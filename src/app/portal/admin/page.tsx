@@ -40,7 +40,7 @@ export default async function AdminPortalPage() {
             {user.firstName ? `, ${user.firstName}` : ""}!
           </>
         }
-        description="Here’s what is happening across the ThreeD Consulting learning platform."
+        description="Here’s what is happening across the Three-D Managers Limited learning platform."
         actions={
           <Button asChild>
             <Link href="/portal/admin/teachers/new">

@@ -21,7 +21,7 @@ export function BrandLogo({
   return (
     <Link
       href="/"
-      aria-label="ThreeD Consulting home"
+      aria-label="Three-D Managers Limited home"
       className={cn(
         "group inline-flex items-center gap-2.5 rounded-xl",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4",
@@ -53,7 +53,10 @@ export function BrandLogo({
           inverse ? "text-white" : "text-foreground",
         )}
       >
-        ThreeD <span className={inverse ? "text-primary" : "text-primary"}>Consulting</span>
+        ThreeD{" "}
+        {/* <span className={inverse ? "text-primary" : "text-primary"}>
+          Consulting
+        </span> */}
       </span>
     </Link>
   );

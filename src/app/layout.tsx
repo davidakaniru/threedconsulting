@@ -19,10 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ThreeD Consulting",
-    template: "%s | ThreeD Consulting",
+    default: "Three-D Managers Limited",
+    template: "%s | Three-D Managers Limited",
   },
-  description: "ThreeD Consulting learning and school management platform.",
+  description:
+    "Three-D Managers Limited learning and school management platform.",
   icons: {
     icon: "/brand/threed-consulting.jpeg",
     apple: "/brand/threed-consulting.jpeg",

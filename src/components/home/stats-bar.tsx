@@ -30,7 +30,7 @@ const stats = [
 export function StatsBar() {
   return (
     <section
-      aria-label="ThreeD Consulting statistics"
+      aria-label="Three-D Managers Limited statistics"
       className="relative z-10 -mt-6 px-5 sm:px-8"
     >
       <div

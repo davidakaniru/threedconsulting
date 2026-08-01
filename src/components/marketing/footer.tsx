@@ -351,7 +351,7 @@ export function Footer() {
               sm:items-center sm:justify-between"
           >
             <p className="text-center text-sm text-white/55 sm:text-left">
-              © {currentYear} ThreeD Consulting. All rights reserved.
+              © {currentYear} Three-D Managers Limited. All rights reserved.
             </p>
 
             <div className="flex items-center justify-center gap-2 sm:justify-end">
