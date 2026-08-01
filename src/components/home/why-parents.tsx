@@ -1,16 +1,5 @@
 "use client";
 
-import {
-  CalendarDays,
-  GraduationCap,
-  HeartHandshake,
-  Home,
-  ShieldCheck,
-  Sparkles,
-  TrendingUp,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
 import { motion } from "motion/react";
 
 const features = [
@@ -18,69 +7,42 @@ const features = [
     title: "Qualified Teachers",
     description:
       "Every tutor is DBS-checked, degree-qualified and specially trained for young learners.",
-    icon: GraduationCap,
-    iconBackground: "bg-[#e0f2fe]",
-    iconColour: "text-[#0284c7]",
   },
   {
     title: "Safe Learning Environment",
     description:
       "Robust safeguarding, secure sign-ins and a warm, welcoming space.",
-    icon: ShieldCheck,
-    iconBackground: "bg-[#dcfce7]",
-    iconColour: "text-[#16a34a]",
   },
   {
     title: "Small Class Sizes",
     description:
       "Never more than six children per class, so nobody gets left behind.",
-    icon: Users,
-    iconBackground: "bg-[#ffe4d9]",
-    iconColour: "text-[#f85e38]",
   },
   {
     title: "Fun Learning Experience",
     description: "Games, projects and stories make progress feel like play.",
-    icon: Sparkles,
-    iconBackground: "bg-[#fef3c7]",
-    iconColour: "text-[#d99806]",
   },
   {
     title: "Progress Tracking",
     description:
       "Clear reports and milestones you can follow from your dashboard.",
-    icon: TrendingUp,
-    iconBackground: "bg-[#ede9fe]",
-    iconColour: "text-[#7c3aed]",
   },
   {
     title: "Personalised Support",
     description: "Learning plans shaped around your child’s pace and goals.",
-    icon: HeartHandshake,
-    iconBackground: "bg-[#ccfbf1]",
-    iconColour: "text-[#0d9488]",
   },
   {
     title: "Flexible Programmes",
     description: "Weekday, weekend and holiday options that fit family life.",
-    icon: CalendarDays,
-    iconBackground: "bg-[#ffe4ee]",
-    iconColour: "text-[#db2777]",
   },
   {
     title: "Strong Community",
     description:
       "Events, clubs and a friendly parent community you can lean on.",
-    icon: Home,
-    iconBackground: "bg-[#e0f2fe]",
-    iconColour: "text-[#0284c7]",
   },
 ] satisfies ReadonlyArray<{
   title: string;
   description: string;
-  icon: LucideIcon;
-  iconBackground: string;
-  iconColour: string;
 }>;
 
 export function WhyParents() {
@@ -149,8 +111,6 @@ type FeatureCardProps = {
 };
 
 function FeatureCard({ feature, index }: FeatureCardProps) {
-  const Icon = feature.icon;
-
   return (
     <motion.article
       initial={{
@@ -180,13 +140,6 @@ function FeatureCard({ feature, index }: FeatureCardProps) {
           hover:-translate-y-1.5
           hover:shadow-[0_28px_60px_-24px_rgba(56,116,189,0.45)]"
       >
-        <span
-          className={`mb-4 grid size-14 place-items-center rounded-2xl
-            ${feature.iconBackground}`}
-        >
-          <Icon aria-hidden="true" className={`size-7 ${feature.iconColour}`} />
-        </span>
-
         <h3 className="font-display text-lg font-bold text-foreground">
           {feature.title}
         </h3>
