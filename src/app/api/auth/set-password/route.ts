@@ -5,14 +5,16 @@ import { apiError, apiSuccess } from "@/lib/api/responses";
 import { requireApiAuth } from "@/lib/auth/guards";
 import { setInvitedPasswordSchema } from "@/modules/teachers/schemas";
 import { setInvitedTeacherPassword } from "@/modules/teachers/server";
+import { setInvitedParentPassword } from "@/modules/parents/server";
 
 export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const user = await requireApiAuth();
-    if (user.role !== "teacher") throw new ApiError("FORBIDDEN", "This setup link is only available to invited teachers.", 403);
+    if (user.role !== "teacher" && user.role !== "parent") throw new ApiError("FORBIDDEN", "This setup link is only available to invited accounts.", 403);
     const input = await setInvitedPasswordSchema.validate(await request.json(), { abortEarly: false, stripUnknown: true });
-    await setInvitedTeacherPassword(user.id, input.password);
+    if (user.role === "teacher") await setInvitedTeacherPassword(user.id, input.password);
+    else await setInvitedParentPassword(user.id, input.password);
     return apiSuccess({ completed: true });
   } catch (error) {
     if (error instanceof ValidationError) return apiError("VALIDATION_ERROR", "Please choose a valid password.", 422);

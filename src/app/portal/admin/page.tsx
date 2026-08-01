@@ -1,17 +1,14 @@
 import Link from "next/link";
 import {
   BookOpen,
-  CalendarDays,
   GraduationCap,
   Plus,
-  ShieldCheck,
   UserRound,
   Users,
 } from "lucide-react";
 
 import {
   AdminPage,
-  InfoCard,
   MetricCard,
   MetricGrid,
   PageHeader,
@@ -40,7 +37,7 @@ export default async function AdminPortalPage() {
             {user.firstName ? `, ${user.firstName}` : ""}!
           </>
         }
-        description="Here’s what is happening across the ThreeD Consulting learning platform."
+        description="Here’s what is happening across the Three-D Managers Limited learning platform."
         actions={
           <Button asChild>
             <Link href="/portal/admin/teachers/new">
@@ -124,27 +121,6 @@ export default async function AdminPortalPage() {
               icon={Plus}
               title="Invite a teacher"
               description="Create a staff record and send a secure invite."
-            />
-          </div>
-        </SectionCard>
-
-        <SectionCard
-          title="Platform readiness"
-          description="A quick view of the administration foundation."
-          icon={ShieldCheck}
-        >
-          <div className="space-y-3">
-            <InfoCard
-              icon={ShieldCheck}
-              title="Secure administration"
-              description="Admin-only APIs and role guards protect teacher provisioning and future management tools."
-              tone="green"
-            />
-            <InfoCard
-              icon={CalendarDays}
-              title="Automatic staff records"
-              description="Teacher hire dates are assigned automatically when an account is created."
-              tone="blue"
             />
           </div>
         </SectionCard>

@@ -35,13 +35,6 @@ const floatingIllustrations = [
   },
 ] as const;
 
-const familyDots = [
-  "bg-[#38bdf8]",
-  "bg-[#ff7a59]",
-  "bg-[#4ade80]",
-  "bg-[#fccf3f]",
-] as const;
-
 export function HeroSection() {
   return (
     <section
@@ -76,38 +69,6 @@ export function HeroSection() {
       >
         {/* Hero copy */}
         <div>
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 16,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.4,
-            }}
-            className="inline-flex items-center gap-2 rounded-full bg-white
-              px-4 py-2 shadow-[0_4px_16px_rgba(15,23,42,0.08)]"
-          >
-            <span className="flex -space-x-1.5" aria-hidden="true">
-              {familyDots.map((colour) => (
-                <span
-                  key={colour}
-                  className={cn(
-                    "size-6 rounded-full border-2 border-white",
-                    colour,
-                  )}
-                />
-              ))}
-            </span>
-
-            <span className="font-display text-sm font-bold text-foreground">
-              Loved by 4,800+ families
-            </span>
-          </motion.div>
-
           <motion.h1
             initial={{
               opacity: 0,

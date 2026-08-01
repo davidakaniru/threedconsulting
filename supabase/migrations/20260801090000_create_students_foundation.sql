@@ -1,0 +1,3 @@
+-- Hosted migration already applied through Supabase. See project migration history.
+-- Creates public.student_status, public.students, private student-photos bucket,
+-- and the private year-specific admission counter/trigger for STD-YYYY-#### numbers.
