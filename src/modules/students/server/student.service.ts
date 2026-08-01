@@ -2,6 +2,7 @@ import { ApiError } from "@/lib/api/errors";
 import { normalizePagination } from "@/lib/modules";
 import { nullableText } from "@/lib/mappers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getStudentParents } from "@/modules/parents/server";
 import type {
   CreateStudentRequest,
   UpdateStudentRequest,
@@ -76,10 +77,11 @@ export async function getStudent(id: string): Promise<StudentDetail> {
       500,
     );
   if (!data) throw new ApiError("STUDENT_NOT_FOUND", "Student not found.", 404);
-  return mapStudentDetail(
-    data as StudentRow,
-    await signedPhotoUrl(data.photo_path),
-  );
+  const [photoUrl, parents] = await Promise.all([
+    signedPhotoUrl(data.photo_path),
+    getStudentParents(id),
+  ]);
+  return { ...mapStudentDetail(data as StudentRow, photoUrl), parents };
 }
 
 export async function getStudentMetrics(): Promise<StudentMetricsI> {
@@ -147,10 +149,11 @@ export async function updateStudent(
       "The student could not be updated.",
       500,
     );
-  return mapStudentDetail(
-    data as StudentRow,
-    await signedPhotoUrl(data.photo_path),
-  );
+  const [photoUrl, parents] = await Promise.all([
+    signedPhotoUrl(data.photo_path),
+    getStudentParents(id),
+  ]);
+  return { ...mapStudentDetail(data as StudentRow, photoUrl), parents };
 }
 
 export async function uploadStudentPhoto(
