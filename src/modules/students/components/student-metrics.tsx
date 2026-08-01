@@ -1,6 +1,6 @@
 import { GraduationCap, UserCheck, UserMinus, Users } from "lucide-react";
 import { MetricCard, MetricGrid } from "@/components/admin/ui";
-import type { StudentMetrics as StudentMetricsType } from "@/modules/students/types";
+import type { StudentMetricsI as StudentMetricsType } from "@/modules/students/types";
 
 export function StudentMetrics({ metrics }: { metrics: StudentMetricsType }) {
   return (

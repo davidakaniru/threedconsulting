@@ -29,7 +29,7 @@ export interface StudentListResult {
   pageSize: number;
 }
 
-export interface StudentMetrics {
+export interface StudentMetricsI {
   total: number;
   active: number;
   inactive: number;
