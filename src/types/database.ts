@@ -12,6 +12,27 @@ export type Database = {
   };
   public: {
     Tables: {
+      audit_logs: {
+        Row: { action: string; actor_id: string | null; created_at: string; entity_id: string | null; entity_type: string; id: number; metadata: Json };
+        Insert: { action: string; actor_id?: string | null; created_at?: string; entity_id?: string | null; entity_type: string; id?: number; metadata?: Json };
+        Update: { action?: string; actor_id?: string | null; created_at?: string; entity_id?: string | null; entity_type?: string; id?: number; metadata?: Json };
+        Relationships: [{ foreignKeyName: "audit_logs_actor_id_fkey"; columns: ["actor_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] }];
+      };
+      parents: {
+        Row: { activated_at: string | null; created_at: string; id: string; invited_at: string; occupation: string | null; onboarding_status: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at: string };
+        Insert: { activated_at?: string | null; created_at?: string; id: string; invited_at?: string; occupation?: string | null; onboarding_status?: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at?: string };
+        Update: { activated_at?: string | null; created_at?: string; id?: string; invited_at?: string; occupation?: string | null; onboarding_status?: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at?: string };
+        Relationships: [{ foreignKeyName: "parents_id_fkey"; columns: ["id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] }];
+      };
+      student_parents: {
+        Row: { created_at: string; is_primary_contact: boolean; parent_id: string; relationship: Database["public"]["Enums"]["guardian_relationship"]; student_id: string };
+        Insert: { created_at?: string; is_primary_contact?: boolean; parent_id: string; relationship: Database["public"]["Enums"]["guardian_relationship"]; student_id: string };
+        Update: { created_at?: string; is_primary_contact?: boolean; parent_id?: string; relationship?: Database["public"]["Enums"]["guardian_relationship"]; student_id?: string };
+        Relationships: [
+          { foreignKeyName: "student_parents_parent_id_fkey"; columns: ["parent_id"]; isOneToOne: false; referencedRelation: "parents"; referencedColumns: ["id"] },
+          { foreignKeyName: "student_parents_student_id_fkey"; columns: ["student_id"]; isOneToOne: false; referencedRelation: "students"; referencedColumns: ["id"] }
+        ];
+      };
       profiles: {
         Row: {
           address: string | null;
@@ -169,6 +190,8 @@ export type Database = {
       };
     };
     Enums: {
+      guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
+      parent_onboarding_status: "invited" | "active";
       profile_status: "active" | "inactive" | "suspended";
       student_status: "active" | "inactive" | "graduated" | "withdrawn";
       teacher_employment_status: "active" | "on_leave" | "former";
@@ -304,6 +327,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],
+      parent_onboarding_status: ["invited", "active"],
       profile_status: ["active", "inactive", "suspended"],
       student_status: ["active", "inactive", "graduated", "withdrawn"],
       teacher_employment_status: ["active", "on_leave", "former"],

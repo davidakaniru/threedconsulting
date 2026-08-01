@@ -2,6 +2,7 @@ import { createEntityQueryKeys } from "@/lib/modules";
 
 const teacherKeys = createEntityQueryKeys("teachers");
 const studentKeys = createEntityQueryKeys("students");
+const parentKeys = createEntityQueryKeys("parents");
 
 export const queryKeys = {
   auth: {
@@ -10,6 +11,7 @@ export const queryKeys = {
   },
   teachers: teacherKeys,
   students: studentKeys,
+  parents: parentKeys,
   profile: {
     all: ["profile"] as const,
     detail: () => ["profile", "detail"] as const,
