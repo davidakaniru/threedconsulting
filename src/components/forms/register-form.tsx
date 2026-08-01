@@ -40,10 +40,8 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: RegisterFormValues) {
-    const { confirmPassword: _confirmPassword, ...request } = values;
-
     try {
-      const result = await registerMutation.mutateAsync(request);
+      const result = await registerMutation.mutateAsync(values);
 
       if (result.requiresEmailConfirmation) {
         setRegisteredEmail(values.email);
@@ -73,7 +71,9 @@ export function RegisterForm() {
         <div className="mt-6 rounded-2xl bg-primary/5 px-4 py-3 text-left text-sm text-muted-foreground">
           <div className="flex gap-3">
             <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
-            <p>The link may take a minute to arrive. Check your spam folder too.</p>
+            <p>
+              The link may take a minute to arrive. Check your spam folder too.
+            </p>
           </div>
         </div>
         <Button asChild size="lg" className="mt-7 w-full">
@@ -93,43 +93,120 @@ export function RegisterForm() {
           Create your account
         </h1>
         <p className="mt-3 leading-7 text-muted-foreground">
-          Register to manage enrolments and follow your child&apos;s learning journey.
+          Register to manage enrolments and follow your child&apos;s learning
+          journey.
         </p>
       </div>
 
       {registerMutation.error && (
-        <div role="alert" className="mt-6 flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div
+          role="alert"
+          className="mt-6 flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
           <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
           <p>{registerMutation.error.message}</p>
         </div>
       )}
 
-      <form noValidate onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-5">
+      <form
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        className="mt-7 space-y-5"
+      >
         <div className="grid gap-5 sm:grid-cols-2">
-          <Input id="first-name" label="First name" autoComplete="given-name" required errorMessage={errors.firstName?.message} {...register("firstName")} />
-          <Input id="last-name" label="Last name" autoComplete="family-name" required errorMessage={errors.lastName?.message} {...register("lastName")} />
+          <Input
+            id="first-name"
+            label="First name"
+            autoComplete="given-name"
+            required
+            errorMessage={errors.firstName?.message}
+            {...register("firstName")}
+          />
+          <Input
+            id="last-name"
+            label="Last name"
+            autoComplete="family-name"
+            required
+            errorMessage={errors.lastName?.message}
+            {...register("lastName")}
+          />
         </div>
-        <Input id="email" type="email" label="Email address" placeholder="you@example.com" autoComplete="email" required errorMessage={errors.email?.message} {...register("email")} />
-        <Input id="password" type="password" label="Password" autoComplete="new-password" required info="At least 8 characters, with uppercase, lowercase and a number." errorMessage={errors.password?.message} {...register("password")} />
-        <Input id="confirm-password" type="password" label="Confirm password" autoComplete="new-password" required errorMessage={errors.confirmPassword?.message} {...register("confirmPassword")} />
+        <Input
+          id="email"
+          type="email"
+          label="Email address"
+          placeholder="you@example.com"
+          autoComplete="email"
+          required
+          errorMessage={errors.email?.message}
+          {...register("email")}
+        />
+        <Input
+          id="password"
+          type="password"
+          label="Password"
+          autoComplete="new-password"
+          required
+          info="At least 8 characters, with uppercase, lowercase and a number."
+          errorMessage={errors.password?.message}
+          {...register("password")}
+        />
+        <Input
+          id="confirm-password"
+          type="password"
+          label="Confirm password"
+          autoComplete="new-password"
+          required
+          errorMessage={errors.confirmPassword?.message}
+          {...register("confirmPassword")}
+        />
 
         <div>
-          <label htmlFor="accepted-terms" className="flex cursor-pointer items-start gap-3 text-sm text-muted-foreground">
-            <input id="accepted-terms" type="checkbox" className="mt-1 size-4 rounded border-primary/20 accent-primary" {...register("acceptedTerms")} />
+          <label
+            htmlFor="accepted-terms"
+            className="flex cursor-pointer items-start gap-3 text-sm text-muted-foreground"
+          >
+            <input
+              id="accepted-terms"
+              type="checkbox"
+              className="mt-1 size-4 rounded border-primary/20 accent-primary"
+              {...register("acceptedTerms")}
+            />
             <span>I agree to the terms of service and privacy policy.</span>
           </label>
-          {errors.acceptedTerms?.message && <p role="alert" className="mt-2 text-xs font-medium text-destructive">{errors.acceptedTerms.message}</p>}
+          {errors.acceptedTerms?.message && (
+            <p
+              role="alert"
+              className="mt-2 text-xs font-medium text-destructive"
+            >
+              {errors.acceptedTerms.message}
+            </p>
+          )}
         </div>
 
-        <Button type="submit" size="lg" disabled={registerMutation.isPending} className="w-full">
-          {registerMutation.isPending ? "Creating account..." : "Create account"}
-          {!registerMutation.isPending && <ArrowRight aria-hidden="true" className="size-4" />}
+        <Button
+          type="submit"
+          size="lg"
+          disabled={registerMutation.isPending}
+          className="w-full"
+        >
+          {registerMutation.isPending
+            ? "Creating account..."
+            : "Create account"}
+          {!registerMutation.isPending && (
+            <ArrowRight aria-hidden="true" className="size-4" />
+          )}
         </Button>
       </form>
 
       <p className="mt-7 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/sign-in" className="font-semibold text-primary hover:text-primary/80">Sign in</Link>
+        <Link
+          href="/sign-in"
+          className="font-semibold text-primary hover:text-primary/80"
+        >
+          Sign in
+        </Link>
       </p>
     </div>
   );
