@@ -72,7 +72,7 @@ export function MetricCard({
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-linear-to-b opacity-80",
+          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b opacity-80",
           tones[tone].accent,
         )}
       />
@@ -109,9 +109,7 @@ export function MetricCard({
               <TrendIcon aria-hidden="true" className="size-3.5" />
               {trend.value}
               {trend.label && (
-                <span className="font-medium text-slate-500">
-                  {trend.label}
-                </span>
+                <span className="font-medium text-slate-500">{trend.label}</span>
               )}
             </span>
           )}
