@@ -8,7 +8,7 @@ export default async function TeacherPortalPage() {
     <PortalPage
       user={user}
       title="Teacher dashboard"
-      description="Your teacher portal is protected and ready for classes, learners, attendance, learning resources, and progress reporting."
+      description="View your assigned programmes now. Cohorts, class sessions, learners and attendance will become available as the academic workflow is completed."
     />
   );
 }

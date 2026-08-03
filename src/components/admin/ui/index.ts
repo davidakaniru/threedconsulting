@@ -19,3 +19,5 @@ export { TableError } from "./table-error";
 export { TableLoading } from "./table-loading";
 export { TableToolbar } from "./table-toolbar";
 export { BulkActionBar } from "./bulk-action-bar";
+
+export { PageBackButton } from "./page-back-button";

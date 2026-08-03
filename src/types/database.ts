@@ -12,6 +12,44 @@ export type Database = {
   };
   public: {
     Tables: {
+      class_sessions: {
+        Row: { cohort_id:string; created_at:string; created_by:string; description:string|null; end_time:string; id:string; meeting_link:string; session_date:string; start_time:string; status:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at:string };
+        Insert: { cohort_id:string; created_at?:string; created_by:string; description?:string|null; end_time:string; id?:string; meeting_link:string; session_date:string; start_time:string; status?:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at?:string };
+        Update: { cohort_id?:string; created_at?:string; created_by?:string; description?:string|null; end_time?:string; id?:string; meeting_link?:string; session_date?:string; start_time?:string; status?:Database["public"]["Enums"]["class_session_status"]; title?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"class_sessions_cohort_id_fkey"; columns:["cohort_id"]; isOneToOne:false; referencedRelation:"cohorts"; referencedColumns:["id"] },
+          { foreignKeyName:"class_sessions_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] }
+        ];
+      };
+      session_attendance: {
+        Row: { created_at:string; id:string; marked_at:string|null; marked_by:string|null; notes:string|null; session_id:string; status:Database["public"]["Enums"]["attendance_status"]; student_id:string; updated_at:string };
+        Insert: { created_at?:string; id?:string; marked_at?:string|null; marked_by?:string|null; notes?:string|null; session_id:string; status?:Database["public"]["Enums"]["attendance_status"]; student_id:string; updated_at?:string };
+        Update: { created_at?:string; id?:string; marked_at?:string|null; marked_by?:string|null; notes?:string|null; session_id?:string; status?:Database["public"]["Enums"]["attendance_status"]; student_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"session_attendance_marked_by_fkey"; columns:["marked_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"session_attendance_session_id_fkey"; columns:["session_id"]; isOneToOne:false; referencedRelation:"class_sessions"; referencedColumns:["id"] },
+          { foreignKeyName:"session_attendance_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
+        ];
+      };
+      cohorts: {
+        Row: { capacity:number; code:string; created_at:string; created_by:string|null; description:string|null; expected_end_date:string|null; id:string; name:string; start_date:string; status:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at:string };
+        Insert: { capacity?:number; code:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name:string; start_date:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at?:string };
+        Update: { capacity?:number; code?:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name?:string; start_date?:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"cohorts_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"cohorts_teaching_assignment_id_fkey"; columns:["teaching_assignment_id"]; isOneToOne:false; referencedRelation:"teaching_assignments"; referencedColumns:["id"] }
+        ];
+      };
+      cohort_students: {
+        Row: { assigned_by:string|null; cohort_id:string; created_at:string; id:string; joined_at:string; left_at:string|null; status:Database["public"]["Enums"]["cohort_membership_status"]; student_id:string; updated_at:string };
+        Insert: { assigned_by?:string|null; cohort_id:string; created_at?:string; id?:string; joined_at?:string; left_at?:string|null; status?:Database["public"]["Enums"]["cohort_membership_status"]; student_id:string; updated_at?:string };
+        Update: { assigned_by?:string|null; cohort_id?:string; created_at?:string; id?:string; joined_at?:string; left_at?:string|null; status?:Database["public"]["Enums"]["cohort_membership_status"]; student_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"cohort_students_assigned_by_fkey"; columns:["assigned_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"cohort_students_cohort_id_fkey"; columns:["cohort_id"]; isOneToOne:false; referencedRelation:"cohorts"; referencedColumns:["id"] },
+          { foreignKeyName:"cohort_students_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
+        ];
+      };
       audit_logs: {
         Row: { action: string; actor_id: string | null; created_at: string; entity_id: string | null; entity_type: string; id: number; metadata: Json };
         Insert: { action: string; actor_id?: string | null; created_at?: string; entity_id?: string | null; entity_type: string; id?: number; metadata?: Json };
@@ -23,6 +61,12 @@ export type Database = {
         Insert: { activated_at?: string | null; created_at?: string; id: string; invited_at?: string; occupation?: string | null; onboarding_status?: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at?: string };
         Update: { activated_at?: string | null; created_at?: string; id?: string; invited_at?: string; occupation?: string | null; onboarding_status?: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at?: string };
         Relationships: [{ foreignKeyName: "parents_id_fkey"; columns: ["id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] }];
+      };
+      programmes: {
+        Row: { created_at: string; created_by: string | null; description: string | null; id: string; name: string; slug: string; status: Database["public"]["Enums"]["programme_status"]; updated_at: string };
+        Insert: { created_at?: string; created_by?: string | null; description?: string | null; id?: string; name: string; slug: string; status?: Database["public"]["Enums"]["programme_status"]; updated_at?: string };
+        Update: { created_at?: string; created_by?: string | null; description?: string | null; id?: string; name?: string; slug?: string; status?: Database["public"]["Enums"]["programme_status"]; updated_at?: string };
+        Relationships: [{ foreignKeyName: "programmes_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] }];
       };
       student_parents: {
         Row: { created_at: string; is_primary_contact: boolean; parent_id: string; relationship: Database["public"]["Enums"]["guardian_relationship"]; student_id: string };
@@ -129,6 +173,16 @@ export type Database = {
         };
         Relationships: [];
       };
+      teaching_assignments: {
+        Row: { assigned_at: string; assigned_by: string | null; created_at: string; id: string; primary_instructor: boolean; programme_id: string; status: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id: string; updated_at: string };
+        Insert: { assigned_at?: string; assigned_by?: string | null; created_at?: string; id?: string; primary_instructor?: boolean; programme_id: string; status?: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id: string; updated_at?: string };
+        Update: { assigned_at?: string; assigned_by?: string | null; created_at?: string; id?: string; primary_instructor?: boolean; programme_id?: string; status?: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id?: string; updated_at?: string };
+        Relationships: [
+          { foreignKeyName: "teaching_assignments_assigned_by_fkey"; columns: ["assigned_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "teaching_assignments_programme_id_fkey"; columns: ["programme_id"]; isOneToOne: false; referencedRelation: "programmes"; referencedColumns: ["id"] },
+          { foreignKeyName: "teaching_assignments_teacher_id_fkey"; columns: ["teacher_id"]; isOneToOne: false; referencedRelation: "teachers"; referencedColumns: ["id"] }
+        ];
+      };
       teachers: {
         Row: {
           activated_at: string | null;
@@ -184,16 +238,35 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      approve_enrolment_application: {
+        Args: {
+          p_application_id: string;
+          p_assignments: Json;
+          p_reviewer_id: string;
+          p_review_notes?: string | null;
+        };
+        Returns: string;
+      };
       deactivate_own_profile: {
         Args: { expected_user_id: string };
         Returns: undefined;
       };
+      ensure_parent_record: {
+        Args: { p_user_id: string };
+        Returns: string;
+      };
     };
     Enums: {
+      attendance_status: "pending" | "present" | "absent" | "late";
+      class_session_status: "draft" | "scheduled" | "completed" | "cancelled";
       guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
+      cohort_membership_status: "active" | "transferred" | "completed" | "withdrawn";
+      cohort_status: "draft" | "open" | "active" | "completed" | "archived";
       parent_onboarding_status: "invited" | "active";
       profile_status: "active" | "inactive" | "suspended";
+      programme_status: "draft" | "published" | "archived";
       student_status: "active" | "inactive" | "graduated" | "withdrawn";
+      teaching_assignment_status: "active" | "inactive";
       teacher_employment_status: "active" | "on_leave" | "former";
       teacher_onboarding_status: "invited" | "active";
       user_role: "parent" | "teacher" | "admin";
@@ -327,10 +400,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      attendance_status: ["pending", "present", "absent", "late"],
+      class_session_status: ["draft", "scheduled", "completed", "cancelled"],
+      cohort_membership_status: ["active", "transferred", "completed", "withdrawn"],
+      cohort_status: ["draft", "open", "active", "completed", "archived"],
       guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],
       parent_onboarding_status: ["invited", "active"],
       profile_status: ["active", "inactive", "suspended"],
+      programme_status: ["draft", "published", "archived"],
       student_status: ["active", "inactive", "graduated", "withdrawn"],
+      teaching_assignment_status: ["active", "inactive"],
       teacher_employment_status: ["active", "on_leave", "former"],
       teacher_onboarding_status: ["invited", "active"],
       user_role: ["parent", "teacher", "admin"],

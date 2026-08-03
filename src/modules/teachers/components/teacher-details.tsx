@@ -5,6 +5,7 @@ import { BookOpenCheck, CalendarDays, GraduationCap, Info, Mail, MapPin, Pencil,
 import { Button } from "@/components/ui/button";
 import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
 import { TeacherLifecycleActions } from "@/modules/teachers/components/teacher-lifecycle-actions";
+import { TeacherProgrammes } from "@/modules/teaching-assignments";
 import type { TeacherDetail } from "@/modules/teachers/types";
 
 function fullName(teacher: TeacherDetail) {
@@ -58,7 +59,8 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
           </dl>
         </SectionCard>
 
-        <InfoCard icon={BookOpenCheck} title="Assigned classes" description="Class assignment will become available when the Classes module is introduced. The teacher record is already structured to support that relationship." />
+        <TeacherProgrammes teacherId={teacher.id} />
+        <InfoCard icon={BookOpenCheck} title="Assigned cohorts" description="Cohorts for this teacher will become available in Phase 7C." />
       </div>
 
       <aside className="space-y-5">
