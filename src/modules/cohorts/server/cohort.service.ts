@@ -1,7 +1,131 @@
-import { ApiError } from "@/lib/api/errors";import { writeAuditLog } from "@/lib/audit";import { nullableText } from "@/lib/mappers";import { normalizePagination } from "@/lib/modules";import type { CohortRequest } from "@/modules/cohorts/schemas";import type { CohortDetail,CohortListResult,CohortMetrics } from "@/modules/cohorts/types";import { mapCohort,type CohortRow } from "./cohort.mapper";import * as repo from "./cohort.repository";
-export async function getCohorts(params:{page?:number;pageSize?:number;search?:string;status?:string;programmeId?:string;teacherId?:string}):Promise<CohortListResult>{const{page,pageSize,from,to}=normalizePagination(params);const{data,error,count}=await repo.listCohortRows(from,to,params);if(error)throw new ApiError("COHORTS_LOAD_FAILED","Cohorts could not be loaded.",500);return{cohorts:((data??[]) as unknown as CohortRow[]).map(mapCohort),total:count??0,page,pageSize};}
-export async function getCohort(id:string):Promise<CohortDetail>{const{data,error}=await repo.getCohortRow(id);if(error)throw new ApiError("COHORT_LOAD_FAILED","The cohort could not be loaded.",500);if(!data)throw new ApiError("COHORT_NOT_FOUND","Cohort not found.",404);return mapCohort(data as unknown as CohortRow);}
-export async function getCohortMetrics():Promise<CohortMetrics>{const r=await Promise.all([repo.countCohorts(),repo.countCohorts("draft"),repo.countCohorts("open"),repo.countCohorts("active"),repo.countCohorts("completed"),repo.countCohorts("archived")]);if(r.some(x=>x.error))throw new ApiError("COHORT_METRICS_FAILED","Cohort metrics could not be loaded.",500);return{total:r[0].count??0,draft:r[1].count??0,open:r[2].count??0,active:r[3].count??0,completed:r[4].count??0,archived:r[5].count??0};}
-function input(v:CohortRequest){return{teaching_assignment_id:v.teachingAssignmentId,name:v.name.trim(),description:nullableText(v.description),capacity:v.capacity,start_date:v.startDate,expected_end_date:nullableText(v.expectedEndDate),status:v.status};}
-export async function createCohort(v:CohortRequest,actorId:string){const{data,error}=await repo.insertCohort({...input(v),code:"",created_by:actorId});if(error||!data){if(error?.code==="23505")throw new ApiError("COHORT_EXISTS","A cohort with this name already exists for the assignment.",409);throw new ApiError("COHORT_CREATE_FAILED","The cohort could not be created.",500);}await writeAuditLog({actorId,action:"cohort.created",entityType:"cohort",entityId:data.id,metadata:{name:data.name,code:data.code}});return mapCohort(data as unknown as CohortRow);}
-export async function updateCohort(id:string,v:CohortRequest,actorId:string){await getCohort(id);const{data,error}=await repo.updateCohortRow(id,input(v));if(error||!data)throw new ApiError("COHORT_UPDATE_FAILED","The cohort could not be updated.",500);await writeAuditLog({actorId,action:"cohort.updated",entityType:"cohort",entityId:id,metadata:{name:data.name,status:data.status}});return mapCohort(data as unknown as CohortRow);}
+import { ApiError } from "@/lib/api/errors";
+import { writeAuditLog } from "@/lib/audit";
+import { nullableText } from "@/lib/mappers";
+import { normalizePagination } from "@/lib/modules";
+import type { CohortRequest } from "@/modules/cohorts/schemas";
+import type {
+  CohortDetail,
+  CohortListResult,
+  CohortMetricsI,
+} from "@/modules/cohorts/types";
+import { mapCohort, type CohortRow } from "./cohort.mapper";
+import * as repo from "./cohort.repository";
+export async function getCohorts(params: {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: string;
+  programmeId?: string;
+  teacherId?: string;
+}): Promise<CohortListResult> {
+  const { page, pageSize, from, to } = normalizePagination(params);
+  const { data, error, count } = await repo.listCohortRows(from, to, params);
+  if (error)
+    throw new ApiError(
+      "COHORTS_LOAD_FAILED",
+      "Cohorts could not be loaded.",
+      500,
+    );
+  return {
+    cohorts: ((data ?? []) as unknown as CohortRow[]).map(mapCohort),
+    total: count ?? 0,
+    page,
+    pageSize,
+  };
+}
+export async function getCohort(id: string): Promise<CohortDetail> {
+  const { data, error } = await repo.getCohortRow(id);
+  if (error)
+    throw new ApiError(
+      "COHORT_LOAD_FAILED",
+      "The cohort could not be loaded.",
+      500,
+    );
+  if (!data) throw new ApiError("COHORT_NOT_FOUND", "Cohort not found.", 404);
+  return mapCohort(data as unknown as CohortRow);
+}
+export async function getCohortMetrics(): Promise<CohortMetricsI> {
+  const r = await Promise.all([
+    repo.countCohorts(),
+    repo.countCohorts("draft"),
+    repo.countCohorts("open"),
+    repo.countCohorts("active"),
+    repo.countCohorts("completed"),
+    repo.countCohorts("archived"),
+  ]);
+  if (r.some((x) => x.error))
+    throw new ApiError(
+      "COHORT_METRICS_FAILED",
+      "Cohort metrics could not be loaded.",
+      500,
+    );
+  return {
+    total: r[0].count ?? 0,
+    draft: r[1].count ?? 0,
+    open: r[2].count ?? 0,
+    active: r[3].count ?? 0,
+    completed: r[4].count ?? 0,
+    archived: r[5].count ?? 0,
+  };
+}
+function input(v: CohortRequest) {
+  return {
+    teaching_assignment_id: v.teachingAssignmentId,
+    name: v.name.trim(),
+    description: nullableText(v.description),
+    capacity: v.capacity,
+    start_date: v.startDate,
+    expected_end_date: nullableText(v.expectedEndDate),
+    status: v.status,
+  };
+}
+export async function createCohort(v: CohortRequest, actorId: string) {
+  const { data, error } = await repo.insertCohort({
+    ...input(v),
+    code: "",
+    created_by: actorId,
+  });
+  if (error || !data) {
+    if (error?.code === "23505")
+      throw new ApiError(
+        "COHORT_EXISTS",
+        "A cohort with this name already exists for the assignment.",
+        409,
+      );
+    throw new ApiError(
+      "COHORT_CREATE_FAILED",
+      "The cohort could not be created.",
+      500,
+    );
+  }
+  await writeAuditLog({
+    actorId,
+    action: "cohort.created",
+    entityType: "cohort",
+    entityId: data.id,
+    metadata: { name: data.name, code: data.code },
+  });
+  return mapCohort(data as unknown as CohortRow);
+}
+export async function updateCohort(
+  id: string,
+  v: CohortRequest,
+  actorId: string,
+) {
+  await getCohort(id);
+  const { data, error } = await repo.updateCohortRow(id, input(v));
+  if (error || !data)
+    throw new ApiError(
+      "COHORT_UPDATE_FAILED",
+      "The cohort could not be updated.",
+      500,
+    );
+  await writeAuditLog({
+    actorId,
+    action: "cohort.updated",
+    entityType: "cohort",
+    entityId: id,
+    metadata: { name: data.name, status: data.status },
+  });
+  return mapCohort(data as unknown as CohortRow);
+}
