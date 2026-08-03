@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, LayoutDashboard } from "lucide-react";
+import Link from "next/link";
 
 import { EnrolmentStepper } from "@/components/enrolment/enrolment-stepper";
 import { EnrolmentSummary } from "@/components/enrolment/enrolment-summary";
@@ -37,6 +38,7 @@ const defaultValues: EnrolmentFormValues = {
 export function EnrolmentForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedApplicationId, setSubmittedApplicationId] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState("");
   const [programmeOptions, setProgrammeOptions] = useState<Array<{id:string;name:string;slug:string}>>([]);
 
@@ -109,6 +111,7 @@ export function EnrolmentForm() {
         }
         throw new Error(payload?.error?.message ?? "Unable to submit enrolment.");
       }
+      setSubmittedApplicationId(payload?.data?.id ?? null);
       setSubmitted(true);
       reset(defaultValues);
     } catch (error) {
@@ -141,22 +144,36 @@ export function EnrolmentForm() {
           className="mx-auto mt-3 max-w-lg leading-7
             text-muted-foreground"
         >
-          We’ve received your enrolment. A member of our team will contact you
-          within one working day to help match your child with the right
-          programme and teacher.
+          We’ve received your enrolment application. You can track its review
+          status from your parent portal while our team matches your child to
+          the appropriate cohort.
         </p>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-7"
-          onClick={() => {
-            setSubmitted(false);
-            setCurrentStep(0);
-          }}
-        >
-          Submit another enrolment
-        </Button>
+        {submittedApplicationId && (
+          <p className="mt-4 text-sm text-muted-foreground">
+            Reference: <span className="font-semibold text-foreground">{submittedApplicationId.slice(0, 8).toUpperCase()}</span>
+          </p>
+        )}
+
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Button asChild>
+            <Link href="/portal/parent/enrolments">
+              <LayoutDashboard />
+              Track application
+            </Link>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setSubmitted(false);
+              setSubmittedApplicationId(null);
+              setCurrentStep(0);
+            }}
+          >
+            Submit another enrolment
+          </Button>
+        </div>
       </div>
     );
   }
