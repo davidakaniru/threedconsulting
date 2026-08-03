@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
     programme: (id: string) => `/admin/programmes/${id}`,
     teachingAssignments: "/admin/teaching-assignments",
     teachingAssignment: (id: string) => `/admin/teaching-assignments/${id}`,
+    cohorts: "/admin/cohorts",
+    cohort: (id: string) => `/admin/cohorts/${id}`,
   },
   profile: {
     root: "/profile",

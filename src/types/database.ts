@@ -12,6 +12,25 @@ export type Database = {
   };
   public: {
     Tables: {
+      cohorts: {
+        Row: { capacity:number; code:string; created_at:string; created_by:string|null; description:string|null; expected_end_date:string|null; id:string; name:string; start_date:string; status:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at:string };
+        Insert: { capacity?:number; code:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name:string; start_date:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at?:string };
+        Update: { capacity?:number; code?:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name?:string; start_date?:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"cohorts_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"cohorts_teaching_assignment_id_fkey"; columns:["teaching_assignment_id"]; isOneToOne:false; referencedRelation:"teaching_assignments"; referencedColumns:["id"] }
+        ];
+      };
+      cohort_students: {
+        Row: { assigned_by:string|null; cohort_id:string; created_at:string; id:string; joined_at:string; left_at:string|null; status:Database["public"]["Enums"]["cohort_membership_status"]; student_id:string; updated_at:string };
+        Insert: { assigned_by?:string|null; cohort_id:string; created_at?:string; id?:string; joined_at?:string; left_at?:string|null; status?:Database["public"]["Enums"]["cohort_membership_status"]; student_id:string; updated_at?:string };
+        Update: { assigned_by?:string|null; cohort_id?:string; created_at?:string; id?:string; joined_at?:string; left_at?:string|null; status?:Database["public"]["Enums"]["cohort_membership_status"]; student_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"cohort_students_assigned_by_fkey"; columns:["assigned_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"cohort_students_cohort_id_fkey"; columns:["cohort_id"]; isOneToOne:false; referencedRelation:"cohorts"; referencedColumns:["id"] },
+          { foreignKeyName:"cohort_students_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
+        ];
+      };
       audit_logs: {
         Row: { action: string; actor_id: string | null; created_at: string; entity_id: string | null; entity_type: string; id: number; metadata: Json };
         Insert: { action: string; actor_id?: string | null; created_at?: string; entity_id?: string | null; entity_type: string; id?: number; metadata?: Json };
@@ -207,6 +226,8 @@ export type Database = {
     };
     Enums: {
       guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
+      cohort_membership_status: "active" | "transferred" | "completed" | "withdrawn";
+      cohort_status: "draft" | "open" | "active" | "completed" | "archived";
       parent_onboarding_status: "invited" | "active";
       profile_status: "active" | "inactive" | "suspended";
       programme_status: "draft" | "published" | "archived";
@@ -345,6 +366,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      cohort_membership_status: ["active", "transferred", "completed", "withdrawn"],
+      cohort_status: ["draft", "open", "active", "completed", "archived"],
       guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],
       parent_onboarding_status: ["invited", "active"],
       profile_status: ["active", "inactive", "suspended"],
