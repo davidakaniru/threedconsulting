@@ -181,6 +181,7 @@ export function TeachersTable() {
           data={data?.teachers ?? []}
           columns={columns}
           getRowId={(teacher) => teacher.id}
+          getRowHref={(teacher) => `/portal/admin/teachers/${teacher.id}`}
           emptyState={
             <EmptyState
               icon={Users}
