@@ -219,9 +219,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      approve_enrolment_application: {
+        Args: {
+          p_application_id: string;
+          p_assignments: Json;
+          p_reviewer_id: string;
+          p_review_notes?: string | null;
+        };
+        Returns: string;
+      };
       deactivate_own_profile: {
         Args: { expected_user_id: string };
         Returns: undefined;
+      };
+      ensure_parent_record: {
+        Args: { p_user_id: string };
+        Returns: string;
       };
     };
     Enums: {

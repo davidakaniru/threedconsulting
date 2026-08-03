@@ -6,6 +6,7 @@ import type { CohortRequest } from "@/modules/cohorts/schemas";
 import type {
   CohortDetail,
   CohortListResult,
+  CohortMember,
   CohortMetricsI,
 } from "@/modules/cohorts/types";
 import { mapCohort, type CohortRow } from "./cohort.mapper";
@@ -34,15 +35,46 @@ export async function getCohorts(params: {
   };
 }
 export async function getCohort(id: string): Promise<CohortDetail> {
-  const { data, error } = await repo.getCohortRow(id);
-  if (error)
+  const [cohortResult, memberResult] = await Promise.all([
+    repo.getCohortRow(id),
+    repo.listCohortMemberRows(id),
+  ]);
+
+  if (cohortResult.error)
     throw new ApiError(
       "COHORT_LOAD_FAILED",
       "The cohort could not be loaded.",
       500,
     );
-  if (!data) throw new ApiError("COHORT_NOT_FOUND", "Cohort not found.", 404);
-  return mapCohort(data as unknown as CohortRow);
+  if (!cohortResult.data)
+    throw new ApiError("COHORT_NOT_FOUND", "Cohort not found.", 404);
+  if (memberResult.error) {
+    console.error("Cohort members could not be loaded", memberResult.error);
+    throw new ApiError(
+      "COHORT_MEMBERS_LOAD_FAILED",
+      "The cohort members could not be loaded.",
+      500,
+    );
+  }
+
+  const members: CohortMember[] = (memberResult.data ?? []).map((row: any) => {
+    const student = Array.isArray(row.students) ? row.students[0] : row.students;
+    return {
+      membershipId: row.id,
+      studentId: row.student_id,
+      admissionNumber: student.admission_number,
+      firstName: student.first_name,
+      middleName: student.middle_name,
+      lastName: student.last_name,
+      status: row.status,
+      joinedAt: row.joined_at,
+    };
+  });
+
+  return {
+    ...mapCohort(cohortResult.data as unknown as CohortRow),
+    members,
+  };
 }
 export async function getCohortMetrics(): Promise<CohortMetricsI> {
   const r = await Promise.all([

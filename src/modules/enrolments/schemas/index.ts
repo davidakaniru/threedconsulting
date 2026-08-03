@@ -1,0 +1,6 @@
+import * as yup from "yup";
+export const submitEnrolmentSchema=yup.object({childFirstName:yup.string().trim().required().max(50),childLastName:yup.string().trim().required().max(50),childDateOfBirth:yup.string().required(),preferredFormat:yup.string().oneOf(["in-person","online","blended"]).required(),programmes:yup.array(yup.string().uuid().required()).min(1).required(),parentName:yup.string().trim().required().max(80),email:yup.string().trim().email().required(),phone:yup.string().trim().required(),additionalInformation:yup.string().trim().max(1000).optional(),acceptedTerms:yup.boolean().oneOf([true]).required()}).required();
+export type SubmitEnrolmentRequest=yup.InferType<typeof submitEnrolmentSchema>;
+export const approveEnrolmentSchema=yup.object({assignments:yup.array().of(yup.object({programmeId:yup.string().uuid().required(),cohortId:yup.string().uuid().required()}).required()).min(1).required(),reviewNotes:yup.string().trim().max(1000).optional()}).required();
+export type ApproveEnrolmentRequest=yup.InferType<typeof approveEnrolmentSchema>;
+export const rejectEnrolmentSchema=yup.object({reviewNotes:yup.string().trim().required("Please provide a reason for rejection.").max(1000)}).required();

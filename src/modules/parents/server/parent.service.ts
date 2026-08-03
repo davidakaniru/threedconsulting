@@ -17,3 +17,18 @@ export async function performParentAction(id:string,action:ParentAction,origin:s
 export async function setInvitedParentPassword(id:string,password:string){const admin=createAdminClient();const{data,error}=await admin.from("parents").select("onboarding_status").eq("id",id).maybeSingle();if(error||!data||data.onboarding_status!=="invited")throw new ApiError("INVITE_SETUP_UNAVAILABLE","This invitation has already been completed or is not valid.",403);const{error:pw}=await admin.auth.admin.updateUserById(id,{password});if(pw)throw new ApiError("PASSWORD_SETUP_FAILED","Your password could not be set.",500);const marked=await repo.markParentActivated(id);if(marked.error)throw new ApiError("PARENT_ACTIVATION_FAILED","Onboarding could not be completed.",500);}
 
 export async function getStudentParents(studentId:string){const{data,error}=await repo.getStudentParentRows(studentId);if(error){console.error("Student parent links failed",error);return [];}return(data??[]).map((link:any)=>{const parent=Array.isArray(link.parents)?link.parents[0]:link.parents;const profile=Array.isArray(parent?.profiles)?parent.profiles[0]:parent?.profiles;return{id:parent.id,firstName:profile?.first_name??"",lastName:profile?.last_name??"",email:profile?.email??"",phone:profile?.phone??null,relationship:link.relationship,isPrimaryContact:link.is_primary_contact};});}
+
+export async function ensureParentRecord(userId: string) {
+  const { data, error } = await createAdminClient().rpc("ensure_parent_record", {
+    p_user_id: userId,
+  });
+  if (error) {
+    console.error("Parent record synchronization failed", error);
+    throw new ApiError(
+      "PARENT_RECORD_SYNC_FAILED",
+      "Your parent profile could not be prepared.",
+      500,
+    );
+  }
+  return data ?? userId;
+}

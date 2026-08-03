@@ -5,3 +5,11 @@ export function getCohortRow(id:string){return createAdminClient().from("cohorts
 export function insertCohort(input:TablesInsert<"cohorts">){return createAdminClient().from("cohorts").insert(input).select(SELECT).single();}
 export function updateCohortRow(id:string,input:TablesUpdate<"cohorts">){return createAdminClient().from("cohorts").update(input).eq("id",id).select(SELECT).single();}
 export function countCohorts(status?:string){let q=createAdminClient().from("cohorts").select("id",{count:"exact",head:true});if(status)q=q.eq("status",status as any);return q;}
+
+export function listCohortMemberRows(cohortId:string){
+  return createAdminClient()
+    .from("cohort_students")
+    .select("id,student_id,status,joined_at,students!inner(id,admission_number,first_name,middle_name,last_name)")
+    .eq("cohort_id",cohortId)
+    .order("joined_at",{ascending:true});
+}
