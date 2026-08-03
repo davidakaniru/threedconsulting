@@ -1,17 +1,14 @@
 import Link from "next/link";
 import {
   BookOpen,
-  CalendarDays,
   GraduationCap,
   Plus,
-  ShieldCheck,
   UserRound,
   Users,
 } from "lucide-react";
 
 import {
   AdminPage,
-  InfoCard,
   MetricCard,
   MetricGrid,
   PageHeader,
@@ -140,27 +137,6 @@ export default async function AdminPortalPage() {
               icon={BookOpen}
               title="Manage programmes"
               description="Create and publish subjects offered to learners."
-            />
-          </div>
-        </SectionCard>
-
-        <SectionCard
-          title="Platform readiness"
-          description="A quick view of the administration foundation."
-          icon={ShieldCheck}
-        >
-          <div className="space-y-3">
-            <InfoCard
-              icon={ShieldCheck}
-              title="Live domain counts"
-              description="Dashboard totals are now aggregated from the same exact-count services used by each management module."
-              tone="green"
-            />
-            <InfoCard
-              icon={CalendarDays}
-              title="Automatic records"
-              description="Teacher hire dates and student admission numbers are generated automatically."
-              tone="blue"
             />
           </div>
         </SectionCard>
