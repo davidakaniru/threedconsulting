@@ -7,6 +7,7 @@ const programmeKeys = createEntityQueryKeys("programmes");
 const teachingAssignmentKeys = createEntityQueryKeys("teaching-assignments");
 const cohortKeys = createEntityQueryKeys("cohorts");
 const enrolmentKeys = createEntityQueryKeys("enrolments");
+const sessionKeys = createEntityQueryKeys("sessions");
 
 export const queryKeys = {
   auth: {
@@ -20,6 +21,7 @@ export const queryKeys = {
   teachingAssignments: teachingAssignmentKeys,
   cohorts: cohortKeys,
   enrolments: enrolmentKeys,
+  sessions: sessionKeys,
   profile: {
     all: ["profile"] as const,
     detail: () => ["profile", "detail"] as const,

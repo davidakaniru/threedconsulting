@@ -12,6 +12,25 @@ export type Database = {
   };
   public: {
     Tables: {
+      class_sessions: {
+        Row: { cohort_id:string; created_at:string; created_by:string; description:string|null; end_time:string; id:string; meeting_link:string; session_date:string; start_time:string; status:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at:string };
+        Insert: { cohort_id:string; created_at?:string; created_by:string; description?:string|null; end_time:string; id?:string; meeting_link:string; session_date:string; start_time:string; status?:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at?:string };
+        Update: { cohort_id?:string; created_at?:string; created_by?:string; description?:string|null; end_time?:string; id?:string; meeting_link?:string; session_date?:string; start_time?:string; status?:Database["public"]["Enums"]["class_session_status"]; title?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"class_sessions_cohort_id_fkey"; columns:["cohort_id"]; isOneToOne:false; referencedRelation:"cohorts"; referencedColumns:["id"] },
+          { foreignKeyName:"class_sessions_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] }
+        ];
+      };
+      session_attendance: {
+        Row: { created_at:string; id:string; marked_at:string|null; marked_by:string|null; notes:string|null; session_id:string; status:Database["public"]["Enums"]["attendance_status"]; student_id:string; updated_at:string };
+        Insert: { created_at?:string; id?:string; marked_at?:string|null; marked_by?:string|null; notes?:string|null; session_id:string; status?:Database["public"]["Enums"]["attendance_status"]; student_id:string; updated_at?:string };
+        Update: { created_at?:string; id?:string; marked_at?:string|null; marked_by?:string|null; notes?:string|null; session_id?:string; status?:Database["public"]["Enums"]["attendance_status"]; student_id?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"session_attendance_marked_by_fkey"; columns:["marked_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"session_attendance_session_id_fkey"; columns:["session_id"]; isOneToOne:false; referencedRelation:"class_sessions"; referencedColumns:["id"] },
+          { foreignKeyName:"session_attendance_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
+        ];
+      };
       cohorts: {
         Row: { capacity:number; code:string; created_at:string; created_by:string|null; description:string|null; expected_end_date:string|null; id:string; name:string; start_date:string; status:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at:string };
         Insert: { capacity?:number; code:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name:string; start_date:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at?:string };
@@ -238,6 +257,8 @@ export type Database = {
       };
     };
     Enums: {
+      attendance_status: "pending" | "present" | "absent" | "late";
+      class_session_status: "draft" | "scheduled" | "completed" | "cancelled";
       guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
       cohort_membership_status: "active" | "transferred" | "completed" | "withdrawn";
       cohort_status: "draft" | "open" | "active" | "completed" | "archived";
@@ -379,6 +400,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      attendance_status: ["pending", "present", "absent", "late"],
+      class_session_status: ["draft", "scheduled", "completed", "cancelled"],
       cohort_membership_status: ["active", "transferred", "completed", "withdrawn"],
       cohort_status: ["draft", "open", "active", "completed", "archived"],
       guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],

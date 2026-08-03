@@ -25,6 +25,12 @@ export const API_ENDPOINTS = {
     enrolment: (id: string) => `/admin/enrolments/${id}`,
     enrolmentApprove: (id: string) => `/admin/enrolments/${id}/approve`,
     enrolmentReject: (id: string) => `/admin/enrolments/${id}/reject`,
+    sessions: "/admin/sessions",
+    session: (id: string) => `/admin/sessions/${id}`,
+  },
+  teacher: {
+    sessions: "/teacher/sessions",
+    session: (id: string) => `/teacher/sessions/${id}`,
   },
   profile: {
     root: "/profile",
