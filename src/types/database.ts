@@ -135,6 +135,16 @@ export type Database = {
         };
         Relationships: [];
       };
+      teaching_assignments: {
+        Row: { assigned_at: string; assigned_by: string | null; created_at: string; id: string; primary_instructor: boolean; programme_id: string; status: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id: string; updated_at: string };
+        Insert: { assigned_at?: string; assigned_by?: string | null; created_at?: string; id?: string; primary_instructor?: boolean; programme_id: string; status?: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id: string; updated_at?: string };
+        Update: { assigned_at?: string; assigned_by?: string | null; created_at?: string; id?: string; primary_instructor?: boolean; programme_id?: string; status?: Database["public"]["Enums"]["teaching_assignment_status"]; teacher_id?: string; updated_at?: string };
+        Relationships: [
+          { foreignKeyName: "teaching_assignments_assigned_by_fkey"; columns: ["assigned_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "teaching_assignments_programme_id_fkey"; columns: ["programme_id"]; isOneToOne: false; referencedRelation: "programmes"; referencedColumns: ["id"] },
+          { foreignKeyName: "teaching_assignments_teacher_id_fkey"; columns: ["teacher_id"]; isOneToOne: false; referencedRelation: "teachers"; referencedColumns: ["id"] }
+        ];
+      };
       teachers: {
         Row: {
           activated_at: string | null;
@@ -201,6 +211,7 @@ export type Database = {
       profile_status: "active" | "inactive" | "suspended";
       programme_status: "draft" | "published" | "archived";
       student_status: "active" | "inactive" | "graduated" | "withdrawn";
+      teaching_assignment_status: "active" | "inactive";
       teacher_employment_status: "active" | "on_leave" | "former";
       teacher_onboarding_status: "invited" | "active";
       user_role: "parent" | "teacher" | "admin";
@@ -339,6 +350,7 @@ export const Constants = {
       profile_status: ["active", "inactive", "suspended"],
       programme_status: ["draft", "published", "archived"],
       student_status: ["active", "inactive", "graduated", "withdrawn"],
+      teaching_assignment_status: ["active", "inactive"],
       teacher_employment_status: ["active", "on_leave", "former"],
       teacher_onboarding_status: ["invited", "active"],
       user_role: ["parent", "teacher", "admin"],

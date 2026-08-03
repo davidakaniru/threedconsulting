@@ -34,6 +34,7 @@ export const portalNavigation: Record<UserRole, readonly PortalNavigationItem[]>
   ],
   teacher: [
     { label: "Dashboard", href: "/portal/teacher", icon: Home, enabled: true },
+    { label: "My programmes", href: "/portal/teacher/programmes", icon: BookOpen, enabled: true },
     { label: "My classes", href: "/portal/teacher/classes", icon: BookOpen, enabled: false },
     { label: "Students", href: "/portal/teacher/students", icon: Users, enabled: false },
     { label: "Attendance", href: "/portal/teacher/attendance", icon: CalendarDays, enabled: false },
