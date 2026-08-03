@@ -24,6 +24,12 @@ export type Database = {
         Update: { activated_at?: string | null; created_at?: string; id?: string; invited_at?: string; occupation?: string | null; onboarding_status?: Database["public"]["Enums"]["parent_onboarding_status"]; updated_at?: string };
         Relationships: [{ foreignKeyName: "parents_id_fkey"; columns: ["id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] }];
       };
+      programmes: {
+        Row: { created_at: string; created_by: string | null; description: string | null; id: string; name: string; slug: string; status: Database["public"]["Enums"]["programme_status"]; updated_at: string };
+        Insert: { created_at?: string; created_by?: string | null; description?: string | null; id?: string; name: string; slug: string; status?: Database["public"]["Enums"]["programme_status"]; updated_at?: string };
+        Update: { created_at?: string; created_by?: string | null; description?: string | null; id?: string; name?: string; slug?: string; status?: Database["public"]["Enums"]["programme_status"]; updated_at?: string };
+        Relationships: [{ foreignKeyName: "programmes_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] }];
+      };
       student_parents: {
         Row: { created_at: string; is_primary_contact: boolean; parent_id: string; relationship: Database["public"]["Enums"]["guardian_relationship"]; student_id: string };
         Insert: { created_at?: string; is_primary_contact?: boolean; parent_id: string; relationship: Database["public"]["Enums"]["guardian_relationship"]; student_id: string };
@@ -193,6 +199,7 @@ export type Database = {
       guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
       parent_onboarding_status: "invited" | "active";
       profile_status: "active" | "inactive" | "suspended";
+      programme_status: "draft" | "published" | "archived";
       student_status: "active" | "inactive" | "graduated" | "withdrawn";
       teacher_employment_status: "active" | "on_leave" | "former";
       teacher_onboarding_status: "invited" | "active";
@@ -330,6 +337,7 @@ export const Constants = {
       guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],
       parent_onboarding_status: ["invited", "active"],
       profile_status: ["active", "inactive", "suspended"],
+      programme_status: ["draft", "published", "archived"],
       student_status: ["active", "inactive", "graduated", "withdrawn"],
       teacher_employment_status: ["active", "on_leave", "former"],
       teacher_onboarding_status: ["invited", "active"],

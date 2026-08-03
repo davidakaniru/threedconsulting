@@ -25,6 +25,7 @@ export const portalNavigation: Record<UserRole, readonly PortalNavigationItem[]>
   admin: [
     { label: "Dashboard", href: "/portal/admin", icon: Home, enabled: true },
     { label: "Teachers", href: "/portal/admin/teachers", icon: GraduationCap, enabled: true, permission: "teachers.read" },
+    { label: "Programmes", href: "/portal/admin/programmes", icon: BookOpen, enabled: true, permission: "programmes.read" },
     { label: "Classes", href: "/portal/admin/classes", icon: BookOpen, enabled: false, permission: "classes.read" },
     { label: "Students", href: "/portal/admin/students", icon: Users, enabled: true, permission: "students.read" },
     { label: "Parents", href: "/portal/admin/parents", icon: UserRound, enabled: true, permission: "parents.read" },

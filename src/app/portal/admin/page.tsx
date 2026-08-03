@@ -100,9 +100,9 @@ export default async function AdminPortalPage() {
           }
         />
         <MetricCard
-          label="Classes"
-          value="—"
-          helper="Class management is planned"
+          label="Programmes"
+          value={metrics.programmes.total}
+          helper={`${metrics.programmes.published} published subject${metrics.programmes.published === 1 ? "" : "s"}`}
           icon={BookOpen}
           tone="purple"
         />
@@ -111,12 +111,12 @@ export default async function AdminPortalPage() {
       <div className="grid gap-5 xl:grid-cols-[1.35fr_.65fr]">
         <SectionCard
           eyebrow="People"
-          title="People management"
-          description="Manage teachers, students and parent accounts from one connected administration workspace."
+          title="Platform management"
+          description="Manage people and the published subjects that power teaching assignments and cohorts."
           icon={GraduationCap}
           action={<StatusBadge status="active" label="Live modules" />}
         >
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <QuickAction
               href="/portal/admin/teachers"
               icon={GraduationCap}
@@ -134,6 +134,12 @@ export default async function AdminPortalPage() {
               icon={UserRound}
               title="Manage parents"
               description="Review parent accounts and student links."
+            />
+            <QuickAction
+              href="/portal/admin/programmes"
+              icon={BookOpen}
+              title="Manage programmes"
+              description="Create and publish subjects offered to learners."
             />
           </div>
         </SectionCard>
