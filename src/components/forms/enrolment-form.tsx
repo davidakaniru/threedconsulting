@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2 } from "lucide-react";
@@ -19,11 +19,12 @@ import {
   EnrolmentFormValues,
   enrolmentSchema,
 } from "@/lib/schemas/enrolment-schema";
-import { programmes } from "@/data/programmes";
+
 
 const defaultValues: EnrolmentFormValues = {
   childFirstName: "",
-  childAge: 4,
+  childLastName: "",
+  childDateOfBirth: "",
   preferredFormat: "",
   programmes: [],
   parentName: "",
@@ -36,6 +37,8 @@ const defaultValues: EnrolmentFormValues = {
 export function EnrolmentForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [programmeOptions, setProgrammeOptions] = useState<Array<{id:string;name:string;slug:string}>>([]);
 
   const methods = useForm<EnrolmentFormValues>({
     resolver: yupResolver(enrolmentSchema),
@@ -60,9 +63,16 @@ export function EnrolmentForm() {
   const preferredFormatLabel = preferredFormatOptions.find((o) =>
     preferredFormat.includes(o.value),
   )?.label;
-  const selectedProgrammesLabels = programmes
-    .filter((programme) => selectedProgrammes.includes(programme.slug))
-    .map((programme) => programme.title);
+  const selectedProgrammesLabels = programmeOptions
+    .filter((programme) => selectedProgrammes.includes(programme.id))
+    .map((programme) => programme.name);
+
+  useEffect(() => {
+    fetch("/api/public/programmes")
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load programmes")))
+      .then((payload) => setProgrammeOptions(payload.data ?? []))
+      .catch(() => setSubmitError("Programmes could not be loaded. Please refresh the page."));
+  }, []);
 
   async function goToNextStep() {
     const currentFields = enrolmentSteps[currentStep].fields;
@@ -86,17 +96,23 @@ export function EnrolmentForm() {
     setSubmitted(false);
 
     try {
-      // Replace with your API request.
-      console.log(formValues);
-
-      await new Promise((resolve) => {
-        window.setTimeout(resolve, 800);
+      setSubmitError("");
+      const response = await fetch("/api/parent/enrolments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
       });
-
+      const payload = await response.json();
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Please sign in with a parent account before submitting an enrolment.");
+        }
+        throw new Error(payload?.error?.message ?? "Unable to submit enrolment.");
+      }
       setSubmitted(true);
       reset(defaultValues);
     } catch (error) {
-      console.error("Unable to submit enrolment:", error);
+      setSubmitError(error instanceof Error ? error.message : "Unable to submit enrolment.");
     }
   }
 
@@ -192,16 +208,23 @@ export function EnrolmentForm() {
                 />
 
                 <Input
-                  id="child-age"
-                  type="number"
-                  label="Child’s age"
-                  placeholder="8"
-                  min={4}
-                  max={16}
-                  inputMode="numeric"
+                  id="child-last-name"
+                  label="Child’s last name"
+                  placeholder="Taylor"
+                  autoComplete="off"
                   required
-                  errorMessage={errors.childAge?.message}
-                  {...register("childAge")}
+                  errorMessage={errors.childLastName?.message}
+                  {...register("childLastName")}
+                />
+
+                <Input
+                  id="child-date-of-birth"
+                  type="date"
+                  label="Date of birth"
+                  required
+                  max={new Date().toISOString().slice(0, 10)}
+                  errorMessage={errors.childDateOfBirth?.message}
+                  {...register("childDateOfBirth")}
                 />
               </div>
 
@@ -252,20 +275,20 @@ export function EnrolmentForm() {
                 render={({ field, fieldState }) => (
                   <div>
                     <div className="grid gap-3 sm:grid-cols-2">
-                      {programmes.map((programme) => {
-                        const isChecked = field.value.includes(programme.slug);
+                      {programmeOptions.map((programme) => {
+                        const isChecked = field.value.includes(programme.id);
 
                         return (
                           <ProgrammeCheckbox
-                            key={programme.slug}
+                            key={programme.id}
                             id={`programme-${programme.slug}`}
-                            label={programme.title}
+                            label={programme.name}
                             checked={isChecked}
                             onCheckedChange={(checked: boolean) => {
                               const nextValue = checked
-                                ? [...field.value, programme.slug]
+                                ? [...field.value, programme.id]
                                 : field.value.filter(
-                                    (value) => value !== programme.slug,
+                                    (value) => value !== programme.id,
                                   );
 
                               field.onChange(nextValue);
@@ -427,6 +450,8 @@ export function EnrolmentForm() {
               </div>
             </section>
           )}
+
+          {submitError && <p role="alert" className="mt-5 text-sm font-medium text-destructive">{submitError}</p>}
 
           <div
             className="mt-8 flex items-center justify-between
