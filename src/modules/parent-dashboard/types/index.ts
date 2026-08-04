@@ -1,11 +1,3 @@
-export type ParentDashboardActivity = {
-  id: string;
-  type: "homework" | "attendance" | "session";
-  title: string;
-  description: string;
-  occurredAt: string;
-};
-
 export type ParentDashboardChild = {
   id: string;
   admissionNumber: string;
@@ -50,7 +42,6 @@ export type ParentDashboardChild = {
       sessionDate: string;
     }>;
   };
-  activity: ParentDashboardActivity[];
 };
 
 export type ParentAcademicDashboard = {

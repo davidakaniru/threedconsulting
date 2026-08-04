@@ -24,6 +24,6 @@ teacher:[
 {label:"Homework",href:"/portal/teacher/homework",icon:ClipboardList,enabled:true},
 {label:"Messages",href:"/portal/teacher/messages",icon:MessageSquare,enabled:false},
 {label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}],
-parent:[{label:"Dashboard",href:"/portal/parent",icon:Home,enabled:true},{label:"My enrolments",href:"/portal/parent/enrolments",icon:FileCheck2,enabled:true},{label:"Messages",href:"/portal/parent/messages",icon:MessageSquare,enabled:false},{label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}]};
+parent:[{label:"My children",href:"/portal/parent",icon:Home,enabled:true},{label:"My enrolments",href:"/portal/parent/enrolments",icon:FileCheck2,enabled:true},{label:"Messages",href:"/portal/parent/messages",icon:MessageSquare,enabled:false},{label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}]};
 export function isPortalNavigationItemActive(pathname:string,item:PortalNavigationItem,role:UserRole){const dashboard=`/portal/${role}`;return pathname===item.href||(item.href!==dashboard&&pathname.startsWith(`${item.href}/`));}
 export function findPortalNavigationItem(pathname:string,role:UserRole){return [...portalNavigation[role]].sort((a,b)=>b.href.length-a.href.length).find(item=>pathname===item.href||pathname.startsWith(`${item.href}/`));}
