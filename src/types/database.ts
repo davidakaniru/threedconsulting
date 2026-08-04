@@ -255,6 +255,10 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: string;
       };
+      update_session_attendance: {
+        Args: { p_session_id: string; p_teacher_id: string; p_records: Json };
+        Returns: number;
+      };
     };
     Enums: {
       attendance_status: "pending" | "present" | "absent" | "late";

@@ -20,7 +20,7 @@ teacher:[
 {label:"My cohorts",href:"/portal/teacher/cohorts",icon:Layers3,enabled:true},
 {label:"My sessions",href:"/portal/teacher/sessions",icon:CalendarDays,enabled:true},
 {label:"Students",href:"/portal/teacher/students",icon:Users,enabled:false},
-{label:"Attendance",href:"/portal/teacher/attendance",icon:CalendarDays,enabled:false},
+{label:"Attendance",href:"/portal/teacher/attendance",icon:CalendarDays,enabled:true},
 {label:"Messages",href:"/portal/teacher/messages",icon:MessageSquare,enabled:false},
 {label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}],
 parent:[{label:"Dashboard",href:"/portal/parent",icon:Home,enabled:true},{label:"My enrolments",href:"/portal/parent/enrolments",icon:FileCheck2,enabled:true},{label:"Messages",href:"/portal/parent/messages",icon:MessageSquare,enabled:false},{label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}]};
