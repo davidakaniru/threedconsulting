@@ -1,0 +1,3 @@
+import * as yup from "yup";
+export const homeworkSchema=yup.object({sessionId:yup.string().uuid().required("Select a session."),title:yup.string().trim().max(160).required("Enter a homework title."),instructions:yup.string().trim().max(4000).required("Enter the homework instructions."),dueAt:yup.string().required("Select a due date and time."),maximumScore:yup.number().transform((v,o)=>o===""||o==null?undefined:v).positive("Maximum score must be greater than zero.").optional(),status:yup.mixed<"draft"|"published"|"closed">().oneOf(["draft","published","closed"]).required()}).required();
+export type HomeworkRequest=yup.InferType<typeof homeworkSchema>;

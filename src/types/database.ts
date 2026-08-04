@@ -31,6 +31,25 @@ export type Database = {
           { foreignKeyName:"session_attendance_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
         ];
       };
+      homework: {
+        Row: { created_at:string; created_by:string; due_at:string; id:string; instructions:string; maximum_score:number|null; session_id:string; status:Database["public"]["Enums"]["homework_status"]; title:string; updated_at:string };
+        Insert: { created_at?:string; created_by:string; due_at:string; id?:string; instructions:string; maximum_score?:number|null; session_id:string; status?:Database["public"]["Enums"]["homework_status"]; title:string; updated_at?:string };
+        Update: { created_at?:string; created_by?:string; due_at?:string; id?:string; instructions?:string; maximum_score?:number|null; session_id?:string; status?:Database["public"]["Enums"]["homework_status"]; title?:string; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"homework_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"homework_session_id_fkey"; columns:["session_id"]; isOneToOne:false; referencedRelation:"class_sessions"; referencedColumns:["id"] }
+        ];
+      };
+      homework_submissions: {
+        Row: { created_at:string; feedback:string|null; graded_at:string|null; graded_by:string|null; homework_id:string; id:string; score:number|null; status:Database["public"]["Enums"]["homework_submission_status"]; student_id:string; submission_text:string|null; submitted_at:string|null; updated_at:string };
+        Insert: { created_at?:string; feedback?:string|null; graded_at?:string|null; graded_by?:string|null; homework_id:string; id?:string; score?:number|null; status?:Database["public"]["Enums"]["homework_submission_status"]; student_id:string; submission_text?:string|null; submitted_at?:string|null; updated_at?:string };
+        Update: { created_at?:string; feedback?:string|null; graded_at?:string|null; graded_by?:string|null; homework_id?:string; id?:string; score?:number|null; status?:Database["public"]["Enums"]["homework_submission_status"]; student_id?:string; submission_text?:string|null; submitted_at?:string|null; updated_at?:string };
+        Relationships: [
+          { foreignKeyName:"homework_submissions_graded_by_fkey"; columns:["graded_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] },
+          { foreignKeyName:"homework_submissions_homework_id_fkey"; columns:["homework_id"]; isOneToOne:false; referencedRelation:"homework"; referencedColumns:["id"] },
+          { foreignKeyName:"homework_submissions_student_id_fkey"; columns:["student_id"]; isOneToOne:false; referencedRelation:"students"; referencedColumns:["id"] }
+        ];
+      };
       cohorts: {
         Row: { capacity:number; code:string; created_at:string; created_by:string|null; description:string|null; expected_end_date:string|null; id:string; name:string; start_date:string; status:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at:string };
         Insert: { capacity?:number; code:string; created_at?:string; created_by?:string|null; description?:string|null; expected_end_date?:string|null; id?:string; name:string; start_date:string; status?:Database["public"]["Enums"]["cohort_status"]; teaching_assignment_id:string; updated_at?:string };
@@ -263,6 +282,8 @@ export type Database = {
     Enums: {
       attendance_status: "pending" | "present" | "absent" | "late";
       class_session_status: "draft" | "scheduled" | "completed" | "cancelled";
+      homework_status: "draft" | "published" | "closed";
+      homework_submission_status: "pending" | "submitted" | "graded" | "late";
       guardian_relationship: "mother" | "father" | "guardian" | "foster_parent" | "other";
       cohort_membership_status: "active" | "transferred" | "completed" | "withdrawn";
       cohort_status: "draft" | "open" | "active" | "completed" | "archived";
@@ -408,6 +429,8 @@ export const Constants = {
       class_session_status: ["draft", "scheduled", "completed", "cancelled"],
       cohort_membership_status: ["active", "transferred", "completed", "withdrawn"],
       cohort_status: ["draft", "open", "active", "completed", "archived"],
+      homework_status: ["draft", "published", "closed"],
+      homework_submission_status: ["pending", "submitted", "graded", "late"],
       guardian_relationship: ["mother", "father", "guardian", "foster_parent", "other"],
       parent_onboarding_status: ["invited", "active"],
       profile_status: ["active", "inactive", "suspended"],

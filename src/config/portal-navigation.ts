@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, CalendarDays, FileCheck2, GraduationCap, Home, Layers3, MessageSquare, Settings, UserRound, Users } from "lucide-react";
+import { BookOpen, CalendarDays, ClipboardList, FileCheck2, GraduationCap, Home, Layers3, MessageSquare, Settings, UserRound, Users } from "lucide-react";
 import type { UserRole } from "@/types/auth";
 export interface PortalNavigationItem { label:string; href:string; icon:LucideIcon; enabled:boolean; permission?:string; }
 export const portalNavigation:Record<UserRole,readonly PortalNavigationItem[]>={
@@ -21,6 +21,7 @@ teacher:[
 {label:"My sessions",href:"/portal/teacher/sessions",icon:CalendarDays,enabled:true},
 {label:"Students",href:"/portal/teacher/students",icon:Users,enabled:false},
 {label:"Attendance",href:"/portal/teacher/attendance",icon:CalendarDays,enabled:true},
+{label:"Homework",href:"/portal/teacher/homework",icon:ClipboardList,enabled:true},
 {label:"Messages",href:"/portal/teacher/messages",icon:MessageSquare,enabled:false},
 {label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}],
 parent:[{label:"Dashboard",href:"/portal/parent",icon:Home,enabled:true},{label:"My enrolments",href:"/portal/parent/enrolments",icon:FileCheck2,enabled:true},{label:"Messages",href:"/portal/parent/messages",icon:MessageSquare,enabled:false},{label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}]};
