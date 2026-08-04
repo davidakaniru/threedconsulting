@@ -1,14 +1,23 @@
-import { PortalPage } from "@/components/portal/portal-page";
+import type { Metadata } from "next";
+import { AdminPage, PageHeader } from "@/components/admin/ui";
 import { requireParent } from "@/lib/auth/guards";
+import { ParentAcademicDashboardView } from "@/modules/parent-dashboard";
+import { getParentAcademicDashboard } from "@/modules/parent-dashboard/server";
+
+export const metadata: Metadata = { title: "Parent Dashboard | ThreeD Consulting" };
 
 export default async function ParentPortalPage() {
-  const user = await requireParent();
+  const parent = await requireParent();
+  const data = await getParentAcademicDashboard(parent.id);
 
   return (
-    <PortalPage
-      user={user}
-      title="Parent dashboard"
-      description="Your parent portal is protected and ready for enrolments, learner progress, messages, notifications, and account settings."
-    />
+    <AdminPage>
+      <PageHeader
+        eyebrow="Parent portal"
+        title="Academic dashboard"
+        description="Switch between your linked children to view upcoming sessions, homework and attendance."
+      />
+      <ParentAcademicDashboardView data={data} />
+    </AdminPage>
   );
 }
