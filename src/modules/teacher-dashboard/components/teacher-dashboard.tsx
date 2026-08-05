@@ -188,10 +188,10 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               description="Create work linked to one of your sessions."
             />
             <QuickAction
-              href="/portal/teacher/cohorts"
+              href="/portal/teacher/teaching"
               icon={Users}
-              title="Review cohorts"
-              description="See your learner groups and membership."
+              title="Review my teaching"
+              description="See your assigned programmes, cohorts, and next sessions."
             />
           </div>
         </SectionCard>

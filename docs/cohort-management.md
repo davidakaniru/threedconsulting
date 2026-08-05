@@ -8,7 +8,7 @@ Cohorts are learner groups attached to a teaching assignment. Programme and teac
 - `/portal/admin/cohorts/new`
 - `/portal/admin/cohorts/[id]`
 - `/portal/admin/cohorts/[id]/edit`
-- `/portal/teacher/cohorts`
+- `/portal/teacher/teaching` (programmes and cohorts consolidated)
 
 ## Lifecycle
 

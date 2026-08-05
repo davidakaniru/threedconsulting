@@ -16,8 +16,7 @@ admin:[
 {label:"Settings",href:"/portal/profile",icon:Settings,enabled:true}],
 teacher:[
 {label:"Dashboard",href:"/portal/teacher",icon:Home,enabled:true},
-{label:"My programmes",href:"/portal/teacher/programmes",icon:BookOpen,enabled:true},
-{label:"My cohorts",href:"/portal/teacher/cohorts",icon:Layers3,enabled:true},
+{label:"My teaching",href:"/portal/teacher/teaching",icon:BookOpen,enabled:true},
 {label:"My sessions",href:"/portal/teacher/sessions",icon:CalendarDays,enabled:true},
 {label:"Students",href:"/portal/teacher/students",icon:Users,enabled:false},
 {label:"Attendance",href:"/portal/teacher/attendance",icon:CalendarDays,enabled:true},

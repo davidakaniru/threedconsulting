@@ -22,9 +22,11 @@ type CohortOption = {
 export function SessionForm({
   session,
   cohorts,
+  initialCohortId,
 }: {
   session?: ClassSession;
   cohorts: CohortOption[];
+  initialCohortId?: string;
 }) {
   const router = useRouter();
   const create = useCreateSession();
@@ -38,7 +40,7 @@ export function SessionForm({
     resolver: yupResolver(classSessionSchema),
     mode: "onTouched",
     defaultValues: {
-      cohortId: session?.cohortId ?? "",
+      cohortId: session?.cohortId ?? initialCohortId ?? "",
       title: session?.title ?? "",
       description: session?.description ?? "",
       sessionDate:
