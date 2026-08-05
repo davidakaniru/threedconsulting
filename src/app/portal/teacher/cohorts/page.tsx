@@ -1,1 +1,5 @@
-import type { Metadata } from "next";import { AdminPage,PageHeader } from "@/components/admin/ui";import { requireTeacher } from "@/lib/auth/guards";import { TeacherCohorts } from "@/modules/cohorts";export const metadata:Metadata={title:"My Cohorts | Teacher Portal"};export default async function Page(){const user=await requireTeacher();return <AdminPage><PageHeader eyebrow="Academic" title="My cohorts" description="View the learner groups attached to your teaching assignments."/><TeacherCohorts teacherId={user.id}/></AdminPage>}
+import { redirect } from "next/navigation";
+
+export default function TeacherCohortsRedirect() {
+  redirect("/portal/teacher/teaching");
+}

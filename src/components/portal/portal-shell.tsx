@@ -6,13 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  Bell,
   ChevronDown,
   CircleHelp,
   ExternalLink,
   LogOut,
   Menu,
-  Search,
   Settings,
   X,
 } from "lucide-react";
@@ -89,9 +87,10 @@ function SidebarContent({
         </span>
       </Link>
 
-      <nav className="mt-8 space-y-1" aria-label="Primary portal navigation">
-        {portalNavigation[user.role].map((item) => {
+      <nav className="mt-8" aria-label="Primary portal navigation">
+        {portalNavigation[user.role].map((item, index, items) => {
           const Icon = item.icon;
+          const showGroup = Boolean(item.group && item.group !== items[index - 1]?.group);
           const active = isPortalNavigationItemActive(
             pathname,
             item,
@@ -99,22 +98,31 @@ function SidebarContent({
           );
           if (!item.enabled) {
             return (
-              <div
-                key={item.href}
+              <div key={item.href}>
+                {showGroup && (
+                  <p className="mb-2 mt-6 px-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
+                    {item.group}
+                  </p>
+                )}
+                <div
                 title="Coming soon"
                 className="flex cursor-not-allowed items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-slate-300"
               >
-                <Icon className="size-5" />
-                <span>{item.label}</span>
-                <span className="ml-auto text-[10px] font-extrabold uppercase tracking-wider">
-                  Soon
-                </span>
+                  <Icon className="size-5" />
+                  <span>{item.label}</span>
+                  <span className="ml-auto text-[10px] font-extrabold uppercase tracking-wider">Soon</span>
+                </div>
               </div>
             );
           }
           return (
-            <Link
-              key={item.href}
+            <div key={item.href}>
+              {showGroup && (
+                <p className="mb-2 mt-6 px-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
+                  {item.group}
+                </p>
+              )}
+              <Link
               href={item.href}
               onClick={onNavigate}
               className={cn(
@@ -125,8 +133,9 @@ function SidebarContent({
               )}
             >
               <Icon className="size-5" />
-              {item.label}
-            </Link>
+                {item.label}
+              </Link>
+            </div>
           );
         })}
       </nav>
@@ -227,26 +236,7 @@ function Topbar({
         <p className="text-sm text-slate-500">{context.section}</p>
       </div>
 
-      <div className="ml-auto hidden w-full max-w-sm px-6 xl:block">
-        <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-          <input
-            aria-label="Search portal"
-            placeholder="Search the portal..."
-            className="h-10 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
-          />
-        </div>
-      </div>
-
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
-        <button
-          type="button"
-          className="relative grid size-10 place-items-center rounded-full text-slate-500 hover:bg-slate-50"
-          aria-label="View notifications"
-        >
-          <Bell className="size-5" />
-          <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-orange-500 ring-2 ring-white" />
-        </button>
         <div className="relative" ref={menuRef}>
           <button
             type="button"
