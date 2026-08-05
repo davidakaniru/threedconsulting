@@ -2,13 +2,14 @@ import Link from "next/link";
 import {
   BookOpen,
   CalendarCheck2,
+  CalendarPlus,
   CalendarDays,
   CheckCircle2,
   ClipboardList,
   Clock3,
   Layers3,
   Plus,
-  Users,
+  ListChecks,
 } from "lucide-react";
 
 import {
@@ -96,7 +97,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
           label="Attendance to complete"
           value={data.metrics.attendancePending}
           helper="Sessions with pending records"
-          icon={CalendarCheck2}
+          icon={ListChecks}
           tone="orange"
         />
       </MetricGrid>
@@ -177,7 +178,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             />
             <QuickAction
               href="/portal/teacher/attendance"
-              icon={CalendarCheck2}
+              icon={ListChecks}
               title="Take attendance"
               description="Complete pending attendance sheets."
             />
@@ -189,7 +190,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             />
             <QuickAction
               href="/portal/teacher/teaching"
-              icon={Users}
+              icon={Layers3}
               title="Review my teaching"
               description="See your assigned programmes, cohorts, and next sessions."
             />
@@ -288,42 +289,87 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
       </div>
 
       <SectionCard
-        title="Your teaching load"
-        description="A quick view of active programme assignments and cohorts."
+        title="My teaching"
+        description="Your active cohorts, programme context, and most useful next actions."
         icon={Layers3}
+        action={
+          <Button asChild variant="outline" size="sm">
+            <Link href="/portal/teacher/teaching">View all cohorts</Link>
+          </Button>
+        }
       >
-        {data.assignments.length === 0 ? (
+        {data.cohorts.length === 0 ? (
           <EmptyState
             compact
-            icon={BookOpen}
-            title="No active programme assignments"
-            description="Your assigned programmes will appear here once an administrator adds them."
+            icon={Layers3}
+            title="No teaching assignments yet"
+            description="Your administrator will assign programmes and cohorts before classes begin."
           />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {data.assignments.map((assignment) => {
-              const cohorts = data.cohorts.filter(
-                (cohort) => cohort.programme.id === assignment.programmeId,
+            {data.cohorts.map((cohort) => {
+              const nextSession = data.upcomingSessions.find(
+                (session) => session.cohortId === cohort.id,
               );
+
               return (
                 <article
-                  key={assignment.id}
-                  className="rounded-2xl border border-slate-200/80 p-5"
+                  key={cohort.id}
+                  className="flex h-full flex-col rounded-2xl border border-slate-200/80 p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-display text-lg font-extrabold text-foreground">
-                        {assignment.programme.name}
+                    <div className="min-w-0">
+                      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
+                        {cohort.code}
+                      </p>
+                      <h3 className="mt-1 truncate font-display text-lg font-extrabold text-foreground">
+                        {cohort.name}
                       </h3>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Assigned {formatDate(assignment.assignedAt)}
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {cohort.programme.name}
                       </p>
                     </div>
-                    <StatusBadge status={assignment.status} />
+                    <StatusBadge status={cohort.status} />
                   </div>
-                  <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-50 px-3 py-3">
-                    <span className="text-sm font-bold text-slate-600">Active cohorts</span>
-                    <span className="text-lg font-extrabold text-foreground">{cohorts.length}</span>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl bg-slate-50 p-3">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Students
+                      </p>
+                      <p className="mt-1 text-lg font-extrabold text-foreground">
+                        {cohort.memberCount}/{cohort.capacity}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-slate-50 p-3">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Next session
+                      </p>
+                      <p className="mt-1 truncate text-sm font-extrabold text-foreground">
+                        {nextSession ? formatRelative(sessionDateTime(nextSession)) : "Not scheduled"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
+                    <Button asChild size="sm" aria-label={`Create session for ${cohort.code}`}>
+                      <Link href={`/portal/teacher/sessions/new?cohortId=${cohort.id}`}>
+                        <CalendarPlus />
+                        <span className="sr-only sm:not-sr-only">Session</span>
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm" aria-label="Open attendance">
+                      <Link href="/portal/teacher/attendance">
+                        <ListChecks />
+                        <span className="sr-only sm:not-sr-only">Attendance</span>
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm" aria-label="Create homework">
+                      <Link href="/portal/teacher/homework/new">
+                        <ClipboardList />
+                        <span className="sr-only sm:not-sr-only">Homework</span>
+                      </Link>
+                    </Button>
                   </div>
                 </article>
               );
