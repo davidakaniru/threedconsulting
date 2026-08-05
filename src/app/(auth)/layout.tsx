@@ -32,10 +32,8 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
 
       <div
         className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)]
-          max-w-6xl items-center gap-10
-          lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14"
+          max-w-6xl items-center justify-center gap-10"
       >
-        <AuthBrandPanel />
         <div className="mx-auto w-full">
           <AuthLogo compact className="mb-7 lg:hidden" />
           {children}
