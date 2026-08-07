@@ -7,6 +7,7 @@ const programmeKeys = createEntityQueryKeys("programmes");
 const teachingAssignmentKeys = createEntityQueryKeys("teaching-assignments");
 const cohortKeys = createEntityQueryKeys("cohorts");
 const enrolmentKeys = createEntityQueryKeys("enrolments");
+const lessonRequestKeys = createEntityQueryKeys("lesson-requests");
 const sessionKeys = createEntityQueryKeys("sessions");
 const attendanceKeys = createEntityQueryKeys("attendance");
 const homeworkKeys = createEntityQueryKeys("homework");
@@ -23,6 +24,7 @@ export const queryKeys = {
   teachingAssignments: teachingAssignmentKeys,
   cohorts: cohortKeys,
   enrolments: enrolmentKeys,
+  lessonRequests: lessonRequestKeys,
   sessions: sessionKeys,
   attendance: attendanceKeys,
   homework: homeworkKeys,

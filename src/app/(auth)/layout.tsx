@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 
-import { AuthBrandPanel } from "@/components/auth/auth-brand-panel";
 import { AuthDecorations } from "@/components/auth/auth-decorations";
 import { AuthLogo } from "@/components/auth/auth-logo";
 import { BackgroundBlob } from "@/components/shared/background-blob";

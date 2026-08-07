@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { BookOpenCheck, CalendarDays, GraduationCap, Info, Mail, MapPin, Pencil, Phone, UserRound } from "lucide-react";
+import { CalendarDays, GraduationCap, Info, Mail, MapPin, Pencil, Phone, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
@@ -60,7 +60,6 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
         </SectionCard>
 
         <TeacherProgrammes teacherId={teacher.id} />
-        <InfoCard icon={BookOpenCheck} title="Assigned cohorts" description="Cohorts for this teacher will become available in Phase 7C." />
       </div>
 
       <aside className="space-y-5">

@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
 import { AdminPage, PageHeader } from "@/components/admin/ui";
-import { EnrolmentMetrics, EnrolmentsTable } from "@/modules/enrolments";
-import { getEnrolmentMetrics } from "@/modules/enrolments/server";
+import { LessonRequestMetrics, LessonRequestsTable } from "@/modules/lesson-requests";
+import { getLessonRequestMetrics } from "@/modules/lesson-requests/server";
+
 export const metadata: Metadata = { title: "Enrolments | Admin Portal" };
+
 export default async function Page() {
-  const metrics = await getEnrolmentMetrics();
+  const metrics = await getLessonRequestMetrics();
   return (
     <AdminPage>
       <PageHeader
         eyebrow="Admissions"
-        title="Enrolment applications"
-        description="Review parent applications and place approved learners into suitable cohorts."
+        title="Enrolments"
+        description="Review parent enrolments and publish suitable teaching opportunities to eligible subject teachers."
       />
-      <EnrolmentMetrics metrics={metrics} />
-      <EnrolmentsTable />
+      <LessonRequestMetrics metrics={metrics} />
+      <LessonRequestsTable />
     </AdminPage>
   );
 }

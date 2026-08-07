@@ -12,27 +12,19 @@ export interface AdminDashboardMetrics {
 
 export interface AdminDashboardOverview {
   metrics: AdminDashboardMetrics;
-  pendingEnrolments: Array<{
+  pendingLessonRequests: Array<{
     id: string;
     childName: string;
     parentName: string;
     submittedAt: string;
+    programmeName: string;
   }>;
   todaySessions: Array<{
     id: string;
     title: string;
     startTime: string;
-    cohortCode: string;
     programmeName: string;
     teacherName: string;
-  }>;
-  capacityAlerts: Array<{
-    id: string;
-    code: string;
-    name: string;
-    programmeName: string;
-    memberCount: number;
-    capacity: number;
   }>;
   recentActivity: Array<{
     id: number;
@@ -40,5 +32,4 @@ export interface AdminDashboardOverview {
     entityType: string;
     createdAt: string;
   }>;
-  activeCohorts: number;
 }

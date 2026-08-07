@@ -194,7 +194,7 @@ export function LoginForm() {
       >
         New to the platform?{" "}
         <Link
-          href="/register"
+          href="/enrolment"
           className="font-semibold text-primary
             hover:text-primary/80"
         >

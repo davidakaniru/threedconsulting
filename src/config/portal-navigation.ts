@@ -6,7 +6,6 @@ import {
   FileCheck2,
   GraduationCap,
   Home,
-  Layers3,
   ListChecks,
   MessageSquare,
   Settings,
@@ -60,14 +59,6 @@ export const portalNavigation: Record<
       icon: BookOpen,
       enabled: true,
       permission: "programmes.read",
-      group: "Academics",
-    },
-    {
-      label: "Cohorts",
-      href: "/portal/admin/cohorts",
-      icon: Layers3,
-      enabled: true,
-      permission: "cohorts.read",
       group: "Academics",
     },
     {
