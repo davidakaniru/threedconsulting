@@ -8,6 +8,7 @@ import {
   Home,
   ListChecks,
   MessageSquare,
+  Sparkles,
   Settings,
   UserRound,
   Users,
@@ -87,6 +88,7 @@ export const portalNavigation: Record<
   ],
   teacher: [
     { label: "Dashboard", href: "/portal/teacher", icon: Home, enabled: true },
+    { label: "Available enrolments", href: "/portal/teacher/opportunities", icon: Sparkles, enabled: true },
     { label: "My teaching", href: "/portal/teacher/teaching", icon: BookOpen, enabled: true },
     { label: "My sessions", href: "/portal/teacher/sessions", icon: CalendarDays, enabled: true },
     { label: "Attendance", href: "/portal/teacher/attendance", icon: ListChecks, enabled: true },

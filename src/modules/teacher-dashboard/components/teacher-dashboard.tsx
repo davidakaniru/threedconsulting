@@ -10,6 +10,7 @@ import {
   Layers3,
   Plus,
   ListChecks,
+  Sparkles,
 } from "lucide-react";
 
 import {
@@ -55,6 +56,12 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <Button asChild variant="outline">
+              <Link href="/portal/teacher/opportunities">
+                <Sparkles />
+                Available enrolments
+              </Link>
+            </Button>
             <Button asChild>
               <Link href="/portal/teacher/sessions/new">
                 <Plus />

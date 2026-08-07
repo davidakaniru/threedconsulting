@@ -257,6 +257,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      claim_open_lesson_request: {
+        Args: { p_lesson_request_id: string; p_teacher_id: string };
+        Returns: Json;
+      };
       approve_enrolment_application: {
         Args: {
           p_application_id: string;
