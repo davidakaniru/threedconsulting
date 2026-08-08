@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  BarChart3,
   BookOpen,
   CalendarDays,
   ClipboardList,
@@ -76,6 +77,13 @@ export const portalNavigation: Record<
       icon: CalendarDays,
       enabled: true,
       permission: "sessions.read",
+      group: "Academics",
+    },
+    {
+      label: "Teacher reports",
+      href: "/portal/admin/reports/teachers",
+      icon: BarChart3,
+      enabled: true,
       group: "Academics",
     },
     {
