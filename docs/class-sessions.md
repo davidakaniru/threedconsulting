@@ -1,7 +1,5 @@
 # Class Sessions
 
-Sessions are strictly online and belong to a cohort. Teachers can create and edit sessions only for cohorts attached to their active teaching assignments. A valid HTTPS meeting link is required.
+Sessions are strictly online and belong to a `lesson_assignment`. Teachers can create and edit sessions only for their own active lesson assignments. A valid meeting link is required.
 
-Statuses: draft, scheduled, completed, cancelled.
-
-When a session becomes scheduled, PostgreSQL creates pending attendance rows for every active cohort member. Admins have read-only oversight at `/portal/admin/sessions`; teachers manage their sessions at `/portal/teacher/sessions`.
+When a session becomes scheduled, PostgreSQL creates the pending attendance record for the assignment's child. Admins have read-only oversight at `/portal/admin/sessions`; teachers manage their sessions at `/portal/teacher/sessions`. Historical cohort-backed session rows may remain in the database, but the application only creates and lists lesson-assignment sessions.

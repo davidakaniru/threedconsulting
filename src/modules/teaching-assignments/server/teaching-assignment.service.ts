@@ -39,7 +39,7 @@ export async function updateTeachingAssignment(id: string, values: UpdateTeachin
 
 export async function removeTeachingAssignment(id: string, actorId: string) {
   const { error } = await repo.deleteAssignmentRow(id);
-  if (error) throw new ApiError("ASSIGNMENT_DELETE_FAILED", "The teaching assignment could not be removed. Deactivate it instead if a cohort already depends on it.", 409);
+  if (error) throw new ApiError("ASSIGNMENT_DELETE_FAILED", "The teaching assignment could not be removed. Deactivate it instead if active lesson relationships may depend on it.", 409);
   await writeAuditLog({ actorId, action: "teaching_assignment.removed", entityType: "teaching_assignment", entityId: id });
   return { id };
 }

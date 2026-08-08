@@ -2,12 +2,11 @@ import Link from "next/link";
 import {
   BookOpen,
   CalendarCheck2,
-  CalendarPlus,
   CalendarDays,
   CheckCircle2,
   ClipboardList,
   Clock3,
-  Layers3,
+  GraduationCap,
   Plus,
   ListChecks,
   Sparkles,
@@ -87,10 +86,10 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
           tone="blue"
         />
         <MetricCard
-          label="Active cohorts"
-          value={data.metrics.activeCohorts}
-          helper="Open or currently running"
-          icon={Layers3}
+          label="Active lessons"
+          value={data.metrics.activeLessons}
+          helper="Accepted one-to-one lessons"
+          icon={GraduationCap}
           tone="purple"
         />
         <MetricCard
@@ -153,7 +152,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                         <StatusBadge status={session.status} />
                       </div>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {session.cohort.programme.name} · {session.cohort.code}
+                        {session.lessonAssignment.programme.name} · {session.lessonAssignment.student.name}
                       </p>
                     </div>
                     <div className="shrink-0 text-left sm:text-right">
@@ -181,7 +180,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               href="/portal/teacher/sessions/new"
               icon={Plus}
               title="Create a session"
-              description="Schedule the next online class for a cohort."
+              description="Schedule the next online class for one of your active lessons."
             />
             <QuickAction
               href="/portal/teacher/attendance"
@@ -197,9 +196,9 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             />
             <QuickAction
               href="/portal/teacher/teaching"
-              icon={Layers3}
+              icon={GraduationCap}
               title="Review my teaching"
-              description="See your assigned programmes, cohorts, and next sessions."
+              description="See your active one-to-one lessons and agreed schedules."
             />
           </div>
         </SectionCard>
@@ -239,7 +238,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                       {session.title}
                     </span>
                     <span className="mt-1 block text-xs text-muted-foreground">
-                      {session.cohort.code} · {formatDate(session.sessionDate)}
+                      {session.lessonAssignment.student.name} · {formatDate(session.sessionDate)}
                     </span>
                   </span>
                   <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-extrabold text-orange-700">
@@ -253,7 +252,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
 
         <SectionCard
           title="Published homework"
-          description="Assignments currently visible for your cohort learners."
+          description="Assignments currently visible to your lesson students."
           icon={ClipboardList}
           action={
             <Button asChild variant="outline" size="sm">
@@ -284,7 +283,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                       {homework.title}
                     </span>
                     <span className="mt-1 block text-xs text-muted-foreground">
-                      {homework.session.cohort.code} · Due {formatDateTime(homework.dueAt)}
+                      {homework.session.lesson.student.name} · Due {formatDateTime(homework.dueAt)}
                     </span>
                   </span>
                   <StatusBadge status={homework.status} />
@@ -297,84 +296,54 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
 
       <SectionCard
         title="My teaching"
-        description="Your active cohorts, programme context, and most useful next actions."
-        icon={Layers3}
+        description="Your active one-to-one lessons and the next scheduled class for each child."
+        icon={GraduationCap}
         action={
           <Button asChild variant="outline" size="sm">
-            <Link href="/portal/teacher/teaching">View all cohorts</Link>
+            <Link href="/portal/teacher/teaching">View all lessons</Link>
           </Button>
         }
       >
-        {data.cohorts.length === 0 ? (
+        {data.lessons.length === 0 ? (
           <EmptyState
             compact
-            icon={Layers3}
-            title="No teaching assignments yet"
-            description="Your administrator will assign programmes and cohorts before classes begin."
+            icon={GraduationCap}
+            title="No active lessons yet"
+            description="Accepted enrolments will appear here as active teaching relationships."
           />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {data.cohorts.map((cohort) => {
+            {data.lessons.map((lesson) => {
               const nextSession = data.upcomingSessions.find(
-                (session) => session.cohortId === cohort.id,
+                (session) => session.lessonAssignmentId === lesson.id,
               );
-
               return (
-                <article
-                  key={cohort.id}
-                  className="flex h-full flex-col rounded-2xl border border-slate-200/80 p-5"
-                >
+                <article key={lesson.id} className="flex h-full flex-col rounded-2xl border border-slate-200/80 p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
-                        {cohort.code}
+                        {lesson.programme.name}
                       </p>
                       <h3 className="mt-1 truncate font-display text-lg font-extrabold text-foreground">
-                        {cohort.name}
+                        {lesson.studentName}
                       </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {cohort.programme.name}
+                        {lesson.preferredDays.map((day) => day.charAt(0).toUpperCase() + day.slice(1)).join(" · ")} · {formatTime(lesson.sessionTime)}
                       </p>
                     </div>
-                    <StatusBadge status={cohort.status} />
+                    <StatusBadge status={lesson.status} />
                   </div>
-
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                        Students
-                      </p>
-                      <p className="mt-1 text-lg font-extrabold text-foreground">
-                        {cohort.memberCount}/{cohort.capacity}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                        Next session
-                      </p>
-                      <p className="mt-1 truncate text-sm font-extrabold text-foreground">
-                        {nextSession ? formatRelative(sessionDateTime(nextSession)) : "Not scheduled"}
-                      </p>
-                    </div>
+                  <div className="mt-4 rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Next session</p>
+                    <p className="mt-1 text-sm font-extrabold text-foreground">
+                      {nextSession ? formatRelative(sessionDateTime(nextSession)) : "Not scheduled"}
+                    </p>
                   </div>
-
-                  <div className="mt-auto grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
-                    <Button asChild size="sm" aria-label={`Create session for ${cohort.code}`}>
-                      <Link href={`/portal/teacher/sessions/new?cohortId=${cohort.id}`}>
-                        <CalendarPlus />
-                        <span className="sr-only sm:not-sr-only">Session</span>
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="sm" aria-label="Open attendance">
-                      <Link href="/portal/teacher/attendance">
-                        <ListChecks />
-                        <span className="sr-only sm:not-sr-only">Attendance</span>
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="sm" aria-label="Create homework">
-                      <Link href="/portal/teacher/homework/new">
-                        <ClipboardList />
-                        <span className="sr-only sm:not-sr-only">Homework</span>
+                  <div className="mt-auto border-t border-slate-100 pt-4">
+                    <Button asChild size="sm" className="w-full">
+                      <Link href={`/portal/teacher/sessions/new?lessonAssignmentId=${lesson.id}`}>
+                        <Plus />
+                        Create session
                       </Link>
                     </Button>
                   </div>

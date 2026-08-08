@@ -39,7 +39,7 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
       .limit(5),
     client
       .from("class_sessions")
-      .select("id,title,start_time,cohorts(teaching_assignments(programmes(name),teachers(profiles(first_name,last_name))))")
+      .select("id,title,start_time,lesson_assignments!inner(programmes(name),teachers(profiles(first_name,last_name)))")
       .eq("session_date", today)
       .eq("status", "scheduled")
       .order("start_time")
@@ -61,12 +61,12 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
       submittedAt: row.created_at,
     })),
     todaySessions: (sessions.data ?? []).map((row: any) => {
-      const profile = row.cohorts?.teaching_assignments?.teachers?.profiles;
+      const profile = row.lesson_assignments?.teachers?.profiles;
       return {
         id: row.id,
         title: row.title,
         startTime: row.start_time,
-        programmeName: row.cohorts?.teaching_assignments?.programmes?.name ?? "Programme",
+        programmeName: row.lesson_assignments?.programmes?.name ?? "Programme",
         teacherName: [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "Teacher",
       };
     }),

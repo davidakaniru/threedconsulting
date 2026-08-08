@@ -1,1 +1,13 @@
-import type {NextRequest} from "next/server";import {ValidationError} from "yup";import {ApiError} from "@/lib/api/errors";import {apiError,apiSuccess} from "@/lib/api/responses";import {requireApiRole} from "@/lib/auth/guards";import {submitEnrolmentSchema} from "@/modules/enrolments/schemas";import {getParentEnrolments,submitEnrolment} from "@/modules/enrolments/server";import {ensureParentRecord} from "@/modules/parents/server";export const runtime="nodejs";export async function GET(){try{const p=await requireApiRole("parent");return apiSuccess(await getParentEnrolments(p.id))}catch(e){if(e instanceof ApiError)return apiError(e.code,e.message,e.status,e.details);return apiError("INTERNAL_SERVER_ERROR","Unable to load enrolments.",500)}}export async function POST(r:NextRequest){try{const p=await requireApiRole("parent");await ensureParentRecord(p.id);const v=await submitEnrolmentSchema.validate(await r.json(),{abortEarly:false,stripUnknown:true});return apiSuccess(await submitEnrolment(v,p.id),201)}catch(e){if(e instanceof ValidationError)return apiError("VALIDATION_ERROR","Please correct the enrolment details.",422);if(e instanceof ApiError)return apiError(e.code,e.message,e.status,e.details);console.error(e);return apiError("INTERNAL_SERVER_ERROR","Unable to submit enrolment.",500)}}
+import { NextResponse } from "next/server";
+
+function retired() {
+  return NextResponse.json(
+    { error: { code: "RETIRED_ENDPOINT", message: "This legacy endpoint is no longer available." } },
+    { status: 410 },
+  );
+}
+
+export const GET = retired;
+export const POST = retired;
+export const PATCH = retired;
+export const DELETE = retired;

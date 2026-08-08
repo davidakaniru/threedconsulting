@@ -37,7 +37,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Lessons"
         title="My enrolments"
-        description="Track your lesson requests and see the teacher matched with your child."
+        description="Track your enrolments and see the teacher matched with your child."
         actions={
           <Button asChild>
             <Link href="/enrolment">

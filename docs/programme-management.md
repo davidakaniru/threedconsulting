@@ -1,6 +1,3 @@
 # Programme Management
 
-Programmes are administrator-managed subjects. Their lifecycle is `draft`, `published`, or `archived`.
-Published programmes can later be used by teaching assignments, cohorts, and enrolment applications.
-
-Initial published records: English Language, Yoruba Language, Mathematics, Chemistry, Physics, Biology, and Coding.
+Programmes represent the subjects offered by the organisation. Admins create and maintain programmes and assign eligible teachers to them. Published programmes are selectable during enrolment and programme assignments determine which teachers can see each published enrolment opportunity.

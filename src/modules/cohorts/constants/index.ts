@@ -1,2 +1,6 @@
-import type { CohortStatus } from "@/modules/cohorts/types";
-export const cohortStatusOptions: Array<{label:string;value:CohortStatus}>=[{label:"Draft",value:"draft"},{label:"Open",value:"open"},{label:"Active",value:"active"},{label:"Completed",value:"completed"},{label:"Archived",value:"archived"}];
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};
