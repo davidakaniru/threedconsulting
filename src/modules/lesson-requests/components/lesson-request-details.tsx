@@ -22,6 +22,7 @@ export function LessonRequestDetails({ request, assignment }: { request: LessonR
         <dl>
           <Row label="Child" value={request.childName} />
           <Row label="Date of birth" value={new Date(request.childDateOfBirth).toLocaleDateString("en-GB")} />
+          <Row label="Current class / education level" value={request.currentEducationLevel} />
           <Row label="Subject" value={request.programme.name} />
           <Row label="Preferred days" value={request.preferredDays.map(dayLabel).join(", ")} />
           <Row label="Preferred time" value={formatTime(request.preferredTime)} />

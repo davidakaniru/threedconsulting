@@ -76,6 +76,7 @@ export default async function Page() {
                       <h2 className="mt-1 font-display text-lg font-extrabold">
                         {request.childName}
                       </h2>
+                      <p className="mt-1 text-sm font-semibold text-muted-foreground">{request.currentEducationLevel}</p>
                     </div>
                     <StatusBadge
                       status={assignment?.status ?? request.status}

@@ -3,6 +3,7 @@ export type LessonRequestStatus = "pending_review" | "open" | "matched" | "activ
 export type ParentLessonRequest = {
   id: string;
   childName: string;
+  currentEducationLevel: string;
   programme: { id: string; name: string; slug: string };
   preferredDays: string[];
   preferredTime: string;

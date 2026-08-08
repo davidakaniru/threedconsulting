@@ -19,6 +19,7 @@ export type LessonRequestDetail = LessonRequestSummary & {
   childFirstName: string;
   childLastName: string;
   childDateOfBirth: string;
+  currentEducationLevel: string;
   parentPhone: string | null;
   additionalMessage: string | null;
   reviewedAt: string | null;

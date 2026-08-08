@@ -8,6 +8,7 @@ export interface LessonAssignmentView {
   teacherSpecialization: string | null;
   studentId: string;
   studentName: string;
+  currentEducationLevel: string;
   parentId: string;
   programme: { id: string; name: string; slug: string };
   preferredDays: string[];

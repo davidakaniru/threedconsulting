@@ -12,6 +12,7 @@ export type ParentDashboardChild = {
     teacherName: string;
     teacherQualification: string | null;
     teacherSpecialization: string | null;
+    currentEducationLevel: string;
     preferredDays: string[];
     sessionTime: string;
     startDate: string;

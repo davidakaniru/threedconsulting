@@ -26,7 +26,7 @@ export async function getParentAcademicDashboard(parentId: string): Promise<Pare
   const [assignmentsResult, sessionsResult, homeworkResult, attendanceResult] = await Promise.all([
     supabase
       .from("lesson_assignments")
-      .select("id,student_id,status,preferred_days,session_time,start_date,end_date,programmes!inner(id,name),teachers!inner(qualification,specialization,profiles!inner(first_name,last_name))")
+      .select("id,student_id,status,current_education_level,preferred_days,session_time,start_date,end_date,programmes!inner(id,name),teachers!inner(qualification,specialization,profiles!inner(first_name,last_name))")
       .eq("parent_id", parentId)
       .in("student_id", studentIds)
       .in("status", ["active", "completed"]),
@@ -71,6 +71,7 @@ export async function getParentAcademicDashboard(parentId: string): Promise<Pare
           teacherName: [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "Teacher",
           teacherQualification: teacher?.qualification ?? null,
           teacherSpecialization: teacher?.specialization ?? null,
+          currentEducationLevel: row.current_education_level,
           preferredDays: row.preferred_days ?? [], sessionTime: row.session_time,
           startDate: row.start_date, endDate: row.end_date,
         }] : [];

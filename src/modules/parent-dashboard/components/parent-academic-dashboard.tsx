@@ -128,6 +128,7 @@ function DashboardContent() {
                   <div>
                     <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">{lesson.name}</p>
                     <p className="mt-2 flex items-center gap-2 font-extrabold"><UserRound className="size-4 text-primary" />{lesson.teacherName}</p>
+                    <p className="mt-1 text-sm font-semibold text-muted-foreground">{lesson.currentEducationLevel}</p>
                     {(lesson.teacherSpecialization || lesson.teacherQualification) && (
                       <p className="mt-1 text-sm text-muted-foreground">{[lesson.teacherSpecialization, lesson.teacherQualification].filter(Boolean).join(" · ")}</p>
                     )}

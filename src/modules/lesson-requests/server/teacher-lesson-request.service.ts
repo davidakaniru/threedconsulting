@@ -6,13 +6,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 const db = () => createAdminClient() as any;
 
 export interface TeacherOpportunity {
-  id: string; childName: string; programme: { id: string; name: string; slug: string };
+  id: string; childName: string; currentEducationLevel: string; programme: { id: string; name: string; slug: string };
   preferredDays: string[]; preferredTime: string; durationMonths: number; additionalMessage: string | null;
   publishedAt: string | null; status: string;
 }
 
 function mapOpportunity(row: any): TeacherOpportunity {
-  return { id: row.id, childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
+  return { id: row.id, childName: `${row.child_first_name} ${row.child_last_name}`.trim(), currentEducationLevel: row.current_education_level,
     programme: row.programmes ?? { id: row.programme_id, name: "Programme", slug: "" },
     preferredDays: row.preferred_days ?? [], preferredTime: row.preferred_time, durationMonths: row.duration_months,
     additionalMessage: row.additional_message, publishedAt: row.published_at, status: row.status };

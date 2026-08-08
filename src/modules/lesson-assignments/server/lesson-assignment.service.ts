@@ -21,6 +21,7 @@ function map(row: any): LessonAssignmentView {
         .filter(Boolean)
         .join(" ") || "Child",
     parentId: row.parent_id,
+    currentEducationLevel: row.current_education_level,
     programme: row.programmes ?? {
       id: row.programme_id,
       name: "Programme",

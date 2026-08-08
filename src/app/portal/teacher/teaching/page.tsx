@@ -45,6 +45,7 @@ export default async function TeacherTeachingPage() {
                   <h2 className="mt-1 font-display text-xl font-extrabold">
                     {item.studentName}
                   </h2>
+                  <p className="mt-1 text-sm font-semibold text-muted-foreground">{item.currentEducationLevel}</p>
                 </div>
                 <StatusBadge status={item.status} />
               </div>

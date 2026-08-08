@@ -79,6 +79,7 @@ export async function getLessonRequest(id: string): Promise<LessonRequestDetail>
     childFirstName: data.child_first_name,
     childLastName: data.child_last_name,
     childDateOfBirth: data.child_date_of_birth,
+    currentEducationLevel: data.current_education_level,
     parentPhone: profile?.phone ?? null,
     additionalMessage: data.additional_message,
     reviewedAt: data.reviewed_at,

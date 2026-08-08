@@ -7,7 +7,7 @@ export function getEnrolmentSteps(hasParentAccount: boolean) {
   const steps: EnrolmentStep[] = [];
   if (!hasParentAccount) steps.push({ id: "parent", label: "Your account", fields: ["parentFirstName","parentLastName","email","phone","password","confirmPassword"] });
   steps.push(
-    { id: "child", label: "Your child", fields: ["childFirstName","childLastName","childDateOfBirth"] },
+    { id: "child", label: "Your child", fields: ["childFirstName","childLastName","childDateOfBirth","currentEducationLevel"] },
     { id: "lesson", label: "Lesson request", fields: ["programmeId","preferredDays","preferredTime","durationMonths","additionalMessage"] },
     { id: "confirm", label: "Review", fields: ["acceptedTerms"] },
   );

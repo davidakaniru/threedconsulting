@@ -41,6 +41,7 @@ export async function submitUnifiedLessonRequest(input: SubmitLessonRequest, ori
     child_first_name: input.childFirstName.trim(),
     child_last_name: input.childLastName.trim(),
     child_date_of_birth: input.childDateOfBirth,
+    current_education_level: input.currentEducationLevel.trim(),
     preferred_days: uniqueDays,
     preferred_time: input.preferredTime,
     duration_months: input.durationMonths,
@@ -59,12 +60,13 @@ export async function submitUnifiedLessonRequest(input: SubmitLessonRequest, ori
 
 export async function listParentLessonRequests(parentId: string): Promise<ParentLessonRequest[]> {
   const { data, error } = await (createAdminClient() as any).from("lesson_requests")
-    .select("id,child_first_name,child_last_name,preferred_days,preferred_time,duration_months,status,created_at,programmes(id,name,slug)")
+    .select("id,child_first_name,child_last_name,current_education_level,preferred_days,preferred_time,duration_months,status,created_at,programmes(id,name,slug)")
     .eq("parent_id", parentId).order("created_at", { ascending: false });
   if (error) throw new ApiError("PARENT_LESSON_REQUESTS_LOAD_FAILED", "Your enrolments could not be loaded.", 500);
   return (data ?? []).map((row: any): ParentLessonRequest => ({
     id: row.id,
     childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
+    currentEducationLevel: row.current_education_level,
     programme: row.programmes ?? { id: "", name: "Programme", slug: "" },
     preferredDays: row.preferred_days ?? [],
     preferredTime: row.preferred_time,

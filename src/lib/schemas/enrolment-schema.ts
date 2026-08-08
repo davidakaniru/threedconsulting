@@ -17,6 +17,7 @@ export const enrolmentSchema = yup.object({
   childFirstName: yup.string().trim().required("Please enter your child’s first name.").max(50),
   childLastName: yup.string().trim().required("Please enter your child’s last name.").max(50),
   childDateOfBirth: yup.string().required("Please enter your child’s date of birth.").test("past", "Date of birth cannot be in the future.", (value) => !value || new Date(value) <= new Date()),
+  currentEducationLevel: yup.string().trim().required("Please enter your child’s current class or education level.").max(100, "Please keep the education level under 100 characters."),
   programmeId: yup.string().uuid().required("Please select a subject."),
   preferredDays: yup.array().of(yup.string().oneOf(["monday","tuesday","wednesday","thursday","friday","saturday"]).required()).min(1, "Please select at least one preferred day.").required(),
   preferredTime: yup.string().required("Please select a preferred time."),

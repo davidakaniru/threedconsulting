@@ -41,6 +41,7 @@ export default async function TeacherOpportunitiesPage() {
                 <h2 className="mt-1 font-display text-xl font-extrabold text-foreground">
                   {item.childName}
                 </h2>
+                <p className="mt-1 text-sm font-semibold text-muted-foreground">{item.currentEducationLevel}</p>
               </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-xl bg-slate-50 p-3">
