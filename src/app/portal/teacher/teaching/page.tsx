@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { BookOpenCheck, CalendarDays, Clock3, Hourglass } from "lucide-react";
+import Link from "next/link";
+import { BookOpenCheck, CalendarDays, Clock3, Hourglass, Plus } from "lucide-react";
 import {
   AdminPage,
   EmptyState,
@@ -7,6 +8,7 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
+import { Button } from "@/components/ui/button";
 import { formatDate, formatTime } from "@/lib/date";
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 
@@ -67,6 +69,13 @@ export default async function TeacherTeachingPage() {
                   </span>
                 </p>
               </div>
+              {item.status === "active" ? (
+                <div className="mt-5 border-t border-slate-100 pt-4">
+                  <Button asChild size="sm">
+                    <Link href={`/portal/teacher/sessions/new?lessonAssignmentId=${item.id}`}><Plus />Create session</Link>
+                  </Button>
+                </div>
+              ) : null}
             </article>
           ))}
         </div>

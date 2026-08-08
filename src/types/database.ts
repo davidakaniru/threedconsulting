@@ -13,11 +13,12 @@ export type Database = {
   public: {
     Tables: {
       class_sessions: {
-        Row: { cohort_id:string; created_at:string; created_by:string; description:string|null; end_time:string; id:string; meeting_link:string; session_date:string; start_time:string; status:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at:string };
-        Insert: { cohort_id:string; created_at?:string; created_by:string; description?:string|null; end_time:string; id?:string; meeting_link:string; session_date:string; start_time:string; status?:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at?:string };
-        Update: { cohort_id?:string; created_at?:string; created_by?:string; description?:string|null; end_time?:string; id?:string; meeting_link?:string; session_date?:string; start_time?:string; status?:Database["public"]["Enums"]["class_session_status"]; title?:string; updated_at?:string };
+        Row: { cohort_id:string|null; lesson_assignment_id:string|null; created_at:string; created_by:string; description:string|null; end_time:string; id:string; meeting_link:string; session_date:string; start_time:string; status:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at:string };
+        Insert: { cohort_id?:string|null; lesson_assignment_id?:string|null; created_at?:string; created_by:string; description?:string|null; end_time:string; id?:string; meeting_link:string; session_date:string; start_time:string; status?:Database["public"]["Enums"]["class_session_status"]; title:string; updated_at?:string };
+        Update: { cohort_id?:string|null; lesson_assignment_id?:string|null; created_at?:string; created_by?:string; description?:string|null; end_time?:string; id?:string; meeting_link?:string; session_date?:string; start_time?:string; status?:Database["public"]["Enums"]["class_session_status"]; title?:string; updated_at?:string };
         Relationships: [
           { foreignKeyName:"class_sessions_cohort_id_fkey"; columns:["cohort_id"]; isOneToOne:false; referencedRelation:"cohorts"; referencedColumns:["id"] },
+          { foreignKeyName:"class_sessions_lesson_assignment_id_fkey"; columns:["lesson_assignment_id"]; isOneToOne:false; referencedRelation:"lesson_assignments"; referencedColumns:["id"] },
           { foreignKeyName:"class_sessions_created_by_fkey"; columns:["created_by"]; isOneToOne:false; referencedRelation:"profiles"; referencedColumns:["id"] }
         ];
       };

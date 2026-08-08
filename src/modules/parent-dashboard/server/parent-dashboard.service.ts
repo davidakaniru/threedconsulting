@@ -6,7 +6,7 @@ function relationOne<T>(value: T | T[] | null | undefined): T | null {
 }
 
 export async function getParentAcademicDashboard(parentId: string): Promise<ParentAcademicDashboard> {
-  const supabase = createAdminClient();
+  const supabase = createAdminClient() as any;
   const { data: links, error: linksError } = await supabase
     .from("student_parents")
     .select("student_id,students!inner(id,admission_number,first_name,middle_name,last_name,status)")
@@ -15,85 +15,85 @@ export async function getParentAcademicDashboard(parentId: string): Promise<Pare
   if (linksError) throw linksError;
 
   const baseChildren = (links ?? [])
-    .map((link) => relationOne(link.students))
-    .filter((student): student is NonNullable<typeof student> => Boolean(student));
-  const studentIds = baseChildren.map((student) => student.id);
+    .map((link: any) => relationOne(link.students))
+    .filter((student: any): student is NonNullable<typeof student> => Boolean(student));
+  const studentIds = baseChildren.map((student: any) => student.id);
   if (studentIds.length === 0) return { children: [] };
 
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
 
-  const [membershipsResult, sessionsResult, homeworkResult, attendanceResult] = await Promise.all([
+  const [assignmentsResult, sessionsResult, homeworkResult, attendanceResult] = await Promise.all([
     supabase
-      .from("cohort_students")
-      .select("student_id,cohorts!inner(id,code,name,status,teaching_assignments!inner(programmes!inner(id,name)))")
+      .from("lesson_assignments")
+      .select("id,student_id,status,start_date,end_date,programmes!inner(id,name)")
+      .eq("parent_id", parentId)
       .in("student_id", studentIds)
-      .eq("status", "active"),
+      .in("status", ["active", "completed"]),
     supabase
-      .from("cohort_students")
-      .select("student_id,cohorts!inner(class_sessions!inner(id,title,session_date,start_time,end_time,meeting_link,status),code,teaching_assignments!inner(programmes!inner(name)))")
-      .in("student_id", studentIds)
-      .eq("status", "active")
-      .gte("cohorts.class_sessions.session_date", today)
-      .eq("cohorts.class_sessions.status", "scheduled"),
+      .from("class_sessions")
+      .select("id,title,session_date,start_time,end_time,meeting_link,status,lesson_assignments!inner(id,student_id,parent_id,programmes!inner(id,name))")
+      .not("lesson_assignment_id", "is", null)
+      .eq("lesson_assignments.parent_id", parentId)
+      .in("lesson_assignments.student_id", studentIds)
+      .gte("session_date", today)
+      .eq("status", "scheduled")
+      .order("session_date", { ascending: true })
+      .order("start_time", { ascending: true }),
     supabase
       .from("homework_submissions")
-      .select("id,student_id,status,homework!inner(id,title,instructions,due_at,maximum_score,status,class_sessions!inner(title,cohorts!inner(teaching_assignments!inner(programmes!inner(name)))))")
+      .select("id,student_id,status,homework!inner(id,title,instructions,due_at,maximum_score,status,class_sessions!inner(title,lesson_assignments!inner(programmes!inner(name))))")
       .in("student_id", studentIds)
       .eq("homework.status", "published")
+      .not("homework.class_sessions.lesson_assignment_id", "is", null)
       .order("created_at", { ascending: false }),
     supabase
       .from("session_attendance")
-      .select("id,student_id,status,class_sessions!inner(title,session_date,cohorts!inner(teaching_assignments!inner(programmes!inner(name))))")
+      .select("id,student_id,status,class_sessions!inner(title,session_date,lesson_assignments!inner(programmes!inner(name)))")
       .in("student_id", studentIds)
+      .not("class_sessions.lesson_assignment_id", "is", null)
       .order("created_at", { ascending: false }),
   ]);
 
-  for (const result of [membershipsResult, sessionsResult, homeworkResult, attendanceResult]) {
+  for (const result of [assignmentsResult, sessionsResult, homeworkResult, attendanceResult]) {
     if (result.error) throw result.error;
   }
 
-  const children: ParentDashboardChild[] = baseChildren.map((student) => {
-    const programmes = (membershipsResult.data ?? [])
-      .filter((row) => row.student_id === student.id)
-      .flatMap((row) => {
-        const cohort = relationOne(row.cohorts);
-        const assignment = relationOne(cohort?.teaching_assignments);
-        const programme = relationOne(assignment?.programmes);
-        return cohort && programme
-          ? [{ id: programme.id, name: programme.name, cohortCode: cohort.code, cohortName: cohort.name }]
+  const children: ParentDashboardChild[] = baseChildren.map((student: any) => {
+    const programmes = (assignmentsResult.data ?? [])
+      .filter((row: any) => row.student_id === student.id && row.status === "active")
+      .flatMap((row: any) => {
+        const programme = relationOne(row.programmes) as any;
+        return programme
+          ? [{ id: programme.id, name: programme.name, assignmentId: row.id }]
           : [];
       });
 
     const upcomingSessions = (sessionsResult.data ?? [])
-      .filter((row) => row.student_id === student.id)
-      .flatMap((row) => {
-        const cohort = relationOne(row.cohorts);
-        const assignment = relationOne(cohort?.teaching_assignments);
-        const programme = relationOne(assignment?.programmes);
-        const sessions = Array.isArray(cohort?.class_sessions) ? cohort.class_sessions : cohort?.class_sessions ? [cohort.class_sessions] : [];
-        return sessions.map((session) => ({
-          id: session.id,
-          title: session.title,
+      .flatMap((row: any) => {
+        const assignment = relationOne(row.lesson_assignments) as any;
+        if (!assignment || assignment.student_id !== student.id) return [];
+        const programme = relationOne(assignment.programmes) as any;
+        return [{
+          id: row.id,
+          title: row.title,
           programmeName: programme?.name ?? "Programme",
-          cohortCode: cohort?.code ?? "",
-          sessionDate: session.session_date,
-          startTime: session.start_time,
-          endTime: session.end_time,
-          meetingLink: session.meeting_link,
-        }));
+          sessionDate: row.session_date,
+          startTime: row.start_time,
+          endTime: row.end_time,
+          meetingLink: row.meeting_link,
+        }];
       })
-      .sort((a, b) => `${a.sessionDate}T${a.startTime}`.localeCompare(`${b.sessionDate}T${b.startTime}`))
+      .sort((a: any, b: any) => `${a.sessionDate}T${a.startTime}`.localeCompare(`${b.sessionDate}T${b.startTime}`))
       .slice(0, 8);
 
     const homework = (homeworkResult.data ?? [])
-      .filter((row) => row.student_id === student.id)
-      .flatMap((row) => {
-        const item = relationOne(row.homework);
-        const session = relationOne(item?.class_sessions);
-        const cohort = relationOne(session?.cohorts);
-        const assignment = relationOne(cohort?.teaching_assignments);
-        const programme = relationOne(assignment?.programmes);
+      .filter((row: any) => row.student_id === student.id)
+      .flatMap((row: any) => {
+        const item = relationOne(row.homework) as any;
+        const session = relationOne(item?.class_sessions) as any;
+        const assignment = relationOne(session?.lesson_assignments) as any;
+        const programme = relationOne(assignment?.programmes) as any;
         return item
           ? [{
               id: item.id,
@@ -107,18 +107,19 @@ export async function getParentAcademicDashboard(parentId: string): Promise<Pare
             }]
           : [];
       })
-      .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
+      .sort((a: any, b: any) => a.dueAt.localeCompare(b.dueAt));
 
-    const attendanceRows = (attendanceResult.data ?? []).filter((row) => row.student_id === student.id);
+    const attendanceRows = (attendanceResult.data ?? []).filter((row: any) => row.student_id === student.id);
     const counts = { present: 0, absent: 0, late: 0, pending: 0 };
-    attendanceRows.forEach((row) => { counts[row.status] += 1; });
+    attendanceRows.forEach((row: any) => {
+      if (row.status in counts) counts[row.status as keyof typeof counts] += 1;
+    });
     const marked = counts.present + counts.absent + counts.late;
     const attended = counts.present + counts.late;
-    const recent = attendanceRows.slice(0, 8).map((row) => {
-      const session = relationOne(row.class_sessions);
-      const cohort = relationOne(session?.cohorts);
-      const assignment = relationOne(cohort?.teaching_assignments);
-      const programme = relationOne(assignment?.programmes);
+    const recent = attendanceRows.slice(0, 8).map((row: any) => {
+      const session = relationOne(row.class_sessions) as any;
+      const assignment = relationOne(session?.lesson_assignments) as any;
+      const programme = relationOne(assignment?.programmes) as any;
       return {
         id: row.id,
         status: row.status,

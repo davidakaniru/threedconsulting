@@ -5,12 +5,11 @@ export type ParentDashboardChild = {
   middleName: string | null;
   lastName: string;
   fullName: string;
-  programmes: Array<{ id: string; name: string; cohortCode: string; cohortName: string }>;
+  programmes: Array<{ id: string; name: string; assignmentId: string }>;
   upcomingSessions: Array<{
     id: string;
     title: string;
     programmeName: string;
-    cohortCode: string;
     sessionDate: string;
     startTime: string;
     endTime: string;

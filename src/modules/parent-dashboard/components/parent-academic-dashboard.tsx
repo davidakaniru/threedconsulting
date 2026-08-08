@@ -108,9 +108,7 @@ function DashboardContent() {
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {child.admissionNumber} ·{" "}
-            {child.programmes
-              .map((programme) => `${programme.name} (${programme.cohortCode})`)
-              .join(", ") || "Awaiting cohort placement"}
+            {child.programmes.map((programme) => programme.name).join(", ") || "No active lessons yet"}
           </p>
         </div>
         <ChildSwitcher />
@@ -148,7 +146,7 @@ function DashboardContent() {
           label="Programmes"
           value={child.programmes.length}
           tone="purple"
-          helper="Active cohort memberships"
+          helper="Active one-to-one lessons"
         />
       </MetricGrid>
 
@@ -182,7 +180,7 @@ function DashboardContent() {
                         )}
                       </div>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {session.programmeName} · {session.cohortCode}
+                        {session.programmeName}
                       </p>
                       <p className="mt-2 text-sm font-semibold">
                         {formatDate(session.sessionDate)} ·{" "}

@@ -54,7 +54,7 @@ export function AdminSessionsTable({
         <div>
           <p className="font-bold">{session.title}</p>
           <p className="text-sm text-slate-500">
-            {session.cohort.programme.name}
+            {session.lessonAssignment.programme.name}
           </p>
         </div>
       ),
@@ -62,7 +62,7 @@ export function AdminSessionsTable({
     {
       id: "teacher",
       header: "Teacher",
-      cell: (session) => session.cohort.teacher.name,
+      cell: (session) => session.lessonAssignment.teacher.name,
     },
     {
       id: "date",
