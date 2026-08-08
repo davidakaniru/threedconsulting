@@ -2,6 +2,7 @@ import { ApiError } from "@/lib/api/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { SubmitLessonRequest } from "@/modules/lesson-requests/schemas";
+import type { ParentLessonRequest } from "@/modules/lesson-requests/types";
 
 async function currentParentId() {
   const supabase = await createClient();
@@ -54,4 +55,21 @@ export async function submitUnifiedLessonRequest(input: SubmitLessonRequest, ori
   }
 
   return { id: request.id as string, status: request.status as string, requiresEmailConfirmation };
+}
+
+export async function listParentLessonRequests(parentId: string): Promise<ParentLessonRequest[]> {
+  const { data, error } = await (createAdminClient() as any).from("lesson_requests")
+    .select("id,child_first_name,child_last_name,preferred_days,preferred_time,duration_months,status,created_at,programmes(id,name,slug)")
+    .eq("parent_id", parentId).order("created_at", { ascending: false });
+  if (error) throw new ApiError("PARENT_LESSON_REQUESTS_LOAD_FAILED", "Your enrolments could not be loaded.", 500);
+  return (data ?? []).map((row: any): ParentLessonRequest => ({
+    id: row.id,
+    childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
+    programme: row.programmes ?? { id: "", name: "Programme", slug: "" },
+    preferredDays: row.preferred_days ?? [],
+    preferredTime: row.preferred_time,
+    durationMonths: row.duration_months,
+    status: row.status,
+    createdAt: row.created_at,
+  }));
 }

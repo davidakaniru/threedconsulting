@@ -3,6 +3,7 @@ import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
 import { Radio, UserCheck } from "lucide-react";
 import { formatDateTime, formatTime } from "@/lib/date";
 import type { LessonRequestDetail } from "../types";
+import type { LessonAssignmentView } from "@/modules/lesson-assignments";
 import { LessonRequestActions } from "./lesson-request-actions";
 
 const Row = ({ label, value }: { label: string; value: ReactNode }) => (
@@ -14,7 +15,7 @@ const Row = ({ label, value }: { label: string; value: ReactNode }) => (
 
 function dayLabel(day: string) { return day.charAt(0).toUpperCase() + day.slice(1); }
 
-export function LessonRequestDetails({ request }: { request: LessonRequestDetail }) {
+export function LessonRequestDetails({ request, assignment }: { request: LessonRequestDetail; assignment?: LessonAssignmentView | null }) {
   return (
     <div className="space-y-6">
       <SectionCard title="Enrolment details" action={<StatusBadge status={request.status} label={request.status === "pending_review" ? "Awaiting review" : undefined} />}>
@@ -36,9 +37,11 @@ export function LessonRequestDetails({ request }: { request: LessonRequestDetail
       {request.status === "open" && (
         <InfoCard icon={Radio} title="Open to eligible teachers" description={`Teachers assigned to ${request.programme.name} can now view this enrolment opportunity. It remains available until one teacher successfully accepts it.`} />
       )}
-      {request.matchedTeacherId && (
-        <InfoCard icon={UserCheck} title="Teacher matched" description="This enrolment has been accepted. Teacher and parent-facing assignment details will be completed in R3/R4." />
-      )}
+      {assignment ? (
+        <InfoCard icon={UserCheck} title="Teacher matched" description={`${assignment.teacherName} accepted this enrolment. The lesson assignment is active from ${new Date(assignment.startDate).toLocaleDateString("en-GB")} to ${new Date(assignment.endDate).toLocaleDateString("en-GB")}.`} />
+      ) : request.matchedTeacherId ? (
+        <InfoCard icon={UserCheck} title="Teacher matched" description="This enrolment has been accepted and its lesson assignment is being prepared." />
+      ) : null}
       <LessonRequestActions request={request} />
     </div>
   );

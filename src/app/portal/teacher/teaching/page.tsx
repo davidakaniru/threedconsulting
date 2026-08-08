@@ -7,31 +7,30 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
-import { formatTime } from "@/lib/date";
-import { listMatchedTeacherEnrolments } from "@/modules/lesson-requests/server";
-import { LessonRequestDetail } from "@/modules/lesson-requests";
+import { formatDate, formatTime } from "@/lib/date";
+import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 
 export const metadata: Metadata = { title: "My Teaching | Teacher Portal" };
 const day = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 export default async function TeacherTeachingPage() {
   const teacher = await requireTeacher();
-  const enrolments = await listMatchedTeacherEnrolments(teacher.id);
+  const assignments = await getTeacherLessonAssignments(teacher.id);
   return (
     <AdminPage>
       <PageHeader
         eyebrow="Teaching"
         title="My teaching"
-        description="The one-to-one enrolments you have accepted. Session management will move onto these teaching relationships in the next checkpoint."
+        description="Your accepted one-to-one teaching assignments and the schedules you committed to."
       />
-      {enrolments.length === 0 ? (
+      {assignments.length === 0 ? (
         <EmptyState
           icon={BookOpenCheck}
-          title="No accepted enrolments yet"
-          description="Open enrolments matching your assigned subjects are available under Available enrolments."
+          title="No teaching assignments yet"
+          description="Accepted enrolments will appear here as active teaching assignments."
         />
       ) : (
         <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-          {enrolments.map((item: LessonRequestDetail) => (
+          {assignments.map((item) => (
             <article
               key={item.id}
               className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm"
@@ -42,7 +41,7 @@ export default async function TeacherTeachingPage() {
                     {item.programme.name}
                   </p>
                   <h2 className="mt-1 font-display text-xl font-extrabold">
-                    {item.childName}
+                    {item.studentName}
                   </h2>
                 </div>
                 <StatusBadge status={item.status} />
@@ -57,14 +56,14 @@ export default async function TeacherTeachingPage() {
                 <p className="flex gap-2">
                   <Clock3 className="size-4 text-primary" />
                   <span>
-                    <b>Time:</b> {formatTime(item.preferredTime)}
+                    <b>Time:</b> {formatTime(item.sessionTime)}
                   </span>
                 </p>
                 <p className="flex gap-2">
                   <Hourglass className="size-4 text-primary" />
                   <span>
-                    <b>Duration:</b> {item.durationMonths}{" "}
-                    {item.durationMonths === 1 ? "month" : "months"}
+                    <b>Lesson period:</b> {formatDate(item.startDate)} –{" "}
+                    {formatDate(item.endDate)}
                   </span>
                 </p>
               </div>
