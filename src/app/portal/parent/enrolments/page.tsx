@@ -5,6 +5,7 @@ import {
   Clock3,
   FileText,
   GraduationCap,
+  Hourglass,
   Plus,
 } from "lucide-react";
 import {
@@ -16,7 +17,7 @@ import {
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { requireParent } from "@/lib/auth/guards";
-import { formatTime } from "@/lib/date";
+import { formatDate, formatTime } from "@/lib/date";
 import { listParentLessonRequests } from "@/modules/lesson-requests/server";
 import { getParentLessonAssignments } from "@/modules/lesson-assignments/server";
 
@@ -96,6 +97,10 @@ export default async function Page() {
                       <Clock3 className="size-4" />
                       {formatTime(request.preferredTime)}
                     </span>
+                    <span className="flex items-center gap-2">
+                      <Hourglass className="size-4" />
+                      {request.durationMonths} {request.durationMonths === 1 ? "month" : "months"}
+                    </span>
                   </div>
                   {assignment ? (
                     <div className="mt-4 rounded-xl bg-primary/6 p-4">
@@ -121,6 +126,9 @@ export default async function Page() {
                                 .join(" · ")}
                             </p>
                           ) : null}
+                          <p className="mt-2 text-xs font-semibold text-muted-foreground">
+                            Active {formatDate(assignment.startDate)} – {formatDate(assignment.endDate)}
+                          </p>
                         </div>
                       </div>
                     </div>

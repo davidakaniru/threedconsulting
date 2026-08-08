@@ -5,7 +5,18 @@ export type ParentDashboardChild = {
   middleName: string | null;
   lastName: string;
   fullName: string;
-  programmes: Array<{ id: string; name: string; assignmentId: string }>;
+  programmes: Array<{
+    id: string;
+    name: string;
+    assignmentId: string;
+    teacherName: string;
+    teacherQualification: string | null;
+    teacherSpecialization: string | null;
+    preferredDays: string[];
+    sessionTime: string;
+    startDate: string;
+    endDate: string;
+  }>;
   upcomingSessions: Array<{
     id: string;
     title: string;
