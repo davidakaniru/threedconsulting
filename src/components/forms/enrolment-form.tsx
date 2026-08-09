@@ -25,17 +25,26 @@ import {
   enrolmentSchema,
   type EnrolmentFormValues,
 } from "@/lib/schemas/enrolment-schema";
+import type { ParentEnrolmentChild } from "@/modules/lesson-requests/types";
 
 type Props = {
   hasParentAccount?: boolean;
   parentName?: string | null;
   parentEmail?: string | null;
+  existingChildren?: ParentEnrolmentChild[];
+  initialExistingStudentId?: string | null;
 };
 export function EnrolmentForm({
   hasParentAccount = false,
   parentName,
   parentEmail,
+  existingChildren = [],
+  initialExistingStudentId,
 }: Props) {
+  const initialChild =
+    existingChildren.find((child) => child.id === initialExistingStudentId) ??
+    existingChildren[0] ??
+    null;
   const steps = useMemo(
     () => getEnrolmentSteps(hasParentAccount),
     [hasParentAccount],
@@ -53,16 +62,18 @@ export function EnrolmentForm({
     resolver: yupResolver(enrolmentSchema),
     defaultValues: {
       hasParentAccount,
+      childMode: hasParentAccount && initialChild ? "existing" : "new",
+      existingStudentId: initialChild?.id ?? "",
       parentFirstName: "",
       parentLastName: "",
       email: "",
       phone: "",
       password: "",
       confirmPassword: "",
-      childFirstName: "",
-      childLastName: "",
-      childDateOfBirth: "",
-      currentEducationLevel: "",
+      childFirstName: initialChild?.firstName ?? "",
+      childLastName: initialChild?.lastName ?? "",
+      childDateOfBirth: initialChild?.dateOfBirth ?? "",
+      currentEducationLevel: initialChild?.currentEducationLevel ?? "",
       programmeId: "",
       preferredDays: [],
       preferredTime: "",
@@ -83,6 +94,8 @@ export function EnrolmentForm({
   } = methods;
   const preferredDays = useWatch({ control, name: "preferredDays" });
   const programmeId = useWatch({ control, name: "programmeId" });
+  const childMode = useWatch({ control, name: "childMode" });
+  const existingStudentId = useWatch({ control, name: "existingStudentId" });
   useEffect(() => {
     fetch("/api/public/programmes")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
@@ -93,6 +106,36 @@ export function EnrolmentForm({
         ),
       );
   }, []);
+  function selectExistingChild(studentId: string) {
+    const child = existingChildren.find((item) => item.id === studentId);
+    methods.setValue("existingStudentId", studentId, { shouldValidate: true });
+    if (!child) return;
+    methods.setValue("childFirstName", child.firstName);
+    methods.setValue("childLastName", child.lastName);
+    methods.setValue("childDateOfBirth", child.dateOfBirth);
+    methods.setValue(
+      "currentEducationLevel",
+      child.currentEducationLevel ?? "",
+      { shouldValidate: true },
+    );
+  }
+
+  function switchChildMode(mode: "existing" | "new") {
+    methods.setValue("childMode", mode, { shouldValidate: true });
+    if (mode === "existing") {
+      const child =
+        existingChildren.find((item) => item.id === existingStudentId) ??
+        existingChildren[0];
+      if (child) selectExistingChild(child.id);
+      return;
+    }
+    methods.setValue("existingStudentId", "");
+    methods.setValue("childFirstName", "");
+    methods.setValue("childLastName", "");
+    methods.setValue("childDateOfBirth", "");
+    methods.setValue("currentEducationLevel", "");
+  }
+
   async function next() {
     if (await trigger([...steps[currentStep].fields], { shouldFocus: true }))
       setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
@@ -242,48 +285,118 @@ export function EnrolmentForm({
                 kicker={`Step ${currentStep + 1} of ${steps.length}`}
                 title={
                   hasParentAccount && parentName
-                    ? `Who are we enrolling, ${parentName}?`
+                    ? `Who is this lesson for, ${parentName}?`
                     : "Tell us about your child"
                 }
                 text={
                   hasParentAccount && parentEmail
-                    ? `This request will be linked to ${parentEmail}.`
+                    ? `Choose a child already linked to ${parentEmail}, or add another child.`
                     : "These details identify the child this lesson request is for."
                 }
               />
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Input
-                  id="child-first-name"
-                  label="Child’s first name"
-                  required
-                  errorMessage={errors.childFirstName?.message}
-                  {...register("childFirstName")}
-                />
-                <Input
-                  id="child-last-name"
-                  label="Child’s last name"
-                  required
-                  errorMessage={errors.childLastName?.message}
-                  {...register("childLastName")}
-                />
-                <Input
-                  id="child-date-of-birth"
-                  type="date"
-                  label="Date of birth"
-                  max={new Date().toISOString().slice(0, 10)}
-                  required
-                  errorMessage={errors.childDateOfBirth?.message}
-                  {...register("childDateOfBirth")}
-                />
-                <Input
-                  id="current-education-level"
-                  label="Current class / education level"
-                  placeholder="e.g. Primary 5, JSS 2, Year 6"
-                  required
-                  errorMessage={errors.currentEducationLevel?.message}
-                  {...register("currentEducationLevel")}
-                />
-              </div>
+
+              {hasParentAccount && existingChildren.length > 0 && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Button
+                    type="button"
+                    variant={childMode === "existing" ? "default" : "outline"}
+                    onClick={() => switchChildMode("existing")}
+                  >
+                    Existing child
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={childMode === "new" ? "default" : "outline"}
+                    onClick={() => switchChildMode("new")}
+                  >
+                    Add another child
+                  </Button>
+                </div>
+              )}
+
+              {childMode === "existing" && existingChildren.length > 0 ? (
+                <>
+                  <Controller
+                    name="existingStudentId"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <SelectField
+                        id="existing-student-id"
+                        name={field.name}
+                        label="Child"
+                        placeholder="Choose a child"
+                        options={existingChildren.map((child) => ({
+                          label: child.fullName,
+                          value: child.id,
+                        }))}
+                        value={field.value ?? ""}
+                        onValueChange={selectExistingChild}
+                        required
+                        errorMessage={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                  {existingStudentId && (
+                    <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4">
+                      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
+                        Existing child
+                      </p>
+                      <p className="mt-1 font-display text-lg font-extrabold">
+                        {existingChildren.find(
+                          (child) => child.id === existingStudentId,
+                        )?.fullName ?? "Selected child"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Their existing profile will be reused. This creates a
+                        new lesson request, not another child record.
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="current-education-level"
+                    label="Current class / education level"
+                    placeholder="e.g. Primary 5, JSS 2, Year 6"
+                    required
+                    info="Update this if your child has moved to a new class since the previous lesson."
+                    errorMessage={errors.currentEducationLevel?.message}
+                    {...register("currentEducationLevel")}
+                  />
+                </>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Input
+                    id="child-first-name"
+                    label="Child’s first name"
+                    required
+                    errorMessage={errors.childFirstName?.message}
+                    {...register("childFirstName")}
+                  />
+                  <Input
+                    id="child-last-name"
+                    label="Child’s last name"
+                    required
+                    errorMessage={errors.childLastName?.message}
+                    {...register("childLastName")}
+                  />
+                  <Input
+                    id="child-date-of-birth"
+                    type="date"
+                    label="Date of birth"
+                    max={new Date().toISOString().slice(0, 10)}
+                    required
+                    errorMessage={errors.childDateOfBirth?.message}
+                    {...register("childDateOfBirth")}
+                  />
+                  <Input
+                    id="current-education-level"
+                    label="Current class / education level"
+                    placeholder="e.g. Primary 5, JSS 2, Year 6"
+                    required
+                    errorMessage={errors.currentEducationLevel?.message}
+                    {...register("currentEducationLevel")}
+                  />
+                </div>
+              )}
             </section>
           )}
           {step === "lesson" && (

@@ -6,8 +6,19 @@ export type LessonRequestStatus =
   | "completed"
   | "cancelled";
 
+export type ParentEnrolmentChild = {
+  id: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  fullName: string;
+  dateOfBirth: string;
+  currentEducationLevel: string;
+};
+
 export type ParentLessonRequest = {
   id: string;
+  studentId: string | null;
   childName: string;
   currentEducationLevel: string;
   programme: { id: string; name: string; slug: string };

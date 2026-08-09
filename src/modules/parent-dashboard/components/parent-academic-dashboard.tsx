@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Clock3,
   GraduationCap,
+  Plus,
   UserRound,
   Users,
 } from "lucide-react";
@@ -113,7 +114,15 @@ function DashboardContent() {
               "No active lessons yet"}
           </p>
         </div>
-        <ChildSwitcher />
+        <div className="space-y-3">
+          <ChildSwitcher />
+          <Button asChild className="w-full sm:w-auto">
+            <Link href={`/enrolment?child=${child.id}`}>
+              <Plus />
+              Request another lesson
+            </Link>
+          </Button>
+        </div>
       </SectionCard>
 
       {child.programmes.length > 0 && (

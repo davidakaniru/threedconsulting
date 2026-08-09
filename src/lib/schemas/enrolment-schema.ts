@@ -15,32 +15,34 @@ const password = yup.string().when("hasParentAccount", {
 export const enrolmentSchema = yup
   .object({
     hasParentAccount: yup.boolean().required(),
-    parentFirstName: yup
-      .string()
-      .when("hasParentAccount", {
-        is: false,
-        then: (s) => s.trim().required("Please enter your first name.").max(50),
-        otherwise: (s) => s.optional(),
-      }),
-    parentLastName: yup
-      .string()
-      .when("hasParentAccount", {
-        is: false,
-        then: (s) => s.trim().required("Please enter your last name.").max(50),
-        otherwise: (s) => s.optional(),
-      }),
-    email: yup
-      .string()
-      .when("hasParentAccount", {
-        is: false,
-        then: (s) =>
-          s
-            .trim()
-            .lowercase()
-            .email("Please enter a valid email address.")
-            .required("Please enter your email address."),
-        otherwise: (s) => s.optional(),
-      }),
+    childMode: yup.string().oneOf(["existing", "new"]).required(),
+    existingStudentId: yup.string().when(["hasParentAccount", "childMode"], {
+      is: (hasParentAccount: boolean, childMode: string) =>
+        hasParentAccount && childMode === "existing",
+      then: (schema) =>
+        schema.uuid().required("Please select the child this lesson is for."),
+      otherwise: (schema) => schema.optional(),
+    }),
+    parentFirstName: yup.string().when("hasParentAccount", {
+      is: false,
+      then: (s) => s.trim().required("Please enter your first name.").max(50),
+      otherwise: (s) => s.optional(),
+    }),
+    parentLastName: yup.string().when("hasParentAccount", {
+      is: false,
+      then: (s) => s.trim().required("Please enter your last name.").max(50),
+      otherwise: (s) => s.optional(),
+    }),
+    email: yup.string().when("hasParentAccount", {
+      is: false,
+      then: (s) =>
+        s
+          .trim()
+          .lowercase()
+          .email("Please enter a valid email address.")
+          .required("Please enter your email address."),
+      otherwise: (s) => s.optional(),
+    }),
     phone: yup.string().when("hasParentAccount", {
       is: false,
       then: (s) =>
@@ -54,34 +56,38 @@ export const enrolmentSchema = yup
       otherwise: (s) => s.optional(),
     }),
     password,
-    confirmPassword: yup
-      .string()
-      .when("hasParentAccount", {
-        is: false,
-        then: (s) =>
-          s
-            .required("Please confirm your password.")
-            .oneOf([yup.ref("password")], "Passwords must match."),
-        otherwise: (s) => s.optional(),
-      }),
-    childFirstName: yup
-      .string()
-      .trim()
-      .required("Please enter your child’s first name.")
-      .max(50),
-    childLastName: yup
-      .string()
-      .trim()
-      .required("Please enter your child’s last name.")
-      .max(50),
-    childDateOfBirth: yup
-      .string()
-      .required("Please enter your child’s date of birth.")
-      .test(
-        "past",
-        "Date of birth cannot be in the future.",
-        (value) => !value || new Date(value) <= new Date(),
-      ),
+    confirmPassword: yup.string().when("hasParentAccount", {
+      is: false,
+      then: (s) =>
+        s
+          .required("Please confirm your password.")
+          .oneOf([yup.ref("password")], "Passwords must match."),
+      otherwise: (s) => s.optional(),
+    }),
+    childFirstName: yup.string().when("childMode", {
+      is: "new",
+      then: (schema) =>
+        schema.trim().required("Please enter your child’s first name.").max(50),
+      otherwise: (schema) => schema.optional(),
+    }),
+    childLastName: yup.string().when("childMode", {
+      is: "new",
+      then: (schema) =>
+        schema.trim().required("Please enter your child’s last name.").max(50),
+      otherwise: (schema) => schema.optional(),
+    }),
+    childDateOfBirth: yup.string().when("childMode", {
+      is: "new",
+      then: (schema) =>
+        schema
+          .required("Please enter your child’s date of birth.")
+          .test(
+            "past",
+            "Date of birth cannot be in the future.",
+            (value) => !value || new Date(value) <= new Date(),
+          ),
+      otherwise: (schema) => schema.optional(),
+    }),
     currentEducationLevel: yup
       .string()
       .trim()
