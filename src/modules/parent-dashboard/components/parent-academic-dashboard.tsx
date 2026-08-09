@@ -35,6 +35,14 @@ function DashboardContent() {
   const { child } = useChild();
 
   const [overdue, setOverdue] = useState<boolean | undefined>(undefined);
+  const [nowMs, setNowMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateNow = () => setNowMs(Date.now());
+    updateNow();
+    const interval = window.setInterval(updateNow, 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!child) {
@@ -236,47 +244,64 @@ function DashboardContent() {
             />
           ) : (
             <div className="space-y-3">
-              {child.upcomingSessions.map((session, index) => (
-                <div
-                  key={session.id}
-                  className={`rounded-2xl border p-4 ${index === 0 ? "border-primary/30 bg-primary/5" : "border-slate-200"}`}
-                >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-extrabold">{session.title}</p>
-                        {index === 0 && (
-                          <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary">
-                            Next
-                          </span>
-                        )}
+              {child.upcomingSessions.map((session, index) => {
+                const startMs = sessionDateTimeMs(
+                  session.sessionDate,
+                  session.startTime,
+                );
+                const endMs = sessionDateTimeMs(
+                  session.sessionDate,
+                  session.endTime,
+                );
+                const canJoin =
+                  nowMs !== null &&
+                  nowMs >= startMs - 30 * 60 * 1000 &&
+                  nowMs <= endMs + 10 * 60 * 1000;
+
+                return (
+                  <div
+                    key={session.id}
+                    className={`rounded-2xl border p-4 ${index === 0 ? "border-primary/30 bg-primary/5" : "border-slate-200"}`}
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-extrabold">{session.title}</p>
+                          {index === 0 && (
+                            <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary">
+                              Next
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {session.programmeName}
+                        </p>
+                        <p className="mt-2 text-sm font-semibold">
+                          {formatDate(session.sessionDate)} ·{" "}
+                          {formatTime(session.startTime)}–
+                          {formatTime(session.endTime)}
+                        </p>
+                        <p className="mt-1 text-xs font-bold text-primary">
+                          {formatRelative(
+                            `${session.sessionDate}T${session.startTime}`,
+                          )}
+                        </p>
                       </div>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {session.programmeName}
-                      </p>
-                      <p className="mt-2 text-sm font-semibold">
-                        {formatDate(session.sessionDate)} ·{" "}
-                        {formatTime(session.startTime)}–
-                        {formatTime(session.endTime)}
-                      </p>
-                      <p className="mt-1 text-xs font-bold text-primary">
-                        {formatRelative(
-                          `${session.sessionDate}T${session.startTime}`,
-                        )}
-                      </p>
+                      {canJoin && (
+                        <Button asChild size="sm">
+                          <a
+                            href={`/api/parent/sessions/${session.id}/join`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Join meeting
+                          </a>
+                        </Button>
+                      )}
                     </div>
-                    <Button asChild size="sm">
-                      <a
-                        href={session.meetingLink}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Join meeting
-                      </a>
-                    </Button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </SectionCard>
@@ -454,6 +479,11 @@ function DashboardContent() {
       </SectionCard>
     </div>
   );
+}
+
+function sessionDateTimeMs(date: string, time: string) {
+  const normalizedTime = time.length === 5 ? `${time}:00` : time;
+  return new Date(`${date}T${normalizedTime}+01:00`).getTime();
 }
 
 export function ParentAcademicDashboardView({

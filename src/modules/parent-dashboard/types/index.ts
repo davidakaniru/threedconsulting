@@ -25,7 +25,6 @@ export type ParentDashboardChild = {
     sessionDate: string;
     startTime: string;
     endTime: string;
-    meetingLink: string;
   }>;
   homework: Array<{
     id: string;

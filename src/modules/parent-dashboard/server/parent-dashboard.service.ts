@@ -123,7 +123,6 @@ export async function getParentAcademicDashboard(
             sessionDate: row.session_date,
             startTime: row.start_time,
             endTime: row.end_time,
-            meetingLink: row.meeting_link,
           },
         ];
       })
