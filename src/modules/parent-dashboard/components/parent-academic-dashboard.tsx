@@ -34,7 +34,6 @@ import { MarkHomeworkDoneButton } from "./mark-homework-done-button";
 function DashboardContent() {
   const { child } = useChild();
 
-  const [overdue, setOverdue] = useState<boolean | undefined>(undefined);
   const [nowMs, setNowMs] = useState<number | null>(null);
 
   useEffect(() => {
@@ -43,22 +42,6 @@ function DashboardContent() {
     const interval = window.setInterval(updateNow, 30_000);
     return () => window.clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (!child) {
-      setOverdue(undefined);
-      return;
-    }
-
-    const now = Date.now();
-    setOverdue(
-      child.homework.some(
-        (item) =>
-          new Date(item.dueAt).getTime() < now &&
-          (item.status === "pending" || item.status === "late"),
-      ),
-    );
-  }, [child]);
 
   if (!child) {
     return (
@@ -102,7 +85,7 @@ function DashboardContent() {
     })),
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 8);
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -244,7 +227,7 @@ function DashboardContent() {
             />
           ) : (
             <div className="space-y-3">
-              {child.upcomingSessions.map((session, index) => {
+              {child.upcomingSessions.slice(0, 2).map((session, index) => {
                 const startMs = sessionDateTimeMs(
                   session.sessionDate,
                   session.startTime,
@@ -319,9 +302,10 @@ function DashboardContent() {
             />
           ) : (
             <div className="space-y-3">
-              {child.homework.slice(0, 8).map((item) => {
+              {child.homework.slice(0, 2).map((item) => {
                 const itemOverdue =
-                  new Date(item.dueAt).getTime() < Date.now() &&
+                  nowMs !== null &&
+                  new Date(item.dueAt).getTime() < nowMs &&
                   (item.status === "pending" || item.status === "late");
                 return (
                   <div
@@ -460,7 +444,7 @@ function DashboardContent() {
           />
         ) : (
           <div className="divide-y divide-slate-100">
-            {child.attendance.recent.map((item) => (
+            {child.attendance.recent.slice(0, 5).map((item) => (
               <div
                 key={item.id}
                 className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
