@@ -29,6 +29,7 @@ import {
 import type { ParentAcademicDashboard } from "../types";
 import { ChildProvider, useChild } from "../context/child-context";
 import { ChildSwitcher } from "./child-switcher";
+import { MarkHomeworkDoneButton } from "./mark-homework-done-button";
 
 function DashboardContent() {
   const { child } = useChild();
@@ -316,7 +317,15 @@ function DashboardContent() {
                           {formatRelative(item.dueAt)}
                         </p>
                       </div>
-                      <StatusBadge status={item.status} />
+                      <div className="flex shrink-0 flex-col items-end gap-2">
+                        <StatusBadge status={item.status} />
+                        {(item.status === "pending" ||
+                          item.status === "late") && (
+                          <MarkHomeworkDoneButton
+                            submissionId={item.submissionId}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 );

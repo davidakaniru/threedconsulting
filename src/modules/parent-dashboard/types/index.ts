@@ -29,6 +29,7 @@ export type ParentDashboardChild = {
   }>;
   homework: Array<{
     id: string;
+    submissionId: string;
     title: string;
     instructions: string;
     dueAt: string;

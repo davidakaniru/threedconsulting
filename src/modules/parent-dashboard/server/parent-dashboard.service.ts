@@ -145,6 +145,7 @@ export async function getParentAcademicDashboard(
           ? [
               {
                 id: item.id,
+                submissionId: row.id,
                 title: item.title,
                 instructions: item.instructions,
                 dueAt: item.due_at,
@@ -206,4 +207,55 @@ export async function getParentAcademicDashboard(
   });
 
   return { children };
+}
+
+export async function markParentHomeworkDone(
+  parentId: string,
+  submissionId: string,
+) {
+  const supabase = createAdminClient() as any;
+
+  const { data: submission, error: submissionError } = await supabase
+    .from("homework_submissions")
+    .select(
+      "id,student_id,status,homework!inner(id,status,class_sessions!inner(lesson_assignments!inner(parent_id,student_id)))",
+    )
+    .eq("id", submissionId)
+    .maybeSingle();
+
+  if (submissionError) throw submissionError;
+  if (!submission) throw new Error("Homework submission not found.");
+
+  const homework = relationOne(submission.homework) as any;
+  const session = relationOne(homework?.class_sessions) as any;
+  const assignment = relationOne(session?.lesson_assignments) as any;
+
+  if (
+    !assignment ||
+    assignment.parent_id !== parentId ||
+    assignment.student_id !== submission.student_id
+  ) {
+    throw new Error("You cannot update this homework submission.");
+  }
+
+  if (homework?.status !== "published") {
+    throw new Error("Only published homework can be marked as done.");
+  }
+
+  if (submission.status === "graded") return submission;
+  if (submission.status === "submitted") return submission;
+  if (submission.status !== "pending" && submission.status !== "late") {
+    throw new Error("This homework cannot be marked as done.");
+  }
+
+  const { data, error } = await supabase
+    .from("homework_submissions")
+    .update({ status: "submitted", submitted_at: new Date().toISOString() })
+    .eq("id", submissionId)
+    .eq("student_id", submission.student_id)
+    .select("id,status,submitted_at")
+    .single();
+
+  if (error) throw error;
+  return data;
 }
