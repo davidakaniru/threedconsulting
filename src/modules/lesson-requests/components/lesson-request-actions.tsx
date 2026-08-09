@@ -9,7 +9,11 @@ import { toApiError } from "@/lib/api/errors";
 import { usePublishLessonRequest } from "../hooks";
 import type { LessonRequestDetail } from "../types";
 
-export function LessonRequestActions({ request }: { request: LessonRequestDetail }) {
+export function LessonRequestActions({
+  request,
+}: {
+  request: LessonRequestDetail;
+}) {
   const router = useRouter();
   const publish = usePublishLessonRequest(request.id);
   if (request.status !== "pending_review") return null;
@@ -31,11 +35,21 @@ export function LessonRequestActions({ request }: { request: LessonRequestDetail
     >
       <ConfirmDialog
         title="Publish this enrolment?"
-        description={<>Once published, eligible <strong>{request.programme.name}</strong> teachers will be able to see and accept this opportunity. The first successful acceptance will claim it.</>}
+        description={
+          <>
+            Once published, eligible <strong>{request.programme.name}</strong>{" "}
+            teachers will be able to see and accept this opportunity. The first
+            successful acceptance will claim it.
+          </>
+        }
         confirmLabel="Publish enrolment"
         isPending={publish.isPending}
         onConfirm={publishNow}
-        trigger={<Button><Radio /> Publish to teachers</Button>}
+        trigger={
+          <Button>
+            <Radio /> Publish to teachers
+          </Button>
+        }
       />
     </SectionCard>
   );

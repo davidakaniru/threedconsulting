@@ -96,19 +96,69 @@ export const portalNavigation: Record<
   ],
   teacher: [
     { label: "Dashboard", href: "/portal/teacher", icon: Home, enabled: true },
-    { label: "Available enrolments", href: "/portal/teacher/opportunities", icon: Sparkles, enabled: true },
-    { label: "My teaching", href: "/portal/teacher/teaching", icon: BookOpen, enabled: true },
-    { label: "My sessions", href: "/portal/teacher/sessions", icon: CalendarDays, enabled: true },
-    { label: "Attendance", href: "/portal/teacher/attendance", icon: ListChecks, enabled: true },
-    { label: "Homework", href: "/portal/teacher/homework", icon: ClipboardList, enabled: true },
-    { label: "Messages", href: "/portal/teacher/messages", icon: MessageSquare, enabled: false },
-    { label: "Settings", href: "/portal/profile", icon: Settings, enabled: true },
+    {
+      label: "Available enrolments",
+      href: "/portal/teacher/opportunities",
+      icon: Sparkles,
+      enabled: true,
+    },
+    {
+      label: "My teaching",
+      href: "/portal/teacher/teaching",
+      icon: BookOpen,
+      enabled: true,
+    },
+    {
+      label: "My sessions",
+      href: "/portal/teacher/sessions",
+      icon: CalendarDays,
+      enabled: true,
+    },
+    {
+      label: "Attendance",
+      href: "/portal/teacher/attendance",
+      icon: ListChecks,
+      enabled: true,
+    },
+    {
+      label: "Homework",
+      href: "/portal/teacher/homework",
+      icon: ClipboardList,
+      enabled: true,
+    },
+    {
+      label: "Messages",
+      href: "/portal/teacher/messages",
+      icon: MessageSquare,
+      enabled: false,
+    },
+    {
+      label: "Settings",
+      href: "/portal/profile",
+      icon: Settings,
+      enabled: true,
+    },
   ],
   parent: [
     { label: "My children", href: "/portal/parent", icon: Home, enabled: true },
-    { label: "My enrolments", href: "/portal/parent/enrolments", icon: FileCheck2, enabled: true },
-    { label: "Messages", href: "/portal/parent/messages", icon: MessageSquare, enabled: false },
-    { label: "Settings", href: "/portal/profile", icon: Settings, enabled: true },
+    {
+      label: "My enrolments",
+      href: "/portal/parent/enrolments",
+      icon: FileCheck2,
+      enabled: true,
+    },
+    {
+      label: "Messages",
+      href: "/portal/parent/messages",
+      icon: MessageSquare,
+      enabled: false,
+    },
+    {
+      label: "Settings",
+      href: "/portal/profile",
+      icon: Settings,
+      enabled: true,
+    },
   ],
 };
 
@@ -128,7 +178,6 @@ export function findPortalNavigationItem(pathname: string, role: UserRole) {
   return [...portalNavigation[role]]
     .sort((a, b) => b.href.length - a.href.length)
     .find(
-      (item) =>
-        pathname === item.href || pathname.startsWith(`${item.href}/`),
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
     );
 }

@@ -92,11 +92,13 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
     }
   }
 
-  async function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleAvatarChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!(["image/jpeg", "image/png", "image/webp"].includes(file.type))) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       toast.error("Use a JPG, PNG, or WebP image.");
       event.target.value = "";
       return;
@@ -152,16 +154,24 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
             <div className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-3xl bg-primary/10 font-display text-2xl font-extrabold text-primary ring-1 ring-primary/10">
               {profile.avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={profile.avatarUrl} alt="Profile" className="size-full object-cover" />
+                <img
+                  src={profile.avatarUrl}
+                  alt="Profile"
+                  className="size-full object-cover"
+                />
               ) : (
                 initials(profile)
               )}
             </div>
             <div>
               <p className="font-display text-xl font-extrabold text-foreground">
-                {[profile.firstName, profile.lastName].filter(Boolean).join(" ") || "Your profile"}
+                {[profile.firstName, profile.lastName]
+                  .filter(Boolean)
+                  .join(" ") || "Your profile"}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">{profile.email}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {profile.email}
+              </p>
               <p className="mt-2 inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-bold capitalize text-primary">
                 {profile.role}
               </p>
@@ -185,7 +195,9 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
               <Camera aria-hidden="true" className="size-4" />
               {avatarMutation.isPending ? "Uploading..." : "Change photo"}
             </Button>
-            <p className="mt-2 text-xs text-muted-foreground">JPG, PNG or WebP. Maximum 2 MB.</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              JPG, PNG or WebP. Maximum 2 MB.
+            </p>
           </div>
         </div>
       </section>
@@ -196,26 +208,73 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
             <UserRound aria-hidden="true" className="size-5" />
           </span>
           <div>
-            <h2 className="font-display text-xl font-extrabold text-foreground">Personal information</h2>
+            <h2 className="font-display text-xl font-extrabold text-foreground">
+              Personal information
+            </h2>
             <p className="mt-1 text-sm leading-6 text-muted-foreground">
               Keep the contact details attached to your account up to date.
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleProfileSubmit(submitProfile)} noValidate className="mt-7 space-y-5">
+        <form
+          onSubmit={handleProfileSubmit(submitProfile)}
+          noValidate
+          className="mt-7 space-y-5"
+        >
           <div className="grid gap-5 sm:grid-cols-2">
-            <Input id="profile-first-name" label="First name" autoComplete="given-name" required errorMessage={profileErrors.firstName?.message} {...registerProfile("firstName")} />
-            <Input id="profile-last-name" label="Last name" autoComplete="family-name" required errorMessage={profileErrors.lastName?.message} {...registerProfile("lastName")} />
+            <Input
+              id="profile-first-name"
+              label="First name"
+              autoComplete="given-name"
+              required
+              errorMessage={profileErrors.firstName?.message}
+              {...registerProfile("firstName")}
+            />
+            <Input
+              id="profile-last-name"
+              label="Last name"
+              autoComplete="family-name"
+              required
+              errorMessage={profileErrors.lastName?.message}
+              {...registerProfile("lastName")}
+            />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Input id="profile-email" label="Email address" type="email" value={profile.email} disabled info="Email changes are managed separately for account security." readOnly />
-            <Input id="profile-phone" label="Phone number" type="tel" autoComplete="tel" placeholder="+234 ..." errorMessage={profileErrors.phone?.message} {...registerProfile("phone")} />
+            <Input
+              id="profile-email"
+              label="Email address"
+              type="email"
+              value={profile.email}
+              disabled
+              info="Email changes are managed separately for account security."
+              readOnly
+            />
+            <Input
+              id="profile-phone"
+              label="Phone number"
+              type="tel"
+              autoComplete="tel"
+              placeholder="+234 ..."
+              errorMessage={profileErrors.phone?.message}
+              {...registerProfile("phone")}
+            />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Input id="profile-dob" label="Date of birth" type="date" errorMessage={profileErrors.dateOfBirth?.message} {...registerProfile("dateOfBirth")} />
+            <Input
+              id="profile-dob"
+              label="Date of birth"
+              type="date"
+              errorMessage={profileErrors.dateOfBirth?.message}
+              {...registerProfile("dateOfBirth")}
+            />
             <div className="flex w-full flex-col gap-2">
-              <label htmlFor="profile-language" className="font-display text-sm font-bold text-foreground">Preferred language</label>
+              <label
+                htmlFor="profile-language"
+                className="font-display text-sm font-bold text-foreground"
+              >
+                Preferred language
+              </label>
               <select
                 id="profile-language"
                 className="min-h-12 rounded-2xl border border-border bg-white px-4 py-3 text-sm text-foreground outline-none transition hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10"
@@ -225,7 +284,14 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
               </select>
             </div>
           </div>
-          <Textarea id="profile-address" label="Address" rows={4} autoComplete="street-address" errorMessage={profileErrors.address?.message} {...registerProfile("address")} />
+          <Textarea
+            id="profile-address"
+            label="Address"
+            rows={4}
+            autoComplete="street-address"
+            errorMessage={profileErrors.address?.message}
+            {...registerProfile("address")}
+          />
 
           <div className="flex justify-end">
             <Button type="submit" disabled={updateMutation.isPending}>
@@ -241,19 +307,56 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
             <KeyRound aria-hidden="true" className="size-5" />
           </span>
           <div>
-            <h2 className="font-display text-xl font-extrabold text-foreground">Password</h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">Confirm your current password before choosing a new one.</p>
+            <h2 className="font-display text-xl font-extrabold text-foreground">
+              Password
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              Confirm your current password before choosing a new one.
+            </p>
           </div>
         </div>
 
-        <form onSubmit={handlePasswordSubmit(submitPassword)} noValidate className="mt-7 space-y-5">
-          <Input id="current-password" label="Current password" type="password" autoComplete="current-password" required errorMessage={passwordErrors.currentPassword?.message} {...registerPassword("currentPassword")} />
+        <form
+          onSubmit={handlePasswordSubmit(submitPassword)}
+          noValidate
+          className="mt-7 space-y-5"
+        >
+          <Input
+            id="current-password"
+            label="Current password"
+            type="password"
+            autoComplete="current-password"
+            required
+            errorMessage={passwordErrors.currentPassword?.message}
+            {...registerPassword("currentPassword")}
+          />
           <div className="grid gap-5 sm:grid-cols-2">
-            <Input id="new-password" label="New password" type="password" autoComplete="new-password" required info="At least 8 characters with uppercase, lowercase and a number." errorMessage={passwordErrors.newPassword?.message} {...registerPassword("newPassword")} />
-            <Input id="confirm-new-password" label="Confirm new password" type="password" autoComplete="new-password" required errorMessage={passwordErrors.confirmPassword?.message} {...registerPassword("confirmPassword")} />
+            <Input
+              id="new-password"
+              label="New password"
+              type="password"
+              autoComplete="new-password"
+              required
+              info="At least 8 characters with uppercase, lowercase and a number."
+              errorMessage={passwordErrors.newPassword?.message}
+              {...registerPassword("newPassword")}
+            />
+            <Input
+              id="confirm-new-password"
+              label="Confirm new password"
+              type="password"
+              autoComplete="new-password"
+              required
+              errorMessage={passwordErrors.confirmPassword?.message}
+              {...registerPassword("confirmPassword")}
+            />
           </div>
           <div className="flex justify-end">
-            <Button type="submit" variant="outline" disabled={passwordMutation.isPending}>
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={passwordMutation.isPending}
+            >
               {passwordMutation.isPending ? "Changing..." : "Change password"}
             </Button>
           </div>
@@ -266,9 +369,13 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
             <ShieldAlert aria-hidden="true" className="size-5" />
           </span>
           <div>
-            <h2 className="font-display text-xl font-extrabold text-foreground">Deactivate account</h2>
+            <h2 className="font-display text-xl font-extrabold text-foreground">
+              Deactivate account
+            </h2>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
-              This signs you out and marks your profile inactive without deleting related school records. An administrator can restore access if needed.
+              This signs you out and marks your profile inactive without
+              deleting related school records. An administrator can restore
+              access if needed.
             </p>
           </div>
         </div>
@@ -285,10 +392,14 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
             type="button"
             variant="destructive"
             className="mt-4"
-            disabled={deactivatePhrase !== "DEACTIVATE" || deactivateMutation.isPending}
+            disabled={
+              deactivatePhrase !== "DEACTIVATE" || deactivateMutation.isPending
+            }
             onClick={deactivateAccount}
           >
-            {deactivateMutation.isPending ? "Deactivating..." : "Deactivate my account"}
+            {deactivateMutation.isPending
+              ? "Deactivating..."
+              : "Deactivate my account"}
           </Button>
         </div>
       </section>

@@ -2,8 +2,16 @@ import * as yup from "yup";
 
 export const profileSchema = yup
   .object({
-    firstName: yup.string().trim().required("Please enter your first name.").max(50),
-    lastName: yup.string().trim().required("Please enter your last name.").max(50),
+    firstName: yup
+      .string()
+      .trim()
+      .required("Please enter your first name.")
+      .max(50),
+    lastName: yup
+      .string()
+      .trim()
+      .required("Please enter your last name.")
+      .max(50),
     phone: yup
       .string()
       .trim()
@@ -16,7 +24,10 @@ export const profileSchema = yup
         if (!value) return true;
         return new Date(`${value}T00:00:00`) <= new Date();
       }),
-    address: yup.string().trim().max(250, "Address must be 250 characters or fewer."),
+    address: yup
+      .string()
+      .trim()
+      .max(250, "Address must be 250 characters or fewer."),
     preferredLanguage: yup.mixed<"en">().oneOf(["en"]).required(),
   })
   .required();
@@ -26,7 +37,9 @@ export type ProfileUpdateRequest = ProfileFormValues;
 
 export const passwordChangeSchema = yup
   .object({
-    currentPassword: yup.string().required("Please enter your current password."),
+    currentPassword: yup
+      .string()
+      .required("Please enter your current password."),
     newPassword: yup
       .string()
       .required("Please enter a new password.")
@@ -41,11 +54,15 @@ export const passwordChangeSchema = yup
   })
   .required();
 
-export type PasswordChangeFormValues = yup.InferType<typeof passwordChangeSchema>;
+export type PasswordChangeFormValues = yup.InferType<
+  typeof passwordChangeSchema
+>;
 
 export const passwordChangeRequestSchema = yup
   .object({
-    currentPassword: yup.string().required("Please enter your current password."),
+    currentPassword: yup
+      .string()
+      .required("Please enter your current password."),
     newPassword: yup
       .string()
       .required("Please enter a new password.")
@@ -56,4 +73,6 @@ export const passwordChangeRequestSchema = yup
   })
   .required();
 
-export type PasswordChangeRequest = yup.InferType<typeof passwordChangeRequestSchema>;
+export type PasswordChangeRequest = yup.InferType<
+  typeof passwordChangeRequestSchema
+>;

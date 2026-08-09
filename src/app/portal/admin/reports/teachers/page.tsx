@@ -98,7 +98,7 @@ export default async function Page({
                 </div>
               </div>
               <div className="mt-5 overflow-x-auto">
-                <table className="w-full min-w-[700px] text-left text-sm">
+                <table className="w-full min-w-175 text-left text-sm">
                   <thead className="border-b text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
                       <th className="py-3 pr-4">Date</th>

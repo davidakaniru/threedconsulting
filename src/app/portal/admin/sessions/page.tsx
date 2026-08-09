@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { CalendarDays } from "lucide-react";
-import { AdminPage, MetricCard, MetricGrid, PageHeader } from "@/components/admin/ui";
+import {
+  AdminPage,
+  MetricCard,
+  MetricGrid,
+  PageHeader,
+} from "@/components/admin/ui";
 import { AdminSessionsTable } from "@/modules/sessions";
 import { getSessionMetrics } from "@/modules/sessions/server";
 import { getProgrammes } from "@/modules/programmes/server";
@@ -15,15 +20,26 @@ export default async function Page() {
     getTeachers({ pageSize: 100 }),
   ]);
   const programmes = p.programmes.map((x) => ({ value: x.id, label: x.name }));
-  const teachers = t.teachers.map((x) => ({ value: x.id, label: [x.firstName, x.lastName].filter(Boolean).join(" ") || x.email }));
+  const teachers = t.teachers.map((x) => ({
+    value: x.id,
+    label: [x.firstName, x.lastName].filter(Boolean).join(" ") || x.email,
+  }));
   return (
     <AdminPage>
-      <PageHeader eyebrow="Academic" title="Class sessions" description="Monitor online sessions across subjects and teachers." />
+      <PageHeader
+        eyebrow="Academic"
+        title="Class sessions"
+        description="Monitor online sessions across subjects and teachers."
+      />
       <MetricGrid>
         <MetricCard label="Total" value={m.total} icon={CalendarDays} />
         <MetricCard label="Scheduled" value={m.scheduled} icon={CalendarDays} />
         <MetricCard label="Completed" value={m.completed} icon={CalendarDays} />
-        <MetricCard label="Draft / Cancelled" value={m.draft + m.cancelled} icon={CalendarDays} />
+        <MetricCard
+          label="Draft / Cancelled"
+          value={m.draft + m.cancelled}
+          icon={CalendarDays}
+        />
       </MetricGrid>
       <AdminSessionsTable programmes={programmes} teachers={teachers} />
     </AdminPage>

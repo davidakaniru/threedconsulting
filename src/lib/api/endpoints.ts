@@ -21,7 +21,8 @@ export const API_ENDPOINTS = {
     teachingAssignment: (id: string) => `/admin/teaching-assignments/${id}`,
     lessonRequests: "/admin/lesson-requests",
     lessonRequest: (id: string) => `/admin/lesson-requests/${id}`,
-    lessonRequestPublish: (id: string) => `/admin/lesson-requests/${id}/publish`,
+    lessonRequestPublish: (id: string) =>
+      `/admin/lesson-requests/${id}/publish`,
     sessions: "/admin/sessions",
     session: (id: string) => `/admin/sessions/${id}`,
   },

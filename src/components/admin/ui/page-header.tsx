@@ -38,7 +38,10 @@ export function PageHeader({
         {breadcrumbs && breadcrumbs.length > 0 && (
           <p className="mb-2 flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
             {breadcrumbs.map((item, index) => (
-              <span key={`${item.label}-${index}`} className="inline-flex items-center gap-2">
+              <span
+                key={`${item.label}-${index}`}
+                className="inline-flex items-center gap-2"
+              >
                 {index > 0 && <span aria-hidden="true">/</span>}
                 <span>{item.label}</span>
               </span>

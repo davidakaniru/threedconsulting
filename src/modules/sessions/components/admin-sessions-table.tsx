@@ -100,7 +100,10 @@ export function AdminSessionsTable({
                 setStatus(value);
                 setPage(1);
               }}
-              options={[{ value: "all", label: "All statuses" }, ...classSessionStatusOptions]}
+              options={[
+                { value: "all", label: "All statuses" },
+                ...classSessionStatusOptions,
+              ]}
             />
             <FilterSelect
               id="session-programme"
@@ -109,7 +112,10 @@ export function AdminSessionsTable({
                 setProgrammeId(value);
                 setPage(1);
               }}
-              options={[{ value: "all", label: "All programmes" }, ...programmes]}
+              options={[
+                { value: "all", label: "All programmes" },
+                ...programmes,
+              ]}
             />
             <FilterSelect
               id="session-teacher"
@@ -163,7 +169,10 @@ export function AdminSessionsTable({
       {query.data && (
         <Pagination
           page={query.data.page}
-          totalPages={Math.max(1, Math.ceil(query.data.total / query.data.pageSize))}
+          totalPages={Math.max(
+            1,
+            Math.ceil(query.data.total / query.data.pageSize),
+          )}
           total={query.data.total}
           label="sessions"
           onPageChange={setPage}

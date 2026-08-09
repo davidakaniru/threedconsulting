@@ -17,7 +17,15 @@ export interface StudentSummary {
   createdAt: string;
 }
 
-export interface StudentParentLink { id:string; firstName:string; lastName:string; email:string; phone:string|null; relationship:string; isPrimaryContact:boolean; }
+export interface StudentParentLink {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  relationship: string;
+  isPrimaryContact: boolean;
+}
 
 export interface StudentDetail extends StudentSummary {
   notes: string | null;

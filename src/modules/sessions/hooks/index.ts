@@ -1,6 +1,70 @@
-"use client";import{useMutation,useQuery,useQueryClient}from"@tanstack/react-query";import{apiClient}from"@/lib/api/client";import{API_ENDPOINTS}from"@/lib/api/endpoints";import{queryKeys}from"@/lib/query/query-keys";import type{ApiSuccess}from"@/lib/api/types";import type{ClassSessionRequest}from"../schemas";import type{ClassSession,SessionListResult}from"../types";
-export function useTeacherSessions(filters?:Record<string,unknown>){return useQuery({queryKey:queryKeys.sessions.list({scope:"teacher",...(filters??{})}),queryFn:async()=>(await apiClient.get<ApiSuccess<SessionListResult>>(API_ENDPOINTS.teacher.sessions,{params:filters})).data.data})}
-export function useAdminSessions(filters?:Record<string,unknown>){return useQuery({queryKey:queryKeys.sessions.list({scope:"admin",...(filters??{})}),queryFn:async()=>(await apiClient.get<ApiSuccess<SessionListResult>>(API_ENDPOINTS.admin.sessions,{params:filters})).data.data})}
-export function useTeacherSession(id:string){return useQuery({queryKey:queryKeys.sessions.detail(id),queryFn:async()=>(await apiClient.get<ApiSuccess<ClassSession>>(API_ENDPOINTS.teacher.session(id))).data.data,enabled:!!id})}
-export function useCreateSession(){const c=useQueryClient();return useMutation({mutationFn:async(v:ClassSessionRequest)=>(await apiClient.post<ApiSuccess<ClassSession>>(API_ENDPOINTS.teacher.sessions,v)).data.data,onSuccess:()=>c.invalidateQueries({queryKey:queryKeys.sessions.all})})}
-export function useUpdateSession(id:string){const c=useQueryClient();return useMutation({mutationFn:async(v:ClassSessionRequest)=>(await apiClient.patch<ApiSuccess<ClassSession>>(API_ENDPOINTS.teacher.session(id),v)).data.data,onSuccess:()=>c.invalidateQueries({queryKey:queryKeys.sessions.all})})}
+"use client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/lib/api/client";
+import { API_ENDPOINTS } from "@/lib/api/endpoints";
+import { queryKeys } from "@/lib/query/query-keys";
+import type { ApiSuccess } from "@/lib/api/types";
+import type { ClassSessionRequest } from "../schemas";
+import type { ClassSession, SessionListResult } from "../types";
+export function useTeacherSessions(filters?: Record<string, unknown>) {
+  return useQuery({
+    queryKey: queryKeys.sessions.list({ scope: "teacher", ...(filters ?? {}) }),
+    queryFn: async () =>
+      (
+        await apiClient.get<ApiSuccess<SessionListResult>>(
+          API_ENDPOINTS.teacher.sessions,
+          { params: filters },
+        )
+      ).data.data,
+  });
+}
+export function useAdminSessions(filters?: Record<string, unknown>) {
+  return useQuery({
+    queryKey: queryKeys.sessions.list({ scope: "admin", ...(filters ?? {}) }),
+    queryFn: async () =>
+      (
+        await apiClient.get<ApiSuccess<SessionListResult>>(
+          API_ENDPOINTS.admin.sessions,
+          { params: filters },
+        )
+      ).data.data,
+  });
+}
+export function useTeacherSession(id: string) {
+  return useQuery({
+    queryKey: queryKeys.sessions.detail(id),
+    queryFn: async () =>
+      (
+        await apiClient.get<ApiSuccess<ClassSession>>(
+          API_ENDPOINTS.teacher.session(id),
+        )
+      ).data.data,
+    enabled: !!id,
+  });
+}
+export function useCreateSession() {
+  const c = useQueryClient();
+  return useMutation({
+    mutationFn: async (v: ClassSessionRequest) =>
+      (
+        await apiClient.post<ApiSuccess<ClassSession>>(
+          API_ENDPOINTS.teacher.sessions,
+          v,
+        )
+      ).data.data,
+    onSuccess: () => c.invalidateQueries({ queryKey: queryKeys.sessions.all }),
+  });
+}
+export function useUpdateSession(id: string) {
+  const c = useQueryClient();
+  return useMutation({
+    mutationFn: async (v: ClassSessionRequest) =>
+      (
+        await apiClient.patch<ApiSuccess<ClassSession>>(
+          API_ENDPOINTS.teacher.session(id),
+          v,
+        )
+      ).data.data,
+    onSuccess: () => c.invalidateQueries({ queryKey: queryKeys.sessions.all }),
+  });
+}

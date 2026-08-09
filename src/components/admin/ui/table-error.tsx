@@ -12,7 +12,9 @@ export function TableError({
   return (
     <div className="grid min-h-72 place-items-center p-8 text-center">
       <div>
-        <h3 className="font-display text-lg font-extrabold text-rose-700">{title}</h3>
+        <h3 className="font-display text-lg font-extrabold text-rose-700">
+          {title}
+        </h3>
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
         <Button variant="outline" className="mt-5" onClick={onRetry}>
           Try again

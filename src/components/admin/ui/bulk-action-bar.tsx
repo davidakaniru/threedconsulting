@@ -23,13 +23,14 @@ export function BulkActionBar({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 border-b border-primary/10 bg-primary/[0.04] px-4 py-3",
+        "flex flex-col gap-3 border-b border-primary/10 bg-primary/4 px-4 py-3",
         "sm:flex-row sm:items-center sm:justify-between sm:px-5",
         className,
       )}
     >
       <p className="text-sm font-bold text-primary">
-        {selectedCount} {selectedCount === 1 ? itemLabel : `${itemLabel}s`} selected
+        {selectedCount} {selectedCount === 1 ? itemLabel : `${itemLabel}s`}{" "}
+        selected
       </p>
       <div className="flex items-center gap-2">
         {actions}

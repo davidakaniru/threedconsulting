@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { AdminPage, PageHeader } from "@/components/admin/ui";
-import { LessonRequestMetrics, LessonRequestsTable } from "@/modules/lesson-requests";
+import {
+  LessonRequestMetrics,
+  LessonRequestsTable,
+} from "@/modules/lesson-requests";
 import { getLessonRequestMetrics } from "@/modules/lesson-requests/server";
 
 export const metadata: Metadata = { title: "Enrolments | Admin Portal" };

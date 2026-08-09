@@ -35,26 +35,31 @@ function mapProfile(profile: {
   };
 }
 
-export const getCurrentUser = cache(async (): Promise<AuthenticatedUser | null> => {
-  const supabase = await createClient();
-  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
+export const getCurrentUser = cache(
+  async (): Promise<AuthenticatedUser | null> => {
+    const supabase = await createClient();
+    const { data: claimsData, error: claimsError } =
+      await supabase.auth.getClaims();
 
-  const userId = claimsData?.claims?.sub;
+    const userId = claimsData?.claims?.sub;
 
-  if (claimsError || !userId) {
-    return null;
-  }
+    if (claimsError || !userId) {
+      return null;
+    }
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("id,email,first_name,last_name,role,status,avatar_url,phone,date_of_birth,address,preferred_language,created_at,updated_at")
-    .eq("id", userId)
-    .maybeSingle();
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select(
+        "id,email,first_name,last_name,role,status,avatar_url,phone,date_of_birth,address,preferred_language,created_at,updated_at",
+      )
+      .eq("id", userId)
+      .maybeSingle();
 
-  if (profileError) {
-    console.error("Unable to load the authenticated profile", profileError);
-    return null;
-  }
+    if (profileError) {
+      console.error("Unable to load the authenticated profile", profileError);
+      return null;
+    }
 
-  return profile ? mapProfile(profile) : null;
-});
+    return profile ? mapProfile(profile) : null;
+  },
+);

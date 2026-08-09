@@ -37,46 +37,134 @@ export function LessonRequestsTable() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [page, setPage] = useState(1);
-  const query = useLessonRequests({ page, pageSize: 10, search: useDeferredValue(search) || undefined, status });
-  const columns = useMemo<DataTableColumn<LessonRequestSummary>[]>(() => [
-    {
-      id: "child",
-      header: "Child / subject",
-      cell: (request) => <div><p className="font-extrabold">{request.childName}</p><p className="text-xs text-slate-500">{request.programme.name}</p></div>,
-    },
-    {
-      id: "schedule",
-      header: "Preferred schedule",
-      cell: (request) => <div><p className="font-semibold capitalize">{days(request.preferredDays)}</p><p className="text-xs text-slate-500">{formatTime(request.preferredTime)} · {request.durationMonths} {request.durationMonths === 1 ? "month" : "months"}</p></div>,
-    },
-    {
-      id: "parent",
-      header: "Parent",
-      cell: (request) => <div><p>{request.parentName}</p><p className="text-xs text-slate-500">{request.parentEmail}</p></div>,
-    },
-    { id: "submitted", header: "Submitted", cell: (request) => formatDateTime(request.createdAt) },
-    { id: "status", header: "Status", cell: (request) => <StatusBadge status={request.status} label={request.status === "pending_review" ? "Awaiting review" : undefined} /> },
-  ], []);
+  const query = useLessonRequests({
+    page,
+    pageSize: 10,
+    search: useDeferredValue(search) || undefined,
+    status,
+  });
+  const columns = useMemo<DataTableColumn<LessonRequestSummary>[]>(
+    () => [
+      {
+        id: "child",
+        header: "Child / subject",
+        cell: (request) => (
+          <div>
+            <p className="font-extrabold">{request.childName}</p>
+            <p className="text-xs text-slate-500">{request.programme.name}</p>
+          </div>
+        ),
+      },
+      {
+        id: "schedule",
+        header: "Preferred schedule",
+        cell: (request) => (
+          <div>
+            <p className="font-semibold capitalize">
+              {days(request.preferredDays)}
+            </p>
+            <p className="text-xs text-slate-500">
+              {formatTime(request.preferredTime)} · {request.durationMonths}{" "}
+              {request.durationMonths === 1 ? "month" : "months"}
+            </p>
+          </div>
+        ),
+      },
+      {
+        id: "parent",
+        header: "Parent",
+        cell: (request) => (
+          <div>
+            <p>{request.parentName}</p>
+            <p className="text-xs text-slate-500">{request.parentEmail}</p>
+          </div>
+        ),
+      },
+      {
+        id: "submitted",
+        header: "Submitted",
+        cell: (request) => formatDateTime(request.createdAt),
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: (request) => (
+          <StatusBadge
+            status={request.status}
+            label={
+              request.status === "pending_review"
+                ? "Awaiting review"
+                : undefined
+            }
+          />
+        ),
+      },
+    ],
+    [],
+  );
   const totalPages = Math.max(1, Math.ceil((query.data?.total ?? 0) / 10));
 
   return (
     <SectionCard className="overflow-hidden">
       <TableToolbar
-        search={<SearchInput id="lesson-request-search" value={search} onChange={(value) => { setSearch(value); setPage(1); }} placeholder="Search by child name..." />}
-        filters={<FilterSelect id="lesson-request-status" value={status} onValueChange={(value) => { setStatus(value); setPage(1); }} options={statuses} />}
+        search={
+          <SearchInput
+            id="lesson-request-search"
+            value={search}
+            onChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
+            placeholder="Search by child name..."
+          />
+        }
+        filters={
+          <FilterSelect
+            id="lesson-request-status"
+            value={status}
+            onValueChange={(value) => {
+              setStatus(value);
+              setPage(1);
+            }}
+            options={statuses}
+          />
+        }
       />
-      {query.isLoading ? <TableLoading /> : query.isError ? <TableError title="Enrolments could not be loaded" description="Please try again." onRetry={() => query.refetch()} /> : (
+      {query.isLoading ? (
+        <TableLoading />
+      ) : query.isError ? (
+        <TableError
+          title="Enrolments could not be loaded"
+          description="Please try again."
+          onRetry={() => query.refetch()}
+        />
+      ) : (
         <DataTable
           data={query.data?.requests ?? []}
           columns={columns}
           getRowId={(request) => request.id}
           getRowHref={(request) => `/portal/admin/enrolments/${request.id}`}
-          emptyState={<EmptyState icon={ClipboardList} title="No enrolments" description="New parent enrolments will appear here." />}
+          emptyState={
+            <EmptyState
+              icon={ClipboardList}
+              title="No enrolments"
+              description="New parent enrolments will appear here."
+            />
+          }
         />
       )}
-      {!query.isLoading && !query.isError && query.data && query.data.total > 0 && (
-        <Pagination page={page} totalPages={totalPages} total={query.data.total} label="enrolments" onPageChange={setPage} />
-      )}
+      {!query.isLoading &&
+        !query.isError &&
+        query.data &&
+        query.data.total > 0 && (
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            total={query.data.total}
+            label="enrolments"
+            onPageChange={setPage}
+          />
+        )}
     </SectionCard>
   );
 }

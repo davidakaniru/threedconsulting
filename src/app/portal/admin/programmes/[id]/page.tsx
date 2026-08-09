@@ -8,6 +8,23 @@ type Props = { params: Promise<{ id: string }> };
 export const metadata: Metadata = { title: "Programme Details | Admin Portal" };
 export default async function Page({ params }: Props) {
   const { id } = await params;
-  const [programme, teachers] = await Promise.all([getProgramme(id), getAssignableTeachers()]);
-  return <AdminPage><PageBackButton /><PageHeader eyebrow="Programmes" title={programme.name} description="Review the programme and manage the teachers eligible to teach this subject."/><ProgrammeDetails programme={programme}/><ProgrammeAssignmentManager programmeId={programme.id} teachers={teachers}/></AdminPage>;
+  const [programme, teachers] = await Promise.all([
+    getProgramme(id),
+    getAssignableTeachers(),
+  ]);
+  return (
+    <AdminPage>
+      <PageBackButton />
+      <PageHeader
+        eyebrow="Programmes"
+        title={programme.name}
+        description="Review the programme and manage the teachers eligible to teach this subject."
+      />
+      <ProgrammeDetails programme={programme} />
+      <ProgrammeAssignmentManager
+        programmeId={programme.id}
+        teachers={teachers}
+      />
+    </AdminPage>
+  );
 }

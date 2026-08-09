@@ -1,7 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import type { LoginRequest } from "@/lib/schemas/login-schema";
 import type { RegisterRequest } from "@/lib/schemas/register-schema";
-import { mapLoginError, mapSignupError, AppAuthError } from "@/lib/auth/auth-errors";
+import {
+  mapLoginError,
+  mapSignupError,
+  AppAuthError,
+} from "@/lib/auth/auth-errors";
 import type { AuthenticatedUser } from "@/types/auth";
 
 export interface RegisterResult {
@@ -48,7 +52,9 @@ export async function login(input: LoginRequest): Promise<AuthenticatedUser> {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id,email,first_name,last_name,role,status,avatar_url,phone,date_of_birth,address,preferred_language,created_at,updated_at")
+    .select(
+      "id,email,first_name,last_name,role,status,avatar_url,phone,date_of_birth,address,preferred_language,created_at,updated_at",
+    )
     .eq("id", data.user.id)
     .single();
 

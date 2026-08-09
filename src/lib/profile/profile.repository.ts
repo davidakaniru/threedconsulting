@@ -6,14 +6,24 @@ const PROFILE_COLUMNS =
 
 export async function findProfileById(id: string) {
   const supabase = await createClient();
-  return supabase.from("profiles").select(PROFILE_COLUMNS).eq("id", id).maybeSingle();
+  return supabase
+    .from("profiles")
+    .select(PROFILE_COLUMNS)
+    .eq("id", id)
+    .maybeSingle();
 }
 
 export async function updateProfileById(
   id: string,
   changes: Pick<
     TablesUpdate<"profiles">,
-    "first_name" | "last_name" | "phone" | "date_of_birth" | "address" | "preferred_language" | "avatar_url"
+    | "first_name"
+    | "last_name"
+    | "phone"
+    | "date_of_birth"
+    | "address"
+    | "preferred_language"
+    | "avatar_url"
   >,
 ) {
   const supabase = await createClient();

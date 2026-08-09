@@ -109,7 +109,8 @@ function DashboardContent() {
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {child.admissionNumber} ·{" "}
-            {child.programmes.map((programme) => programme.name).join(", ") || "No active lessons yet"}
+            {child.programmes.map((programme) => programme.name).join(", ") ||
+              "No active lessons yet"}
           </p>
         </div>
         <ChildSwitcher />
@@ -123,23 +124,52 @@ function DashboardContent() {
         >
           <div className="grid gap-4 lg:grid-cols-2">
             {child.programmes.map((lesson) => (
-              <div key={lesson.assignmentId} className="rounded-2xl border border-slate-200 p-4">
+              <div
+                key={lesson.assignmentId}
+                className="rounded-2xl border border-slate-200 p-4"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">{lesson.name}</p>
-                    <p className="mt-2 flex items-center gap-2 font-extrabold"><UserRound className="size-4 text-primary" />{lesson.teacherName}</p>
-                    <p className="mt-1 text-sm font-semibold text-muted-foreground">{lesson.currentEducationLevel}</p>
-                    {(lesson.teacherSpecialization || lesson.teacherQualification) && (
-                      <p className="mt-1 text-sm text-muted-foreground">{[lesson.teacherSpecialization, lesson.teacherQualification].filter(Boolean).join(" · ")}</p>
+                    <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
+                      {lesson.name}
+                    </p>
+                    <p className="mt-2 flex items-center gap-2 font-extrabold">
+                      <UserRound className="size-4 text-primary" />
+                      {lesson.teacherName}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-muted-foreground">
+                      {lesson.currentEducationLevel}
+                    </p>
+                    {(lesson.teacherSpecialization ||
+                      lesson.teacherQualification) && (
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {[
+                          lesson.teacherSpecialization,
+                          lesson.teacherQualification,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
                     )}
                   </div>
                   <StatusBadge status="active" />
                 </div>
                 <div className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-                  <p><CalendarDays className="mr-2 inline size-4" />{lesson.preferredDays.map((d) => d.charAt(0).toUpperCase() + d.slice(1)).join(", ")}</p>
-                  <p><Clock3 className="mr-2 inline size-4" />{formatTime(lesson.sessionTime)}</p>
+                  <p>
+                    <CalendarDays className="mr-2 inline size-4" />
+                    {lesson.preferredDays
+                      .map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+                      .join(", ")}
+                  </p>
+                  <p>
+                    <Clock3 className="mr-2 inline size-4" />
+                    {formatTime(lesson.sessionTime)}
+                  </p>
                 </div>
-                <p className="mt-3 text-xs font-semibold text-muted-foreground">Lesson period: {formatDate(lesson.startDate)} – {formatDate(lesson.endDate)}</p>
+                <p className="mt-3 text-xs font-semibold text-muted-foreground">
+                  Lesson period: {formatDate(lesson.startDate)} –{" "}
+                  {formatDate(lesson.endDate)}
+                </p>
               </div>
             ))}
           </div>
@@ -255,7 +285,9 @@ function DashboardContent() {
           ) : (
             <div className="space-y-3">
               {child.homework.slice(0, 8).map((item) => {
-                const itemOverdue = new Date(item.dueAt).getTime() < Date.now() && (item.status === "pending" || item.status === "late");
+                const itemOverdue =
+                  new Date(item.dueAt).getTime() < Date.now() &&
+                  (item.status === "pending" || item.status === "late");
                 return (
                   <div
                     key={item.id}

@@ -14,8 +14,14 @@ interface PortalPageProps {
   children?: ReactNode;
 }
 
-export function PortalPage({ user, title, description, children }: PortalPageProps) {
-  const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
+export function PortalPage({
+  user,
+  title,
+  description,
+  children,
+}: PortalPageProps) {
+  const name =
+    [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
 
   return (
     <main className="min-h-svh bg-cream px-5 py-10 sm:px-8">
@@ -45,7 +51,9 @@ export function PortalPage({ user, title, description, children }: PortalPagePro
         </header>
 
         <section className="mt-8 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
-          <p className="max-w-2xl leading-7 text-muted-foreground">{description}</p>
+          <p className="max-w-2xl leading-7 text-muted-foreground">
+            {description}
+          </p>
           {children}
         </section>
       </div>

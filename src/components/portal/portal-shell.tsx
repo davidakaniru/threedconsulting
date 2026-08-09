@@ -90,7 +90,9 @@ function SidebarContent({
       <nav className="mt-8" aria-label="Primary portal navigation">
         {portalNavigation[user.role].map((item, index, items) => {
           const Icon = item.icon;
-          const showGroup = Boolean(item.group && item.group !== items[index - 1]?.group);
+          const showGroup = Boolean(
+            item.group && item.group !== items[index - 1]?.group,
+          );
           const active = isPortalNavigationItemActive(
             pathname,
             item,
@@ -105,12 +107,14 @@ function SidebarContent({
                   </p>
                 )}
                 <div
-                title="Coming soon"
-                className="flex cursor-not-allowed items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-slate-300"
-              >
+                  title="Coming soon"
+                  className="flex cursor-not-allowed items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-slate-300"
+                >
                   <Icon className="size-5" />
                   <span>{item.label}</span>
-                  <span className="ml-auto text-[10px] font-extrabold uppercase tracking-wider">Soon</span>
+                  <span className="ml-auto text-[10px] font-extrabold uppercase tracking-wider">
+                    Soon
+                  </span>
                 </div>
               </div>
             );
@@ -123,16 +127,16 @@ function SidebarContent({
                 </p>
               )}
               <Link
-              href={item.href}
-              onClick={onNavigate}
-              className={cn(
-                "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold transition-colors",
-                active
-                  ? cn(meta.soft, meta.text)
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-950",
-              )}
-            >
-              <Icon className="size-5" />
+                href={item.href}
+                onClick={onNavigate}
+                className={cn(
+                  "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold transition-colors",
+                  active
+                    ? cn(meta.soft, meta.text)
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-950",
+                )}
+              >
+                <Icon className="size-5" />
                 {item.label}
               </Link>
             </div>

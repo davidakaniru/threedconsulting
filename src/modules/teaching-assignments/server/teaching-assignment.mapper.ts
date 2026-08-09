@@ -10,13 +10,51 @@ export type TeachingAssignmentRow = {
   assigned_at: string;
   created_at: string;
   updated_at: string;
-  teachers: { employee_id: string; profiles: { first_name: string | null; last_name: string | null; email: string } | Array<{ first_name: string | null; last_name: string | null; email: string }> } | Array<{ employee_id: string; profiles: { first_name: string | null; last_name: string | null; email: string } | Array<{ first_name: string | null; last_name: string | null; email: string }> }>;
-  programmes: { name: string; slug: string; status: "draft" | "published" | "archived" } | Array<{ name: string; slug: string; status: "draft" | "published" | "archived" }>;
+  teachers:
+    | {
+        employee_id: string;
+        profiles:
+          | {
+              first_name: string | null;
+              last_name: string | null;
+              email: string;
+            }
+          | Array<{
+              first_name: string | null;
+              last_name: string | null;
+              email: string;
+            }>;
+      }
+    | Array<{
+        employee_id: string;
+        profiles:
+          | {
+              first_name: string | null;
+              last_name: string | null;
+              email: string;
+            }
+          | Array<{
+              first_name: string | null;
+              last_name: string | null;
+              email: string;
+            }>;
+      }>;
+  programmes:
+    | { name: string; slug: string; status: "draft" | "published" | "archived" }
+    | Array<{
+        name: string;
+        slug: string;
+        status: "draft" | "published" | "archived";
+      }>;
 };
 
-function one<T>(value: T | T[]): T { return Array.isArray(value) ? value[0] : value; }
+function one<T>(value: T | T[]): T {
+  return Array.isArray(value) ? value[0] : value;
+}
 
-export function mapTeachingAssignment(row: TeachingAssignmentRow): TeachingAssignment {
+export function mapTeachingAssignment(
+  row: TeachingAssignmentRow,
+): TeachingAssignment {
   const teacher = one(row.teachers);
   const profile = one(teacher.profiles);
   const programme = one(row.programmes);
@@ -30,7 +68,12 @@ export function mapTeachingAssignment(row: TeachingAssignmentRow): TeachingAssig
     assignedAt: row.assigned_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    teacher: { firstName: profile.first_name, lastName: profile.last_name, email: profile.email, employeeId: teacher.employee_id },
+    teacher: {
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      email: profile.email,
+      employeeId: teacher.employee_id,
+    },
     programme,
   };
 }

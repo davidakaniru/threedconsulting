@@ -4,7 +4,9 @@ import { requireParent } from "@/lib/auth/guards";
 import { ParentAcademicDashboardView } from "@/modules/parent-dashboard";
 import { getParentAcademicDashboard } from "@/modules/parent-dashboard/server";
 
-export const metadata: Metadata = { title: "Parent Dashboard | ThreeD Consulting" };
+export const metadata: Metadata = {
+  title: "Parent Dashboard | ThreeD Consulting",
+};
 
 export default async function ParentPortalPage() {
   const parent = await requireParent();

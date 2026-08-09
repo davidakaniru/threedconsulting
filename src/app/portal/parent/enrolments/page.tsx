@@ -76,7 +76,9 @@ export default async function Page() {
                       <h2 className="mt-1 font-display text-lg font-extrabold">
                         {request.childName}
                       </h2>
-                      <p className="mt-1 text-sm font-semibold text-muted-foreground">{request.currentEducationLevel}</p>
+                      <p className="mt-1 text-sm font-semibold text-muted-foreground">
+                        {request.currentEducationLevel}
+                      </p>
                     </div>
                     <StatusBadge
                       status={assignment?.status ?? request.status}
@@ -100,7 +102,8 @@ export default async function Page() {
                     </span>
                     <span className="flex items-center gap-2">
                       <Hourglass className="size-4" />
-                      {request.durationMonths} {request.durationMonths === 1 ? "month" : "months"}
+                      {request.durationMonths}{" "}
+                      {request.durationMonths === 1 ? "month" : "months"}
                     </span>
                   </div>
                   {assignment ? (
@@ -128,7 +131,8 @@ export default async function Page() {
                             </p>
                           ) : null}
                           <p className="mt-2 text-xs font-semibold text-muted-foreground">
-                            Active {formatDate(assignment.startDate)} – {formatDate(assignment.endDate)}
+                            Active {formatDate(assignment.startDate)} –{" "}
+                            {formatDate(assignment.endDate)}
                           </p>
                         </div>
                       </div>

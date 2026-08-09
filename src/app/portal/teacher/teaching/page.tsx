@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpenCheck, CalendarDays, Clock3, Hourglass, Plus } from "lucide-react";
+import {
+  BookOpenCheck,
+  CalendarDays,
+  Clock3,
+  Hourglass,
+  Plus,
+} from "lucide-react";
 import {
   AdminPage,
   EmptyState,
@@ -45,7 +51,9 @@ export default async function TeacherTeachingPage() {
                   <h2 className="mt-1 font-display text-xl font-extrabold">
                     {item.studentName}
                   </h2>
-                  <p className="mt-1 text-sm font-semibold text-muted-foreground">{item.currentEducationLevel}</p>
+                  <p className="mt-1 text-sm font-semibold text-muted-foreground">
+                    {item.currentEducationLevel}
+                  </p>
                 </div>
                 <StatusBadge status={item.status} />
               </div>
@@ -73,7 +81,12 @@ export default async function TeacherTeachingPage() {
               {item.status === "active" ? (
                 <div className="mt-5 border-t border-slate-100 pt-4">
                   <Button asChild size="sm">
-                    <Link href={`/portal/teacher/sessions/new?lessonAssignmentId=${item.id}`}><Plus />Create session</Link>
+                    <Link
+                      href={`/portal/teacher/sessions/new?lessonAssignmentId=${item.id}`}
+                    >
+                      <Plus />
+                      Create session
+                    </Link>
                   </Button>
                 </div>
               ) : null}

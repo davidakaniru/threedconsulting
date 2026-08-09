@@ -1,2 +1,4 @@
 import { redirect } from "next/navigation";
-export default function RegisterPage() { redirect("/enrolment"); }
+export default function RegisterPage() {
+  redirect("/enrolment");
+}

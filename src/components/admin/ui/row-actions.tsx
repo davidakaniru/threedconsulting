@@ -16,7 +16,13 @@ export interface RowAction {
   disabled?: boolean;
 }
 
-export function RowActions({ actions, label = "Open actions" }: { actions: RowAction[]; label?: string }) {
+export function RowActions({
+  actions,
+  label = "Open actions",
+}: {
+  actions: RowAction[];
+  label?: string;
+}) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -42,7 +48,11 @@ export function RowActions({ actions, label = "Open actions" }: { actions: RowAc
 
             if (action.href) {
               return (
-                <DropdownMenu.Item key={action.label} asChild disabled={action.disabled}>
+                <DropdownMenu.Item
+                  key={action.label}
+                  asChild
+                  disabled={action.disabled}
+                >
                   <a href={action.href} className={className}>
                     {Icon && <Icon className="size-4" />}
                     {action.label}

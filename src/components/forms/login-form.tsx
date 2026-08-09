@@ -75,7 +75,10 @@ export function LoginForm() {
           role="status"
           className="mt-6 flex items-start gap-3 rounded-2xl border border-turquoise/20 bg-turquoise/5 px-4 py-3 text-sm text-foreground"
         >
-          <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-teal-700" />
+          <CheckCircle2
+            aria-hidden="true"
+            className="mt-0.5 size-5 shrink-0 text-teal-700"
+          />
           <p>Your account has been deactivated and you have been signed out.</p>
         </div>
       )}
@@ -86,7 +89,10 @@ export function LoginForm() {
           className="mt-6 flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
         >
           <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
-          <p>This account is currently unavailable. Please contact an administrator if you need access restored.</p>
+          <p>
+            This account is currently unavailable. Please contact an
+            administrator if you need access restored.
+          </p>
         </div>
       )}
 

@@ -1,7 +1,12 @@
 import type { SelectOption } from "@/types/form";
 import type { StudentStatus } from "@/modules/students/types";
 
-export const STUDENT_STATUSES = ["active", "inactive", "graduated", "withdrawn"] as const satisfies readonly StudentStatus[];
+export const STUDENT_STATUSES = [
+  "active",
+  "inactive",
+  "graduated",
+  "withdrawn",
+] as const satisfies readonly StudentStatus[];
 
 export const studentStatusOptions: SelectOption[] = [
   { label: "Active", value: "active" },

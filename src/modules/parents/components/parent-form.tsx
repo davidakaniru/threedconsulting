@@ -1,4 +1,238 @@
 "use client";
-import Link from "next/link";import{useForm,useFieldArray,Controller}from"react-hook-form";import{yupResolver}from"@hookform/resolvers/yup";import{useRouter}from"next/navigation";import{toast}from"sonner";import{ArrowLeft,Send,Save,Trash2}from"lucide-react";import{Input}from"@/components/ui/input";import{Button}from"@/components/ui/button";import{Checkbox}from"@/components/ui/checkbox";import{SelectField}from"@/components/forms/select-field";import{createParentSchema,type CreateParentRequest,type UpdateParentRequest}from"@/modules/parents/schemas";import{guardianRelationshipOptions}from"@/modules/parents/constants";import{useCreateParent,useUpdateParent}from"@/modules/parents/hooks";import{toApiError}from"@/lib/api/errors";
-type StudentOption={id:string;admission_number:string;first_name:string;middle_name:string|null;last_name:string};
-export function ParentForm({students,parentId,initial}:{students:StudentOption[];parentId?:string;initial?:UpdateParentRequest}){const router=useRouter();const create=useCreateParent();const update=useUpdateParent(parentId??"");const {register,control,handleSubmit,formState:{errors}}=useForm<CreateParentRequest>({resolver:yupResolver(createParentSchema),defaultValues:initial??{firstName:"",lastName:"",email:"",phone:"",address:"",occupation:"",students:[]},mode:"onTouched"});const{fields,append,remove}=useFieldArray({control,name:"students"});const selected=new Set(fields.map(f=>f.studentId));const pending=create.isPending||update.isPending;const submit=handleSubmit(async values=>{try{if(parentId)await update.mutateAsync(values);else await create.mutateAsync(values);toast.success(parentId?"Parent updated.":"Parent invited successfully.");router.push("/portal/admin/parents");}catch(e){toast.error(toApiError(e).message);}});return <form onSubmit={submit} className="space-y-6"><div className="grid gap-5 sm:grid-cols-2"><Input id="firstName" label="First name" required errorMessage={errors.firstName?.message} {...register("firstName")}/><Input id="lastName" label="Last name" required errorMessage={errors.lastName?.message} {...register("lastName")}/><Input id="email" type="email" label="Email" required disabled={!!parentId} errorMessage={errors.email?.message} {...register("email")}/><Input id="phone" label="Phone" errorMessage={errors.phone?.message} {...register("phone")}/><Input id="occupation" label="Occupation" errorMessage={errors.occupation?.message} {...register("occupation")}/><Input id="address" label="Address" errorMessage={errors.address?.message} {...register("address")}/></div><div className="rounded-2xl border p-5"><div className="mb-4"><h3 className="font-display font-extrabold">Linked students</h3><p className="text-sm text-muted-foreground">Link one or more children to this parent account.</p></div><div className="grid gap-2 sm:grid-cols-2">{students.filter(s=>!selected.has(s.id)).map(s=><button key={s.id} type="button" onClick={()=>append({studentId:s.id,relationship:"guardian",isPrimaryContact:fields.length===0})} className="rounded-xl border p-3 text-left hover:bg-muted"><span className="font-bold">{[s.first_name,s.middle_name,s.last_name].filter(Boolean).join(" ")}</span><span className="block text-xs text-muted-foreground">{s.admission_number}</span></button>)}</div>{fields.map((field,index)=>{const s=students.find(x=>x.id===field.studentId);return <div key={field.id} className="mt-3 grid items-end gap-3 rounded-xl bg-muted/40 p-3 sm:grid-cols-[1fr_180px_auto_auto]"><div><p className="font-bold">{s?[s.first_name,s.middle_name,s.last_name].filter(Boolean).join(" "):field.studentId}</p><p className="text-xs text-muted-foreground">{s?.admission_number}</p></div><Controller name={`students.${index}.relationship`} control={control} render={({field:f})=><SelectField id={`relationship-${index}`} options={guardianRelationshipOptions} value={f.value} onValueChange={f.onChange}/>}/><label className="flex items-center gap-2 pb-3 text-sm"><Controller name={`students.${index}.isPrimaryContact`} control={control} render={({field:f})=><Checkbox checked={f.value} onCheckedChange={v=>f.onChange(Boolean(v))}/>}/>Primary</label><Button type="button" size="icon" variant="ghost" onClick={()=>remove(index)}><Trash2/></Button></div>})}{(errors.students as any)?.message&&<p className="mt-2 text-xs text-destructive">{(errors.students as any).message}</p>}</div><div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><Button type="button" variant="outline" asChild><Link href="/portal/admin/parents"><ArrowLeft/>Cancel</Link></Button><Button type="submit" disabled={pending}>{parentId?<><Save/>Save changes</>:<><Send/>Add & invite parent</>}</Button></div></form>}
+import Link from "next/link";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ArrowLeft, Send, Save, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { SelectField } from "@/components/forms/select-field";
+import {
+  createParentSchema,
+  type CreateParentRequest,
+  type UpdateParentRequest,
+} from "@/modules/parents/schemas";
+import { guardianRelationshipOptions } from "@/modules/parents/constants";
+import { useCreateParent, useUpdateParent } from "@/modules/parents/hooks";
+import { toApiError } from "@/lib/api/errors";
+type StudentOption = {
+  id: string;
+  admission_number: string;
+  first_name: string;
+  middle_name: string | null;
+  last_name: string;
+};
+export function ParentForm({
+  students,
+  parentId,
+  initial,
+}: {
+  students: StudentOption[];
+  parentId?: string;
+  initial?: UpdateParentRequest;
+}) {
+  const router = useRouter();
+  const create = useCreateParent();
+  const update = useUpdateParent(parentId ?? "");
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateParentRequest>({
+    resolver: yupResolver(createParentSchema),
+    defaultValues: initial ?? {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      occupation: "",
+      students: [],
+    },
+    mode: "onTouched",
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "students",
+  });
+  const selected = new Set(fields.map((f) => f.studentId));
+  const pending = create.isPending || update.isPending;
+  const submit = handleSubmit(async (values) => {
+    try {
+      if (parentId) await update.mutateAsync(values);
+      else await create.mutateAsync(values);
+      toast.success(
+        parentId ? "Parent updated." : "Parent invited successfully.",
+      );
+      router.push("/portal/admin/parents");
+    } catch (e) {
+      toast.error(toApiError(e).message);
+    }
+  });
+  return (
+    <form onSubmit={submit} className="space-y-6">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Input
+          id="firstName"
+          label="First name"
+          required
+          errorMessage={errors.firstName?.message}
+          {...register("firstName")}
+        />
+        <Input
+          id="lastName"
+          label="Last name"
+          required
+          errorMessage={errors.lastName?.message}
+          {...register("lastName")}
+        />
+        <Input
+          id="email"
+          type="email"
+          label="Email"
+          required
+          disabled={!!parentId}
+          errorMessage={errors.email?.message}
+          {...register("email")}
+        />
+        <Input
+          id="phone"
+          label="Phone"
+          errorMessage={errors.phone?.message}
+          {...register("phone")}
+        />
+        <Input
+          id="occupation"
+          label="Occupation"
+          errorMessage={errors.occupation?.message}
+          {...register("occupation")}
+        />
+        <Input
+          id="address"
+          label="Address"
+          errorMessage={errors.address?.message}
+          {...register("address")}
+        />
+      </div>
+      <div className="rounded-2xl border p-5">
+        <div className="mb-4">
+          <h3 className="font-display font-extrabold">Linked students</h3>
+          <p className="text-sm text-muted-foreground">
+            Link one or more children to this parent account.
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {students
+            .filter((s) => !selected.has(s.id))
+            .map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() =>
+                  append({
+                    studentId: s.id,
+                    relationship: "guardian",
+                    isPrimaryContact: fields.length === 0,
+                  })
+                }
+                className="rounded-xl border p-3 text-left hover:bg-muted"
+              >
+                <span className="font-bold">
+                  {[s.first_name, s.middle_name, s.last_name]
+                    .filter(Boolean)
+                    .join(" ")}
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  {s.admission_number}
+                </span>
+              </button>
+            ))}
+        </div>
+        {fields.map((field, index) => {
+          const s = students.find((x) => x.id === field.studentId);
+          return (
+            <div
+              key={field.id}
+              className="mt-3 grid items-end gap-3 rounded-xl bg-muted/40 p-3 sm:grid-cols-[1fr_180px_auto_auto]"
+            >
+              <div>
+                <p className="font-bold">
+                  {s
+                    ? [s.first_name, s.middle_name, s.last_name]
+                        .filter(Boolean)
+                        .join(" ")
+                    : field.studentId}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {s?.admission_number}
+                </p>
+              </div>
+              <Controller
+                name={`students.${index}.relationship`}
+                control={control}
+                render={({ field: f }) => (
+                  <SelectField
+                    id={`relationship-${index}`}
+                    options={guardianRelationshipOptions}
+                    value={f.value}
+                    onValueChange={f.onChange}
+                  />
+                )}
+              />
+              <label className="flex items-center gap-2 pb-3 text-sm">
+                <Controller
+                  name={`students.${index}.isPrimaryContact`}
+                  control={control}
+                  render={({ field: f }) => (
+                    <Checkbox
+                      checked={f.value}
+                      onCheckedChange={(v) => f.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+                Primary
+              </label>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={() => remove(index)}
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          );
+        })}
+        {(errors.students as any)?.message && (
+          <p className="mt-2 text-xs text-destructive">
+            {(errors.students as any).message}
+          </p>
+        )}
+      </div>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" asChild>
+          <Link href="/portal/admin/parents">
+            <ArrowLeft />
+            Cancel
+          </Link>
+        </Button>
+        <Button type="submit" disabled={pending}>
+          {parentId ? (
+            <>
+              <Save />
+              Save changes
+            </>
+          ) : (
+            <>
+              <Send />
+              Add & invite parent
+            </>
+          )}
+        </Button>
+      </div>
+    </form>
+  );
+}

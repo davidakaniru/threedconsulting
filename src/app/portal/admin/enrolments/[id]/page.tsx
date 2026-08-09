@@ -6,13 +6,24 @@ import { getLessonAssignmentByRequest } from "@/modules/lesson-assignments/serve
 
 export const metadata: Metadata = { title: "Enrolment Review | Admin Portal" };
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const id = (await params).id;
-  const [request, assignment] = await Promise.all([getLessonRequest(id), getLessonAssignmentByRequest(id)]);
+  const [request, assignment] = await Promise.all([
+    getLessonRequest(id),
+    getLessonAssignmentByRequest(id),
+  ]);
   return (
     <AdminPage>
       <PageBackButton />
-      <PageHeader eyebrow="Enrolments" title={request.childName} description={`${request.programme.name} · enrolment from ${request.parentName}`} />
+      <PageHeader
+        eyebrow="Enrolments"
+        title={request.childName}
+        description={`${request.programme.name} · enrolment from ${request.parentName}`}
+      />
       <LessonRequestDetails request={request} assignment={assignment} />
     </AdminPage>
   );

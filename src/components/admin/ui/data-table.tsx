@@ -41,7 +41,9 @@ const interactiveSelector = [
 ].join(",");
 
 function isInteractiveTarget(target: EventTarget | null) {
-  return target instanceof Element && Boolean(target.closest(interactiveSelector));
+  return (
+    target instanceof Element && Boolean(target.closest(interactiveSelector))
+  );
 }
 
 export function DataTable<T>({
@@ -63,8 +65,11 @@ export function DataTable<T>({
 
   const selectionEnabled = Boolean(selectedIds && onSelectionChange);
   const selectableRows = data.filter(isRowSelectable);
-  const selectedOnPage = selectableRows.filter((row) => selectedIds?.has(getRowId(row))).length;
-  const allSelected = selectableRows.length > 0 && selectedOnPage === selectableRows.length;
+  const selectedOnPage = selectableRows.filter((row) =>
+    selectedIds?.has(getRowId(row)),
+  ).length;
+  const allSelected =
+    selectableRows.length > 0 && selectedOnPage === selectableRows.length;
   const someSelected = selectedOnPage > 0 && !allSelected;
 
   function toggleAll(checked: boolean) {
@@ -118,7 +123,9 @@ export function DataTable<T>({
                 {selectionEnabled && selectable && (
                   <Checkbox
                     checked={selectedIds?.has(id)}
-                    onCheckedChange={(checked) => toggleRow(row, checked === true)}
+                    onCheckedChange={(checked) =>
+                      toggleRow(row, checked === true)
+                    }
                     aria-label={`Select record ${id}`}
                     className="absolute top-4 left-4 z-10"
                     data-row-click-ignore
@@ -144,13 +151,19 @@ export function DataTable<T>({
       )}
 
       <div className={cn("overflow-x-auto", mobileCard && "hidden md:block")}>
-        <table className="w-full min-w-[840px] text-left text-sm">
+        <table className="w-full min-w-210 text-left text-sm">
           <thead className="bg-slate-50/90 text-xs font-extrabold uppercase tracking-[.08em] text-slate-500">
             <tr>
               {selectionEnabled && (
                 <th scope="col" className="w-12 px-5 py-3.5">
                   <Checkbox
-                    checked={allSelected ? true : someSelected ? "indeterminate" : false}
+                    checked={
+                      allSelected
+                        ? true
+                        : someSelected
+                          ? "indeterminate"
+                          : false
+                    }
                     onCheckedChange={(checked) => toggleAll(checked === true)}
                     aria-label="Select all records on this page"
                     data-row-click-ignore
@@ -196,7 +209,9 @@ export function DataTable<T>({
                       <Checkbox
                         checked={selectedIds?.has(id)}
                         disabled={!selectable}
-                        onCheckedChange={(checked) => toggleRow(row, checked === true)}
+                        onCheckedChange={(checked) =>
+                          toggleRow(row, checked === true)
+                        }
                         aria-label={`Select record ${id}`}
                         data-row-click-ignore
                       />

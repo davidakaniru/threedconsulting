@@ -31,11 +31,17 @@ const teacherStatusOptions = [
 ];
 
 function teacherName(teacher: TeacherSummary) {
-  return [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") || "Unnamed teacher";
+  return (
+    [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") ||
+    "Unnamed teacher"
+  );
 }
 
 function teacherInitials(teacher: TeacherSummary) {
-  return `${teacher.firstName?.[0] ?? ""}${teacher.lastName?.[0] ?? ""}`.toUpperCase() || "T";
+  return (
+    `${teacher.firstName?.[0] ?? ""}${teacher.lastName?.[0] ?? ""}`.toUpperCase() ||
+    "T"
+  );
 }
 
 function formatDate(value: string) {
@@ -71,8 +77,12 @@ export function TeachersTable() {
               {teacherInitials(teacher)}
             </span>
             <div className="min-w-0">
-              <p className="truncate font-extrabold text-slate-900">{teacherName(teacher)}</p>
-              <p className="mt-0.5 truncate text-xs text-slate-500">{teacher.email}</p>
+              <p className="truncate font-extrabold text-slate-900">
+                {teacherName(teacher)}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-slate-500">
+                {teacher.email}
+              </p>
             </div>
           </div>
         ),
@@ -114,8 +124,16 @@ export function TeachersTable() {
           <RowActions
             label={`Actions for ${teacherName(teacher)}`}
             actions={[
-              { label: "View profile", icon: Eye, href: `/portal/admin/teachers/${teacher.id}` },
-              { label: "Edit teacher", icon: Pencil, href: `/portal/admin/teachers/${teacher.id}/edit` },
+              {
+                label: "View profile",
+                icon: Eye,
+                href: `/portal/admin/teachers/${teacher.id}`,
+              },
+              {
+                label: "Edit teacher",
+                icon: Pencil,
+                href: `/portal/admin/teachers/${teacher.id}/edit`,
+              },
               {
                 label: "Copy email",
                 icon: Copy,
@@ -208,14 +226,24 @@ export function TeachersTable() {
                     <h3 className="truncate font-display font-extrabold text-slate-900">
                       {teacherName(teacher)}
                     </h3>
-                    <p className="truncate text-xs text-slate-500">{teacher.email}</p>
+                    <p className="truncate text-xs text-slate-500">
+                      {teacher.email}
+                    </p>
                   </div>
                 </div>
                 <RowActions
                   label={`Actions for ${teacherName(teacher)}`}
                   actions={[
-                    { label: "View profile", icon: Eye, href: `/portal/admin/teachers/${teacher.id}` },
-                    { label: "Edit teacher", icon: Pencil, href: `/portal/admin/teachers/${teacher.id}/edit` },
+                    {
+                      label: "View profile",
+                      icon: Eye,
+                      href: `/portal/admin/teachers/${teacher.id}`,
+                    },
+                    {
+                      label: "Edit teacher",
+                      icon: Pencil,
+                      href: `/portal/admin/teachers/${teacher.id}/edit`,
+                    },
                     {
                       label: "Copy email",
                       icon: Copy,
@@ -230,12 +258,20 @@ export function TeachersTable() {
 
               <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <dt className="text-xs font-semibold text-slate-400">Employee ID</dt>
-                  <dd className="mt-1 font-bold text-slate-700">{teacher.employeeId}</dd>
+                  <dt className="text-xs font-semibold text-slate-400">
+                    Employee ID
+                  </dt>
+                  <dd className="mt-1 font-bold text-slate-700">
+                    {teacher.employeeId}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-semibold text-slate-400">Hire date</dt>
-                  <dd className="mt-1 font-semibold text-slate-700">{formatDate(teacher.hireDate)}</dd>
+                  <dt className="text-xs font-semibold text-slate-400">
+                    Hire date
+                  </dt>
+                  <dd className="mt-1 font-semibold text-slate-700">
+                    {formatDate(teacher.hireDate)}
+                  </dd>
                 </div>
               </dl>
 

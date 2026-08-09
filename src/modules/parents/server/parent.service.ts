@@ -1,27 +1,250 @@
 import { ApiError } from "@/lib/api/errors";
 import { normalizePagination } from "@/lib/modules";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { inviteUser,resendInvitation } from "@/lib/invitations";
+import { inviteUser, resendInvitation } from "@/lib/invitations";
 import { writeAuditLog } from "@/lib/audit";
-import type { CreateParentRequest,UpdateParentRequest } from "@/modules/parents/schemas";
-import type { ParentAction,ParentDetail,ParentListResult,ParentMetricsI } from "@/modules/parents/types";
-import { mapParentDetail,mapParentSummary } from "./parent.mapper";
+import type {
+  CreateParentRequest,
+  UpdateParentRequest,
+} from "@/modules/parents/schemas";
+import type {
+  ParentAction,
+  ParentDetail,
+  ParentListResult,
+  ParentMetricsI,
+} from "@/modules/parents/types";
+import { mapParentDetail, mapParentSummary } from "./parent.mapper";
 import * as repo from "./parent.repository";
-export async function getParents(params:{page?:number;pageSize?:number;search?:string;status?:string}):Promise<ParentListResult>{const{page,pageSize,from,to}=normalizePagination(params);const{data,error,count}=await repo.listParentRows(from,to,params.search,params.status);if(error){console.error(error);throw new ApiError("PARENTS_LOAD_FAILED","Parents could not be loaded.",500);}return{parents:(data??[]).map(r=>mapParentSummary(r as any)),total:count??0,page,pageSize};}
-export async function getParent(id:string):Promise<ParentDetail>{const{data,error}=await repo.getParentRow(id);if(error)throw new ApiError("PARENT_LOAD_FAILED","The parent could not be loaded.",500);if(!data)throw new ApiError("PARENT_NOT_FOUND","Parent not found.",404);return mapParentDetail(data as any);}
-export async function getParentMetrics():Promise<ParentMetricsI>{const [total,active,invited,suspended]=await Promise.all([repo.getParentCount(),repo.getParentCount({onboarding:"active"}),repo.getParentCount({onboarding:"invited"}),repo.getParentCount({account:"suspended"})]);if([total,active,invited,suspended].some(r=>r.error))throw new ApiError("PARENT_METRICS_FAILED","Parent metrics could not be loaded.",500);return{total:total.count??0,active:active.count??0,invited:invited.count??0,suspended:suspended.count??0};}
-export async function getParentStudentOptions(){const{data,error}=await repo.listStudentOptions();if(error)throw new ApiError("STUDENTS_LOAD_FAILED","Students could not be loaded.",500);return data??[];}
-export async function createParent(input:CreateParentRequest,origin:string,actorId:string){const user=await inviteUser({email:input.email.trim().toLowerCase(),firstName:input.firstName.trim(),lastName:input.lastName.trim(),role:"parent",origin});const admin=createAdminClient();try{const profile=await repo.configureParentProfile(user.id,input);if(profile.error)throw profile.error;const parent=await repo.createParentRecord(user.id,input);if(parent.error)throw parent.error;const links=await repo.replaceStudentLinks(user.id,input.students);if(links.error)throw links.error;await writeAuditLog({actorId,action:"parent.invited",entityType:"parent",entityId:user.id,metadata:{email:input.email,studentIds:input.students.map(s=>s.studentId)}});return{id:user.id,email:input.email};}catch(error){await admin.auth.admin.deleteUser(user.id);console.error(error);throw new ApiError("PARENT_PROVISION_FAILED","The parent account could not be provisioned. No partial account was kept.",500);}}
-export async function updateParent(id:string,input:UpdateParentRequest,actorId:string){await getParent(id);const result=await repo.updateParentRecord(id,input);if(result.error)throw new ApiError("PARENT_UPDATE_FAILED","The parent could not be updated.",500);const links=await repo.replaceStudentLinks(id,input.students);if(links.error)throw new ApiError("PARENT_LINKS_FAILED","Student links could not be updated.",500);await writeAuditLog({actorId,action:"parent.updated",entityType:"parent",entityId:id});return getParent(id);}
-export async function performParentAction(id:string,action:ParentAction,origin:string,actorId:string){const parent=await getParent(id);if(action.type==="account_status"){const r=await repo.updateParentAccountStatus(id,action.status);if(r.error)throw new ApiError("ACCOUNT_STATUS_FAILED","Account status could not be updated.",500);}else{if(parent.onboardingStatus!=="invited")throw new ApiError("INVITATION_NOT_AVAILABLE","This parent has already activated the account.",409);await resendInvitation(parent.email,origin);}await writeAuditLog({actorId,action:`parent.${action.type}`,entityType:"parent",entityId:id,metadata:action});return getParent(id);}
-export async function setInvitedParentPassword(id:string,password:string){const admin=createAdminClient();const{data,error}=await admin.from("parents").select("onboarding_status").eq("id",id).maybeSingle();if(error||!data||data.onboarding_status!=="invited")throw new ApiError("INVITE_SETUP_UNAVAILABLE","This invitation has already been completed or is not valid.",403);const{error:pw}=await admin.auth.admin.updateUserById(id,{password});if(pw)throw new ApiError("PASSWORD_SETUP_FAILED","Your password could not be set.",500);const marked=await repo.markParentActivated(id);if(marked.error)throw new ApiError("PARENT_ACTIVATION_FAILED","Onboarding could not be completed.",500);}
+export async function getParents(params: {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: string;
+}): Promise<ParentListResult> {
+  const { page, pageSize, from, to } = normalizePagination(params);
+  const { data, error, count } = await repo.listParentRows(
+    from,
+    to,
+    params.search,
+    params.status,
+  );
+  if (error) {
+    console.error(error);
+    throw new ApiError(
+      "PARENTS_LOAD_FAILED",
+      "Parents could not be loaded.",
+      500,
+    );
+  }
+  return {
+    parents: (data ?? []).map((r) => mapParentSummary(r as any)),
+    total: count ?? 0,
+    page,
+    pageSize,
+  };
+}
+export async function getParent(id: string): Promise<ParentDetail> {
+  const { data, error } = await repo.getParentRow(id);
+  if (error)
+    throw new ApiError(
+      "PARENT_LOAD_FAILED",
+      "The parent could not be loaded.",
+      500,
+    );
+  if (!data) throw new ApiError("PARENT_NOT_FOUND", "Parent not found.", 404);
+  return mapParentDetail(data as any);
+}
+export async function getParentMetrics(): Promise<ParentMetricsI> {
+  const [total, active, invited, suspended] = await Promise.all([
+    repo.getParentCount(),
+    repo.getParentCount({ onboarding: "active" }),
+    repo.getParentCount({ onboarding: "invited" }),
+    repo.getParentCount({ account: "suspended" }),
+  ]);
+  if ([total, active, invited, suspended].some((r) => r.error))
+    throw new ApiError(
+      "PARENT_METRICS_FAILED",
+      "Parent metrics could not be loaded.",
+      500,
+    );
+  return {
+    total: total.count ?? 0,
+    active: active.count ?? 0,
+    invited: invited.count ?? 0,
+    suspended: suspended.count ?? 0,
+  };
+}
+export async function getParentStudentOptions() {
+  const { data, error } = await repo.listStudentOptions();
+  if (error)
+    throw new ApiError(
+      "STUDENTS_LOAD_FAILED",
+      "Students could not be loaded.",
+      500,
+    );
+  return data ?? [];
+}
+export async function createParent(
+  input: CreateParentRequest,
+  origin: string,
+  actorId: string,
+) {
+  const user = await inviteUser({
+    email: input.email.trim().toLowerCase(),
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
+    role: "parent",
+    origin,
+  });
+  const admin = createAdminClient();
+  try {
+    const profile = await repo.configureParentProfile(user.id, input);
+    if (profile.error) throw profile.error;
+    const parent = await repo.createParentRecord(user.id, input);
+    if (parent.error) throw parent.error;
+    const links = await repo.replaceStudentLinks(user.id, input.students);
+    if (links.error) throw links.error;
+    await writeAuditLog({
+      actorId,
+      action: "parent.invited",
+      entityType: "parent",
+      entityId: user.id,
+      metadata: {
+        email: input.email,
+        studentIds: input.students.map((s) => s.studentId),
+      },
+    });
+    return { id: user.id, email: input.email };
+  } catch (error) {
+    await admin.auth.admin.deleteUser(user.id);
+    console.error(error);
+    throw new ApiError(
+      "PARENT_PROVISION_FAILED",
+      "The parent account could not be provisioned. No partial account was kept.",
+      500,
+    );
+  }
+}
+export async function updateParent(
+  id: string,
+  input: UpdateParentRequest,
+  actorId: string,
+) {
+  await getParent(id);
+  const result = await repo.updateParentRecord(id, input);
+  if (result.error)
+    throw new ApiError(
+      "PARENT_UPDATE_FAILED",
+      "The parent could not be updated.",
+      500,
+    );
+  const links = await repo.replaceStudentLinks(id, input.students);
+  if (links.error)
+    throw new ApiError(
+      "PARENT_LINKS_FAILED",
+      "Student links could not be updated.",
+      500,
+    );
+  await writeAuditLog({
+    actorId,
+    action: "parent.updated",
+    entityType: "parent",
+    entityId: id,
+  });
+  return getParent(id);
+}
+export async function performParentAction(
+  id: string,
+  action: ParentAction,
+  origin: string,
+  actorId: string,
+) {
+  const parent = await getParent(id);
+  if (action.type === "account_status") {
+    const r = await repo.updateParentAccountStatus(id, action.status);
+    if (r.error)
+      throw new ApiError(
+        "ACCOUNT_STATUS_FAILED",
+        "Account status could not be updated.",
+        500,
+      );
+  } else {
+    if (parent.onboardingStatus !== "invited")
+      throw new ApiError(
+        "INVITATION_NOT_AVAILABLE",
+        "This parent has already activated the account.",
+        409,
+      );
+    await resendInvitation(parent.email, origin);
+  }
+  await writeAuditLog({
+    actorId,
+    action: `parent.${action.type}`,
+    entityType: "parent",
+    entityId: id,
+    metadata: action,
+  });
+  return getParent(id);
+}
+export async function setInvitedParentPassword(id: string, password: string) {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("parents")
+    .select("onboarding_status")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !data || data.onboarding_status !== "invited")
+    throw new ApiError(
+      "INVITE_SETUP_UNAVAILABLE",
+      "This invitation has already been completed or is not valid.",
+      403,
+    );
+  const { error: pw } = await admin.auth.admin.updateUserById(id, { password });
+  if (pw)
+    throw new ApiError(
+      "PASSWORD_SETUP_FAILED",
+      "Your password could not be set.",
+      500,
+    );
+  const marked = await repo.markParentActivated(id);
+  if (marked.error)
+    throw new ApiError(
+      "PARENT_ACTIVATION_FAILED",
+      "Onboarding could not be completed.",
+      500,
+    );
+}
 
-export async function getStudentParents(studentId:string){const{data,error}=await repo.getStudentParentRows(studentId);if(error){console.error("Student parent links failed",error);return [];}return(data??[]).map((link:any)=>{const parent=Array.isArray(link.parents)?link.parents[0]:link.parents;const profile=Array.isArray(parent?.profiles)?parent.profiles[0]:parent?.profiles;return{id:parent.id,firstName:profile?.first_name??"",lastName:profile?.last_name??"",email:profile?.email??"",phone:profile?.phone??null,relationship:link.relationship,isPrimaryContact:link.is_primary_contact};});}
+export async function getStudentParents(studentId: string) {
+  const { data, error } = await repo.getStudentParentRows(studentId);
+  if (error) {
+    console.error("Student parent links failed", error);
+    return [];
+  }
+  return (data ?? []).map((link: any) => {
+    const parent = Array.isArray(link.parents) ? link.parents[0] : link.parents;
+    const profile = Array.isArray(parent?.profiles)
+      ? parent.profiles[0]
+      : parent?.profiles;
+    return {
+      id: parent.id,
+      firstName: profile?.first_name ?? "",
+      lastName: profile?.last_name ?? "",
+      email: profile?.email ?? "",
+      phone: profile?.phone ?? null,
+      relationship: link.relationship,
+      isPrimaryContact: link.is_primary_contact,
+    };
+  });
+}
 
 export async function ensureParentRecord(userId: string) {
-  const { data, error } = await createAdminClient().rpc("ensure_parent_record", {
-    p_user_id: userId,
-  });
+  const { data, error } = await createAdminClient().rpc(
+    "ensure_parent_record",
+    {
+      p_user_id: userId,
+    },
+  );
   if (error) {
     console.error("Parent record synchronization failed", error);
     throw new ApiError(

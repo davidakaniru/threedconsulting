@@ -21,7 +21,12 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatDateTime, formatRelative, formatTime } from "@/lib/date";
+import {
+  formatDate,
+  formatDateTime,
+  formatRelative,
+  formatTime,
+} from "@/lib/date";
 import type { TeacherDashboardData } from "../types";
 
 interface TeacherDashboardProps {
@@ -29,17 +34,14 @@ interface TeacherDashboardProps {
   data: TeacherDashboardData;
 }
 
-function sessionDateTime(session: {
-  sessionDate: string;
-  startTime: string;
-}) {
+function sessionDateTime(session: { sessionDate: string; startTime: string }) {
   return new Date(`${session.sessionDate}T${session.startTime}`);
 }
 
 export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
   return (
     <div className="space-y-7">
-      <div className="rounded-[1.75rem] border border-primary/10 bg-gradient-to-br from-primary/[0.12] via-white to-orange-50 p-6 shadow-[0_18px_50px_-32px_rgba(15,23,42,.45)] sm:p-8">
+      <div className="rounded-[1.75rem] border border-primary/10 bg-linear-to-br from-primary/12 via-white to-orange-50 p-6 shadow-[0_18px_50px_-32px_rgba(15,23,42,.45)] sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
@@ -49,8 +51,8 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               Welcome back{firstName ? `, ${firstName}` : ""}.
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Review today&apos;s teaching priorities, prepare upcoming sessions,
-              and keep attendance and homework moving.
+              Review today&apos;s teaching priorities, prepare upcoming
+              sessions, and keep attendance and homework moving.
             </p>
           </div>
 
@@ -127,7 +129,9 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               description="Create a scheduled session when you are ready for your next class."
               action={
                 <Button asChild size="sm">
-                  <Link href="/portal/teacher/sessions/new">Create session</Link>
+                  <Link href="/portal/teacher/sessions/new">
+                    Create session
+                  </Link>
                 </Button>
               }
             />
@@ -139,7 +143,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                   <Link
                     key={session.id}
                     href={`/portal/teacher/sessions/${session.id}`}
-                    className="group flex flex-col gap-4 rounded-2xl border border-slate-200/80 p-4 transition hover:border-primary/25 hover:bg-primary/[0.025] sm:flex-row sm:items-center"
+                    className="group flex flex-col gap-4 rounded-2xl border border-slate-200/80 p-4 transition hover:border-primary/25 hover:bg-primary/2.5 sm:flex-row sm:items-center"
                   >
                     <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
                       <CalendarDays className="size-5" />
@@ -152,12 +156,14 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                         <StatusBadge status={session.status} />
                       </div>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {session.lessonAssignment.programme.name} · {session.lessonAssignment.student.name}
+                        {session.lessonAssignment.programme.name} ·{" "}
+                        {session.lessonAssignment.student.name}
                       </p>
                     </div>
                     <div className="shrink-0 text-left sm:text-right">
                       <p className="text-sm font-bold text-foreground">
-                        {formatDate(session.sessionDate)} · {formatTime(session.startTime)}
+                        {formatDate(session.sessionDate)} ·{" "}
+                        {formatTime(session.startTime)}
                       </p>
                       <p className="mt-1 text-xs font-medium text-primary">
                         {formatRelative(start)}
@@ -238,7 +244,8 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                       {session.title}
                     </span>
                     <span className="mt-1 block text-xs text-muted-foreground">
-                      {session.lessonAssignment.student.name} · {formatDate(session.sessionDate)}
+                      {session.lessonAssignment.student.name} ·{" "}
+                      {formatDate(session.sessionDate)}
                     </span>
                   </span>
                   <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-extrabold text-orange-700">
@@ -283,7 +290,8 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                       {homework.title}
                     </span>
                     <span className="mt-1 block text-xs text-muted-foreground">
-                      {homework.session.lesson.student.name} · Due {formatDateTime(homework.dueAt)}
+                      {homework.session.lesson.student.name} · Due{" "}
+                      {formatDateTime(homework.dueAt)}
                     </span>
                   </span>
                   <StatusBadge status={homework.status} />
@@ -318,7 +326,10 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                 (session) => session.lessonAssignmentId === lesson.id,
               );
               return (
-                <article key={lesson.id} className="flex h-full flex-col rounded-2xl border border-slate-200/80 p-5">
+                <article
+                  key={lesson.id}
+                  className="flex h-full flex-col rounded-2xl border border-slate-200/80 p-5"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
@@ -328,20 +339,31 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
                         {lesson.studentName}
                       </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {lesson.preferredDays.map((day) => day.charAt(0).toUpperCase() + day.slice(1)).join(" · ")} · {formatTime(lesson.sessionTime)}
+                        {lesson.preferredDays
+                          .map(
+                            (day) => day.charAt(0).toUpperCase() + day.slice(1),
+                          )
+                          .join(" · ")}{" "}
+                        · {formatTime(lesson.sessionTime)}
                       </p>
                     </div>
                     <StatusBadge status={lesson.status} />
                   </div>
                   <div className="mt-4 rounded-xl bg-slate-50 p-3">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Next session</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                      Next session
+                    </p>
                     <p className="mt-1 text-sm font-extrabold text-foreground">
-                      {nextSession ? formatRelative(sessionDateTime(nextSession)) : "Not scheduled"}
+                      {nextSession
+                        ? formatRelative(sessionDateTime(nextSession))
+                        : "Not scheduled"}
                     </p>
                   </div>
                   <div className="mt-auto border-t border-slate-100 pt-4">
                     <Button asChild size="sm" className="w-full">
-                      <Link href={`/portal/teacher/sessions/new?lessonAssignmentId=${lesson.id}`}>
+                      <Link
+                        href={`/portal/teacher/sessions/new?lessonAssignmentId=${lesson.id}`}
+                      >
                         <Plus />
                         Create session
                       </Link>

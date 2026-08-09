@@ -1,4 +1,10 @@
-export type LessonRequestStatus = "pending_review" | "open" | "matched" | "active" | "completed" | "cancelled";
+export type LessonRequestStatus =
+  | "pending_review"
+  | "open"
+  | "matched"
+  | "active"
+  | "completed"
+  | "cancelled";
 
 export type ParentLessonRequest = {
   id: string;

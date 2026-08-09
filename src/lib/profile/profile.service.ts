@@ -50,7 +50,11 @@ export async function getProfile(userId: string): Promise<AuthenticatedUser> {
 
   if (error || !data) {
     console.error("Unable to load profile", error);
-    throw new ApiError("PROFILE_NOT_FOUND", "Your profile could not be loaded.", 404);
+    throw new ApiError(
+      "PROFILE_NOT_FOUND",
+      "Your profile could not be loaded.",
+      404,
+    );
   }
 
   return mapProfile(data);
@@ -71,7 +75,11 @@ export async function updateProfile(
 
   if (error) {
     console.error("Unable to update profile", error);
-    throw new ApiError("PROFILE_UPDATE_FAILED", "Your profile could not be updated.", 500);
+    throw new ApiError(
+      "PROFILE_UPDATE_FAILED",
+      "Your profile could not be updated.",
+      500,
+    );
   }
 
   return mapProfile(data);
@@ -81,25 +89,39 @@ export async function uploadAvatar(userId: string, file: File) {
   const supabase = await createClient();
   const path = `${userId}/avatar`;
 
-  const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, {
-    cacheControl: "3600",
-    contentType: file.type,
-    upsert: true,
-  });
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, file, {
+      cacheControl: "3600",
+      contentType: file.type,
+      upsert: true,
+    });
 
   if (uploadError) {
     console.error("Unable to upload avatar", uploadError);
-    throw new ApiError("AVATAR_UPLOAD_FAILED", "Your profile photo could not be uploaded.", 500);
+    throw new ApiError(
+      "AVATAR_UPLOAD_FAILED",
+      "Your profile photo could not be uploaded.",
+      500,
+    );
   }
 
-  const { data: publicUrlData } = supabase.storage.from("avatars").getPublicUrl(path);
+  const { data: publicUrlData } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(path);
   const versionedUrl = `${publicUrlData.publicUrl}?v=${Date.now()}`;
 
-  const { data, error } = await updateProfileById(userId, { avatar_url: versionedUrl });
+  const { data, error } = await updateProfileById(userId, {
+    avatar_url: versionedUrl,
+  });
 
   if (error) {
     console.error("Unable to save avatar URL", error);
-    throw new ApiError("AVATAR_UPDATE_FAILED", "The photo uploaded, but your profile could not be updated.", 500);
+    throw new ApiError(
+      "AVATAR_UPDATE_FAILED",
+      "The photo uploaded, but your profile could not be updated.",
+      500,
+    );
   }
 
   return mapProfile(data);
@@ -118,14 +140,24 @@ export async function changePassword(
   });
 
   if (verifyError) {
-    throw new ApiError("CURRENT_PASSWORD_INVALID", "Your current password is incorrect.", 400);
+    throw new ApiError(
+      "CURRENT_PASSWORD_INVALID",
+      "Your current password is incorrect.",
+      400,
+    );
   }
 
-  const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
 
   if (updateError) {
     console.error("Unable to update password", updateError);
-    throw new ApiError("PASSWORD_UPDATE_FAILED", "Your password could not be changed.", 500);
+    throw new ApiError(
+      "PASSWORD_UPDATE_FAILED",
+      "Your password could not be changed.",
+      500,
+    );
   }
 }
 
@@ -134,7 +166,11 @@ export async function deactivateProfile(userId: string) {
 
   if (error) {
     console.error("Unable to deactivate profile", error);
-    throw new ApiError("PROFILE_DEACTIVATION_FAILED", "Your account could not be deactivated.", 500);
+    throw new ApiError(
+      "PROFILE_DEACTIVATION_FAILED",
+      "Your account could not be deactivated.",
+      500,
+    );
   }
 
   const supabase = await createClient();

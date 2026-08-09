@@ -3,7 +3,10 @@ import type { StudentDetail, StudentSummary } from "@/modules/students/types";
 
 export type StudentRow = Tables<"students">;
 
-export function mapStudentSummary(row: StudentRow, photoUrl: string | null = null): StudentSummary {
+export function mapStudentSummary(
+  row: StudentRow,
+  photoUrl: string | null = null,
+): StudentSummary {
   return {
     id: row.id,
     admissionNumber: row.admission_number,
@@ -19,7 +22,10 @@ export function mapStudentSummary(row: StudentRow, photoUrl: string | null = nul
   };
 }
 
-export function mapStudentDetail(row: StudentRow, photoUrl: string | null = null): StudentDetail {
+export function mapStudentDetail(
+  row: StudentRow,
+  photoUrl: string | null = null,
+): StudentDetail {
   return {
     ...mapStudentSummary(row, photoUrl),
     notes: row.notes,

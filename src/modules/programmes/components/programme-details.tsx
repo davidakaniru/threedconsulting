@@ -1,3 +1,67 @@
-import Link from "next/link";import { BookOpen,CalendarDays,Pencil,Users } from "lucide-react";import { Button } from "@/components/ui/button";import { InfoCard,SectionCard,StatusBadge } from "@/components/admin/ui";import type { ProgrammeDetail } from "@/modules/programmes/types";
-const date=(v:string)=>new Intl.DateTimeFormat("en-GB",{dateStyle:"medium"}).format(new Date(v));
-export function ProgrammeDetails({programme:p}:{programme:ProgrammeDetail}){return <div className="space-y-6"><SectionCard contentClassName="p-6 sm:p-8"><div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between"><div><div className="mb-3 flex items-center gap-3"><span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary"><BookOpen/></span><div><h2 className="font-display text-2xl font-extrabold text-slate-900">{p.name}</h2><p className="text-sm text-slate-500">/{p.slug}</p></div></div><StatusBadge status={p.status}/></div><Button asChild variant="outline"><Link href={`/portal/admin/programmes/${p.id}/edit`}><Pencil/>Edit programme</Link></Button></div></SectionCard><SectionCard title="Programme information" description="The subject definition used by teacher eligibility, enrolments and teaching activity." contentClassName="p-6"><p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">{p.description||"No description has been added."}</p><div className="mt-6 grid gap-4 sm:grid-cols-2"><InfoCard icon={CalendarDays} title="Created" description={date(p.createdAt)}/><InfoCard icon={CalendarDays} title="Last updated" description={date(p.updatedAt)}/></div></SectionCard><InfoCard icon={BookOpen} title="Enrolments" description="Parent enrolments for this subject are managed from the Enrolments queue."/></div>}
+import Link from "next/link";
+import { BookOpen, CalendarDays, Pencil, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
+import type { ProgrammeDetail } from "@/modules/programmes/types";
+const date = (v: string) =>
+  new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(v));
+export function ProgrammeDetails({
+  programme: p,
+}: {
+  programme: ProgrammeDetail;
+}) {
+  return (
+    <div className="space-y-6">
+      <SectionCard contentClassName="p-6 sm:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <div className="mb-3 flex items-center gap-3">
+              <span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+                <BookOpen />
+              </span>
+              <div>
+                <h2 className="font-display text-2xl font-extrabold text-slate-900">
+                  {p.name}
+                </h2>
+                <p className="text-sm text-slate-500">/{p.slug}</p>
+              </div>
+            </div>
+            <StatusBadge status={p.status} />
+          </div>
+          <Button asChild variant="outline">
+            <Link href={`/portal/admin/programmes/${p.id}/edit`}>
+              <Pencil />
+              Edit programme
+            </Link>
+          </Button>
+        </div>
+      </SectionCard>
+      <SectionCard
+        title="Programme information"
+        description="The subject definition used by teacher eligibility, enrolments and teaching activity."
+        contentClassName="p-6"
+      >
+        <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">
+          {p.description || "No description has been added."}
+        </p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <InfoCard
+            icon={CalendarDays}
+            title="Created"
+            description={date(p.createdAt)}
+          />
+          <InfoCard
+            icon={CalendarDays}
+            title="Last updated"
+            description={date(p.updatedAt)}
+          />
+        </div>
+      </SectionCard>
+      <InfoCard
+        icon={BookOpen}
+        title="Enrolments"
+        description="Parent enrolments for this subject are managed from the Enrolments queue."
+      />
+    </div>
+  );
+}

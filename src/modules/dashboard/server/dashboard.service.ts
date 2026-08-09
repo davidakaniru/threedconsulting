@@ -33,13 +33,17 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
     getAdminDashboardMetrics(),
     client
       .from("lesson_requests")
-      .select("id,child_first_name,child_last_name,created_at,programmes(name),parents(profiles(first_name,last_name))")
+      .select(
+        "id,child_first_name,child_last_name,created_at,programmes(name),parents(profiles(first_name,last_name))",
+      )
       .eq("status", "pending_review")
       .order("created_at", { ascending: false })
       .limit(5),
     client
       .from("class_sessions")
-      .select("id,title,start_time,lesson_assignments!inner(programmes(name),teachers(profiles(first_name,last_name)))")
+      .select(
+        "id,title,start_time,lesson_assignments!inner(programmes(name),teachers(profiles(first_name,last_name)))",
+      )
       .eq("session_date", today)
       .eq("status", "scheduled")
       .order("start_time")
@@ -56,7 +60,10 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
     pendingLessonRequests: (enrolments.data ?? []).map((row: any) => ({
       id: row.id,
       childName: `${row.child_first_name} ${row.child_last_name}`,
-      parentName: [row.parents?.profiles?.first_name, row.parents?.profiles?.last_name].filter(Boolean).join(" ") || "Parent",
+      parentName:
+        [row.parents?.profiles?.first_name, row.parents?.profiles?.last_name]
+          .filter(Boolean)
+          .join(" ") || "Parent",
       programmeName: row.programmes?.name ?? "Programme",
       submittedAt: row.created_at,
     })),
@@ -67,7 +74,9 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
         title: row.title,
         startTime: row.start_time,
         programmeName: row.lesson_assignments?.programmes?.name ?? "Programme",
-        teacherName: [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "Teacher",
+        teacherName:
+          [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
+          "Teacher",
       };
     }),
     recentActivity: (activity.data ?? []).map((row: any) => ({

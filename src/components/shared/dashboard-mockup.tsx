@@ -115,7 +115,13 @@ export function DashboardMock({
         >
           <div className="hidden items-center gap-2 px-2 py-2 sm:flex">
             <span className="relative size-8 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-              <Image src="/brand/threed-consulting.jpeg" alt="" fill sizes="32px" className="object-contain" />
+              <Image
+                src="/brand/threed-consulting.jpeg"
+                alt=""
+                fill
+                sizes="32px"
+                className="object-contain"
+              />
             </span>
 
             <span
@@ -163,7 +169,13 @@ export function DashboardMock({
             </div>
 
             <span className="relative size-9 shrink-0 overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-black/5">
-              <Image src="/brand/threed-consulting.jpeg" alt="" fill sizes="36px" className="object-contain" />
+              <Image
+                src="/brand/threed-consulting.jpeg"
+                alt=""
+                fill
+                sizes="36px"
+                className="object-contain"
+              />
             </span>
           </div>
 

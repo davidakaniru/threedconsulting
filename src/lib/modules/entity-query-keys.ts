@@ -4,7 +4,9 @@
  * Keep entity-specific keys beside the module when the module needs more
  * than list/detail keys; this helper only covers the proven common shape.
  */
-export function createEntityQueryKeys<const TEntity extends string>(entity: TEntity) {
+export function createEntityQueryKeys<const TEntity extends string>(
+  entity: TEntity,
+) {
   const all = [entity] as const;
 
   return {

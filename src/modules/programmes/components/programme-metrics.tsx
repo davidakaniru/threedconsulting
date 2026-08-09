@@ -1,2 +1,41 @@
-import { Archive,BookOpen,FilePenLine,Radio } from "lucide-react";import { MetricCard,MetricGrid } from "@/components/admin/ui";import type { ProgrammeMetricsI } from "@/modules/programmes/types";
-export function ProgrammeMetrics({metrics:m}:{metrics:ProgrammeMetricsI}){return <MetricGrid><MetricCard label="Programmes" value={m.total} helper="All subjects" icon={BookOpen} tone="blue"/><MetricCard label="Published" value={m.published} helper="Available for assignment" icon={Radio} tone="green"/><MetricCard label="Draft" value={m.draft} helper="Still being prepared" icon={FilePenLine} tone="orange"/><MetricCard label="Archived" value={m.archived} helper="Historical programmes" icon={Archive} tone="purple"/></MetricGrid>}
+import { Archive, BookOpen, FilePenLine, Radio } from "lucide-react";
+import { MetricCard, MetricGrid } from "@/components/admin/ui";
+import type { ProgrammeMetricsI } from "@/modules/programmes/types";
+export function ProgrammeMetrics({
+  metrics: m,
+}: {
+  metrics: ProgrammeMetricsI;
+}) {
+  return (
+    <MetricGrid>
+      <MetricCard
+        label="Programmes"
+        value={m.total}
+        helper="All subjects"
+        icon={BookOpen}
+        tone="blue"
+      />
+      <MetricCard
+        label="Published"
+        value={m.published}
+        helper="Available for assignment"
+        icon={Radio}
+        tone="green"
+      />
+      <MetricCard
+        label="Draft"
+        value={m.draft}
+        helper="Still being prepared"
+        icon={FilePenLine}
+        tone="orange"
+      />
+      <MetricCard
+        label="Archived"
+        value={m.archived}
+        helper="Historical programmes"
+        icon={Archive}
+        tone="purple"
+      />
+    </MetricGrid>
+  );
+}
