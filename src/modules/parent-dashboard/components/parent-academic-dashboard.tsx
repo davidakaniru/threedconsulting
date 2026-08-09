@@ -34,6 +34,7 @@ import { MarkHomeworkDoneButton } from "./mark-homework-done-button";
 function DashboardContent() {
   const { child } = useChild();
 
+  const [overdue, setOverdue] = useState<boolean | undefined>(undefined);
   const [nowMs, setNowMs] = useState<number | null>(null);
 
   useEffect(() => {
@@ -42,6 +43,22 @@ function DashboardContent() {
     const interval = window.setInterval(updateNow, 30_000);
     return () => window.clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!child) {
+      setOverdue(undefined);
+      return;
+    }
+
+    const now = Date.now();
+    setOverdue(
+      child.homework.some(
+        (item) =>
+          new Date(item.dueAt).getTime() < now &&
+          (item.status === "pending" || item.status === "late"),
+      ),
+    );
+  }, [child]);
 
   if (!child) {
     return (
@@ -304,8 +321,7 @@ function DashboardContent() {
             <div className="space-y-3">
               {child.homework.slice(0, 2).map((item) => {
                 const itemOverdue =
-                  nowMs !== null &&
-                  new Date(item.dueAt).getTime() < nowMs &&
+                  new Date(item.dueAt).getTime() < Date.now() &&
                   (item.status === "pending" || item.status === "late");
                 return (
                   <div

@@ -58,9 +58,9 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
 
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="outline">
-              <Link href="/portal/teacher/opportunities">
+              <Link href="/portal/teacher/lessons?tab=available">
                 <Sparkles />
-                Available enrolments
+                Available lessons
               </Link>
             </Button>
             <Button asChild>
@@ -201,7 +201,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               description="Create work linked to one of your sessions."
             />
             <QuickAction
-              href="/portal/teacher/teaching"
+              href="/portal/teacher/lessons"
               icon={GraduationCap}
               title="Review my teaching"
               description="See your active one-to-one lessons and agreed schedules."
@@ -303,12 +303,12 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
       </div>
 
       <SectionCard
-        title="My teaching"
+        title="My lessons"
         description="Your active one-to-one lessons and the next scheduled class for each child."
         icon={GraduationCap}
         action={
           <Button asChild variant="outline" size="sm">
-            <Link href="/portal/teacher/teaching">View all lessons</Link>
+            <Link href="/portal/teacher/lessons">View all lessons</Link>
           </Button>
         }
       >
