@@ -7,12 +7,6 @@ export interface AttendanceSummary {
   late: number;
   total: number;
 }
-export interface HomeworkSummary {
-  total: number;
-  draft: number;
-  published: number;
-  closed: number;
-}
 export interface ClassSession {
   id: string;
   lessonAssignmentId: string;
@@ -33,7 +27,6 @@ export interface ClassSession {
     teacher: { id: string; name: string };
   };
   attendance: AttendanceSummary;
-  homework: HomeworkSummary;
 }
 export interface SessionListResult {
   sessions: ClassSession[];

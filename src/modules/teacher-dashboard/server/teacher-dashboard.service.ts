@@ -1,4 +1,3 @@
-import { getHomeworkList } from "@/modules/homework/server";
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 import { getSessions } from "@/modules/sessions/server";
 import { getTeachingAssignments } from "@/modules/teaching-assignments/server";
@@ -11,12 +10,10 @@ function sessionStart(session: { sessionDate: string; startTime: string }) {
 export async function getTeacherDashboard(
   teacherId: string,
 ): Promise<TeacherDashboardData> {
-  const [assignmentResult, lessons, sessionResult, homeworkResult] =
-    await Promise.all([
+  const [assignmentResult, lessons, sessionResult] = await Promise.all([
       getTeachingAssignments({ teacherId, status: "active" }),
       getTeacherLessonAssignments(teacherId),
       getSessions({ teacherId, page: 1, pageSize: 100 }),
-      getHomeworkList({ teacherId, page: 1, pageSize: 100 }),
     ]);
 
   const now = new Date();
@@ -37,10 +34,6 @@ export async function getTeacherDashboard(
     )
     .sort((a, b) => sessionStart(b).getTime() - sessionStart(a).getTime())
     .slice(0, 5);
-  const homeworkDue = homeworkResult.homework
-    .filter((homework) => homework.status === "published")
-    .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
-    .slice(0, 5);
 
   return {
     metrics: {
@@ -53,6 +46,5 @@ export async function getTeacherDashboard(
     lessons: activeLessons,
     upcomingSessions,
     attendanceAttention,
-    homeworkDue,
   };
 }

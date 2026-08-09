@@ -23,7 +23,7 @@ const faqs: FAQItem[] = [
   {
     question: "Can I track my child’s progress?",
     answer:
-      "Yes. Registered families get a personalised parent dashboard with progress tracking, attendance, homework, certificates and direct messaging with teachers.",
+      "Yes. Registered families get a personalised parent dashboard with progress tracking, attendance, lesson schedules, certificates and direct messaging with teachers.",
   },
   {
     question: "Do you offer online and in-person classes?",

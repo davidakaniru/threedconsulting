@@ -1,1 +1,2 @@
-export * from "./homework.service";
+/** Homework is currently out of product scope. */
+export {};

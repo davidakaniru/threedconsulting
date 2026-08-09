@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
-  BookOpenCheck,
   CalendarDays,
   CheckCircle2,
   Clock3,
@@ -29,12 +28,10 @@ import {
 import type { ParentAcademicDashboard } from "../types";
 import { ChildProvider, useChild } from "../context/child-context";
 import { ChildSwitcher } from "./child-switcher";
-import { MarkHomeworkDoneButton } from "./mark-homework-done-button";
 
 function DashboardContent() {
   const { child } = useChild();
 
-  const [overdue, setOverdue] = useState<boolean | undefined>(undefined);
   const [nowMs, setNowMs] = useState<number | null>(null);
 
   useEffect(() => {
@@ -43,22 +40,6 @@ function DashboardContent() {
     const interval = window.setInterval(updateNow, 30_000);
     return () => window.clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (!child) {
-      setOverdue(undefined);
-      return;
-    }
-
-    const now = Date.now();
-    setOverdue(
-      child.homework.some(
-        (item) =>
-          new Date(item.dueAt).getTime() < now &&
-          (item.status === "pending" || item.status === "late"),
-      ),
-    );
-  }, [child]);
 
   if (!child) {
     return (
@@ -75,19 +56,10 @@ function DashboardContent() {
     );
   }
 
-  const pendingHomework = child.homework.filter(
-    (item) => item.status === "pending" || item.status === "late",
-  ).length;
   const nextSession = child.upcomingSessions[0];
   const attendanceRate = child.attendance.rate ?? 0;
 
   const activity = [
-    ...child.homework.slice(0, 4).map((item) => ({
-      id: `homework-${item.id}`,
-      title: "Homework assigned",
-      detail: `${item.programmeName} · ${item.title}`,
-      date: item.dueAt,
-    })),
     ...child.attendance.recent.slice(0, 4).map((item) => ({
       id: `attendance-${item.id}`,
       title: "Attendance recorded",
@@ -206,13 +178,6 @@ function DashboardContent() {
           }
         />
         <MetricCard
-          icon={BookOpenCheck}
-          label="Homework due"
-          value={pendingHomework}
-          tone="orange"
-          helper={`${child.homework.length} published assignment${child.homework.length === 1 ? "" : "s"}`}
-        />
-        <MetricCard
           icon={CheckCircle2}
           label="Attendance"
           value={
@@ -230,7 +195,7 @@ function DashboardContent() {
         />
       </MetricGrid>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-6">
         <SectionCard
           title="Upcoming sessions"
           description="Scheduled online lessons for this child."
@@ -306,58 +271,6 @@ function DashboardContent() {
           )}
         </SectionCard>
 
-        <SectionCard
-          title="Homework"
-          description="Published assignments for this child."
-          icon={BookOpenCheck}
-        >
-          {child.homework.length === 0 ? (
-            <EmptyState
-              icon={BookOpenCheck}
-              title="No homework yet"
-              description="This child doesn't have any published homework at the moment."
-            />
-          ) : (
-            <div className="space-y-3">
-              {child.homework.slice(0, 2).map((item) => {
-                const itemOverdue =
-                  new Date(item.dueAt).getTime() < Date.now() &&
-                  (item.status === "pending" || item.status === "late");
-                return (
-                  <div
-                    key={item.id}
-                    className={`rounded-2xl border p-4 ${itemOverdue ? "border-destructive/30 bg-destructive/5" : "border-slate-200"}`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-extrabold">{item.title}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {item.programmeName} · {item.sessionTitle}
-                        </p>
-                        <p
-                          className={`mt-2 text-sm ${itemOverdue ? "font-bold text-destructive" : ""}`}
-                        >
-                          <Clock3 className="mr-1.5 inline size-4" />
-                          Due {formatDateTime(item.dueAt)} ·{" "}
-                          {formatRelative(item.dueAt)}
-                        </p>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-2">
-                        <StatusBadge status={item.status} />
-                        {(item.status === "pending" ||
-                          item.status === "late") && (
-                          <MarkHomeworkDoneButton
-                            submissionId={item.submissionId}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </SectionCard>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">

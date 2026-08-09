@@ -1,4 +1,3 @@
-import type { Homework } from "@/modules/homework/types";
 import type { LessonAssignmentView } from "@/modules/lesson-assignments/types";
 import type { ClassSession } from "@/modules/sessions/types";
 import type { TeachingAssignment } from "@/modules/teaching-assignments/types";
@@ -16,5 +15,4 @@ export interface TeacherDashboardData {
   lessons: LessonAssignmentView[];
   upcomingSessions: ClassSession[];
   attendanceAttention: ClassSession[];
-  homeworkDue: Homework[];
 }

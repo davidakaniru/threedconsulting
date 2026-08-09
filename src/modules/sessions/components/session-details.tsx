@@ -1,12 +1,10 @@
 import Link from "next/link";
 import {
-  BookOpen,
   CalendarCheck2,
   CalendarDays,
   Clock,
   ExternalLink,
   Pencil,
-  Plus,
   Users,
 } from "lucide-react";
 import {
@@ -53,14 +51,6 @@ export function SessionDetails({
             )}
             {!admin && (
               <>
-                <Button variant="outline" asChild>
-                  <Link
-                    href={`/portal/teacher/homework/new?sessionId=${session.id}`}
-                  >
-                    <Plus />
-                    Add homework
-                  </Link>
-                </Button>
                 <Button variant="outline" asChild>
                   <Link
                     href={`/portal/teacher/sessions/${session.id}/attendance`}
@@ -151,52 +141,6 @@ export function SessionDetails({
           />
         </MetricGrid>
       </SectionCard>
-      {!admin && (
-        <SectionCard
-          title="Homework"
-          description="Homework attached to this session."
-          contentClassName="p-6"
-        >
-          <MetricGrid>
-            <MetricCard
-              label="Total"
-              value={session.homework.total}
-              icon={BookOpen}
-            />
-            <MetricCard
-              label="Draft"
-              value={session.homework.draft}
-              icon={BookOpen}
-            />
-            <MetricCard
-              label="Published"
-              value={session.homework.published}
-              icon={BookOpen}
-            />
-            <MetricCard
-              label="Closed"
-              value={session.homework.closed}
-              icon={BookOpen}
-            />
-          </MetricGrid>
-          <div className="mt-5 flex gap-2">
-            <Button variant="outline" asChild>
-              <Link href={`/portal/teacher/homework?sessionId=${session.id}`}>
-                <BookOpen />
-                View homework
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link
-                href={`/portal/teacher/homework/new?sessionId=${session.id}`}
-              >
-                <Plus />
-                Create homework
-              </Link>
-            </Button>
-          </div>
-        </SectionCard>
-      )}
     </div>
   );
 }

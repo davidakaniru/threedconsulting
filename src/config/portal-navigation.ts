@@ -3,7 +3,6 @@ import {
   BarChart3,
   BookOpen,
   CalendarDays,
-  ClipboardList,
   FileCheck2,
   GraduationCap,
   Home,
@@ -111,12 +110,6 @@ export const portalNavigation: Record<
       label: "Attendance",
       href: "/portal/teacher/attendance",
       icon: ListChecks,
-      enabled: true,
-    },
-    {
-      label: "Homework",
-      href: "/portal/teacher/homework",
-      icon: ClipboardList,
       enabled: true,
     },
     {
