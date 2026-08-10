@@ -34,7 +34,10 @@ export function LoadingState({
       ) : (
         <div className="divide-y divide-slate-100">
           {Array.from({ length: rows }, (_, index) => (
-            <div key={index} className="flex items-center gap-4 px-5 py-4 sm:px-6">
+            <div
+              key={index}
+              className="flex items-center gap-4 px-5 py-4 sm:px-6"
+            >
               <div className="size-10 shrink-0 rounded-full bg-slate-100" />
               <div className="min-w-0 flex-1">
                 <div className="h-4 w-40 max-w-full rounded bg-slate-100" />

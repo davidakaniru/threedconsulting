@@ -1,4 +1,152 @@
-"use client";import{useRouter}from"next/navigation";import{Controller,useForm}from"react-hook-form";import{yupResolver}from"@hookform/resolvers/yup";import{BookPlus,Save}from"lucide-react";import{toast}from"sonner";import{Input}from"@/components/ui/input";import{Textarea}from"@/components/ui/textarea";import{Button}from"@/components/ui/button";import{SelectField}from"@/components/forms/select-field";import{toApiError}from"@/lib/api/errors";import{homeworkSchema,type HomeworkRequest}from"../schemas";import{homeworkStatusOptions}from"../constants";import{useCreateHomework,useUpdateHomework}from"../hooks";import type{Homework}from"../types";
-type SessionOption={id:string;title:string;sessionDate:string;cohort:{code:string;programme:{name:string}}};
-function toLocalInput(value:string){const d=new Date(value);const off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,16)}
-export function HomeworkForm({homework,sessions,defaultSessionId}:{homework?:Homework;sessions:SessionOption[];defaultSessionId?:string}){const router=useRouter();const create=useCreateHomework();const update=useUpdateHomework(homework?.id??"");const{register,control,handleSubmit,formState:{errors}}=useForm<HomeworkRequest>({resolver:yupResolver(homeworkSchema),mode:"onTouched",defaultValues:{sessionId:homework?.sessionId??defaultSessionId??"",title:homework?.title??"",instructions:homework?.instructions??"",dueAt:homework?toLocalInput(homework.dueAt):"",maximumScore:homework?.maximumScore??undefined,status:homework?.status??"draft"}});const submit=handleSubmit(async(v)=>{try{const saved=homework?await update.mutateAsync(v):await create.mutateAsync(v);toast.success(homework?"Homework updated.":"Homework created.");router.push(`/portal/teacher/homework/${saved.id}`)}catch(e){toast.error(toApiError(e).message)}});return <form onSubmit={submit} className="space-y-6"><div className="grid gap-5 sm:grid-cols-2"><Controller name="sessionId" control={control} render={({field})=><SelectField id="sessionId" label="Session" required options={sessions.map(s=>({value:s.id,label:`${s.cohort.code} · ${s.cohort.programme.name} · ${s.title}`}))} value={field.value} onValueChange={field.onChange} errorMessage={errors.sessionId?.message} className="sm:col-span-2"/>}/><Input id="title" label="Title" required placeholder="e.g. Algebra exercises 1–10" errorMessage={errors.title?.message} {...register("title")}/><Controller name="status" control={control} render={({field})=><SelectField id="status" label="Status" required options={homeworkStatusOptions} value={field.value} onValueChange={field.onChange} errorMessage={errors.status?.message}/>}/><Input id="dueAt" type="datetime-local" label="Due date and time" required errorMessage={errors.dueAt?.message} {...register("dueAt")}/><Input id="maximumScore" type="number" step="0.01" min="0" label="Maximum score" info="Optional" errorMessage={errors.maximumScore?.message} {...register("maximumScore")}/><Textarea id="instructions" label="Instructions" required rows={8} className="sm:col-span-2" errorMessage={errors.instructions?.message} {...register("instructions")}/></div><div className="flex justify-end border-t pt-6"><Button type="submit" disabled={create.isPending||update.isPending}>{homework?<Save/>:<BookPlus/>}{create.isPending||update.isPending?"Saving...":homework?"Save changes":"Create homework"}</Button></div></form>}
+"use client";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { BookPlus, Save } from "lucide-react";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { SelectField } from "@/components/forms/select-field";
+import { toApiError } from "@/lib/api/errors";
+import { homeworkSchema, type HomeworkRequest } from "../schemas";
+import { homeworkStatusOptions } from "../constants";
+import { useCreateHomework, useUpdateHomework } from "../hooks";
+import type { Homework } from "../types";
+type SessionOption = {
+  id: string;
+  title: string;
+  sessionDate: string;
+  lessonAssignment: { student: { name: string }; programme: { name: string } };
+};
+function toLocalInput(value: string) {
+  const d = new Date(value);
+  const off = d.getTimezoneOffset();
+  return new Date(d.getTime() - off * 60000).toISOString().slice(0, 16);
+}
+export function HomeworkForm({
+  homework,
+  sessions,
+  defaultSessionId,
+}: {
+  homework?: Homework;
+  sessions: SessionOption[];
+  defaultSessionId?: string;
+}) {
+  const router = useRouter();
+  const create = useCreateHomework();
+  const update = useUpdateHomework(homework?.id ?? "");
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<HomeworkRequest>({
+    resolver: yupResolver(homeworkSchema),
+    mode: "onTouched",
+    defaultValues: {
+      sessionId: homework?.sessionId ?? defaultSessionId ?? "",
+      title: homework?.title ?? "",
+      instructions: homework?.instructions ?? "",
+      dueAt: homework ? toLocalInput(homework.dueAt) : "",
+      maximumScore: homework?.maximumScore ?? undefined,
+      status: homework?.status ?? "draft",
+    },
+  });
+  const submit = handleSubmit(async (v) => {
+    try {
+      const saved = homework
+        ? await update.mutateAsync(v)
+        : await create.mutateAsync(v);
+      toast.success(homework ? "Homework updated." : "Homework created.");
+      router.push(`/portal/teacher/homework/${saved.id}`);
+    } catch (e) {
+      toast.error(toApiError(e).message);
+    }
+  });
+  return (
+    <form onSubmit={submit} className="space-y-6">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Controller
+          name="sessionId"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              id="sessionId"
+              label="Session"
+              required
+              options={sessions.map((s) => ({
+                value: s.id,
+                label: `${s.lessonAssignment.student.name} · ${s.lessonAssignment.programme.name} · ${s.title}`,
+              }))}
+              value={field.value}
+              onValueChange={field.onChange}
+              errorMessage={errors.sessionId?.message}
+              className="sm:col-span-2"
+            />
+          )}
+        />
+        <Input
+          id="title"
+          label="Title"
+          required
+          placeholder="e.g. Algebra exercises 1–10"
+          errorMessage={errors.title?.message}
+          {...register("title")}
+        />
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              id="status"
+              label="Status"
+              required
+              options={homeworkStatusOptions}
+              value={field.value}
+              onValueChange={field.onChange}
+              errorMessage={errors.status?.message}
+            />
+          )}
+        />
+        <Input
+          id="dueAt"
+          type="datetime-local"
+          label="Due date and time"
+          required
+          errorMessage={errors.dueAt?.message}
+          {...register("dueAt")}
+        />
+        <Input
+          id="maximumScore"
+          type="number"
+          step="0.01"
+          min="0"
+          label="Maximum score"
+          info="Optional"
+          errorMessage={errors.maximumScore?.message}
+          {...register("maximumScore")}
+        />
+        <Textarea
+          id="instructions"
+          label="Instructions"
+          required
+          rows={8}
+          className="sm:col-span-2"
+          errorMessage={errors.instructions?.message}
+          {...register("instructions")}
+        />
+      </div>
+      <div className="flex justify-end border-t pt-6">
+        <Button type="submit" disabled={create.isPending || update.isPending}>
+          {homework ? <Save /> : <BookPlus />}
+          {create.isPending || update.isPending
+            ? "Saving..."
+            : homework
+              ? "Save changes"
+              : "Create homework"}
+        </Button>
+      </div>
+    </form>
+  );
+}

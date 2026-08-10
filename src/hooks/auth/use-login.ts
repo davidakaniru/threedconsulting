@@ -8,7 +8,10 @@ import type { LoginRequest } from "@/lib/schemas/login-schema";
 import type { LoginResponse } from "@/types/auth";
 
 async function login(values: LoginRequest): Promise<LoginResponse> {
-  const { data } = await apiClient.post<ApiSuccess<LoginResponse>>(API_ENDPOINTS.auth.login, values);
+  const { data } = await apiClient.post<ApiSuccess<LoginResponse>>(
+    API_ENDPOINTS.auth.login,
+    values,
+  );
   return data.data;
 }
 

@@ -1,260 +1,424 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, LayoutDashboard } from "lucide-react";
-import Link from "next/link";
-
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  LayoutDashboard,
+  Mail,
+} from "lucide-react";
 import { EnrolmentStepper } from "@/components/enrolment/enrolment-stepper";
 import { EnrolmentSummary } from "@/components/enrolment/enrolment-summary";
-import { ProgrammeCheckbox } from "@/components/enrolment/programme-checkbox";
-
 import { SelectField } from "@/components/forms/select-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { enrolmentSteps, preferredFormatOptions } from "@/data/enrolment";
-import { cn } from "@/lib/utils";
 import {
-  EnrolmentFormValues,
+  durationOptions,
+  getEnrolmentSteps,
+  lessonDays,
+} from "@/data/enrolment";
+import {
   enrolmentSchema,
+  type EnrolmentFormValues,
 } from "@/lib/schemas/enrolment-schema";
+import type { ParentEnrolmentChild } from "@/modules/lesson-requests/types";
 
-
-const defaultValues: EnrolmentFormValues = {
-  childFirstName: "",
-  childLastName: "",
-  childDateOfBirth: "",
-  preferredFormat: "",
-  programmes: [],
-  parentName: "",
-  email: "",
-  phone: "",
-  additionalInformation: "",
-  acceptedTerms: false,
+type Props = {
+  hasParentAccount?: boolean;
+  parentName?: string | null;
+  parentEmail?: string | null;
+  existingChildren?: ParentEnrolmentChild[];
+  initialExistingStudentId?: string | null;
 };
-
-export function EnrolmentForm() {
+export function EnrolmentForm({
+  hasParentAccount = false,
+  parentName,
+  parentEmail,
+  existingChildren = [],
+  initialExistingStudentId,
+}: Props) {
+  const initialChild =
+    existingChildren.find((child) => child.id === initialExistingStudentId) ??
+    existingChildren[0] ??
+    null;
+  const steps = useMemo(
+    () => getEnrolmentSteps(hasParentAccount),
+    [hasParentAccount],
+  );
   const [currentStep, setCurrentStep] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
-  const [submittedApplicationId, setSubmittedApplicationId] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState<{
+    id: string;
+    requiresEmailConfirmation: boolean;
+  } | null>(null);
   const [submitError, setSubmitError] = useState("");
-  const [programmeOptions, setProgrammeOptions] = useState<Array<{id:string;name:string;slug:string}>>([]);
-
+  const [programmeOptions, setProgrammeOptions] = useState<
+    Array<{ id: string; name: string; slug: string }>
+  >([]);
   const methods = useForm<EnrolmentFormValues>({
     resolver: yupResolver(enrolmentSchema),
-    defaultValues,
+    defaultValues: {
+      hasParentAccount,
+      childMode: hasParentAccount && initialChild ? "existing" : "new",
+      existingStudentId: initialChild?.id ?? "",
+      parentFirstName: "",
+      parentLastName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      childFirstName: initialChild?.firstName ?? "",
+      childLastName: initialChild?.lastName ?? "",
+      childDateOfBirth: initialChild?.dateOfBirth ?? "",
+      currentEducationLevel: initialChild?.currentEducationLevel ?? "",
+      programmeId: "",
+      preferredDays: [],
+      preferredTime: "",
+      durationMonths: 1,
+      additionalMessage: "",
+      acceptedTerms: false,
+    },
     mode: "onTouched",
     shouldUnregister: false,
   });
-
   const {
     control,
     register,
     handleSubmit,
     trigger,
-    reset,
     getValues,
     formState: { errors, isSubmitting },
   } = methods;
-
-  const selectedProgrammes = useWatch({ control, name: "programmes" });
-  const preferredFormat = useWatch({ control, name: "preferredFormat" });
-
-  const preferredFormatLabel = preferredFormatOptions.find((o) =>
-    preferredFormat.includes(o.value),
-  )?.label;
-  const selectedProgrammesLabels = programmeOptions
-    .filter((programme) => selectedProgrammes.includes(programme.id))
-    .map((programme) => programme.name);
-
+  const preferredDays = useWatch({ control, name: "preferredDays" });
+  const programmeId = useWatch({ control, name: "programmeId" });
+  const childMode = useWatch({ control, name: "childMode" });
+  const existingStudentId = useWatch({ control, name: "existingStudentId" });
   useEffect(() => {
     fetch("/api/public/programmes")
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load programmes")))
-      .then((payload) => setProgrammeOptions(payload.data ?? []))
-      .catch(() => setSubmitError("Programmes could not be loaded. Please refresh the page."));
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((p) => setProgrammeOptions(p.data ?? []))
+      .catch(() =>
+        setSubmitError(
+          "Subjects could not be loaded. Please refresh the page.",
+        ),
+      );
   }, []);
-
-  async function goToNextStep() {
-    const currentFields = enrolmentSteps[currentStep].fields;
-
-    const isStepValid = await trigger([...currentFields], {
-      shouldFocus: true,
-    });
-
-    if (!isStepValid) {
-      return;
-    }
-
-    setCurrentStep((step) => Math.min(step + 1, enrolmentSteps.length - 1));
-  }
-
-  function goToPreviousStep() {
-    setCurrentStep((step) => Math.max(step - 1, 0));
-  }
-
-  async function onSubmit(formValues: EnrolmentFormValues) {
-    setSubmitted(false);
-
-    try {
-      setSubmitError("");
-      const response = await fetch("/api/parent/enrolments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formValues),
-      });
-      const payload = await response.json();
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          throw new Error("Please sign in with a parent account before submitting an enrolment.");
-        }
-        throw new Error(payload?.error?.message ?? "Unable to submit enrolment.");
-      }
-      setSubmittedApplicationId(payload?.data?.id ?? null);
-      setSubmitted(true);
-      reset(defaultValues);
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Unable to submit enrolment.");
-    }
-  }
-
-  if (submitted) {
-    return (
-      <div
-        className="rounded-[2.5rem] bg-white p-7 text-center
-          shadow-[0_25px_80px_-35px_rgba(56,116,189,0.32)]
-          sm:p-10"
-      >
-        <span
-          className="mx-auto grid size-16 place-items-center
-            rounded-full bg-turquoise/15 text-teal-700"
-        >
-          <CheckCircle2 aria-hidden="true" className="size-8" />
-        </span>
-
-        <h2
-          className="mt-5 font-display text-3xl font-extrabold
-            text-foreground"
-        >
-          You’re all set!
-        </h2>
-
-        <p
-          className="mx-auto mt-3 max-w-lg leading-7
-            text-muted-foreground"
-        >
-          We’ve received your enrolment application. You can track its review
-          status from your parent portal while our team matches your child to
-          the appropriate cohort.
-        </p>
-
-        {submittedApplicationId && (
-          <p className="mt-4 text-sm text-muted-foreground">
-            Reference: <span className="font-semibold text-foreground">{submittedApplicationId.slice(0, 8).toUpperCase()}</span>
-          </p>
-        )}
-
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Button asChild>
-            <Link href="/portal/parent/enrolments">
-              <LayoutDashboard />
-              Track application
-            </Link>
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              setSubmitted(false);
-              setSubmittedApplicationId(null);
-              setCurrentStep(0);
-            }}
-          >
-            Submit another enrolment
-          </Button>
-        </div>
-      </div>
+  function selectExistingChild(studentId: string) {
+    const child = existingChildren.find((item) => item.id === studentId);
+    methods.setValue("existingStudentId", studentId, { shouldValidate: true });
+    if (!child) return;
+    methods.setValue("childFirstName", child.firstName);
+    methods.setValue("childLastName", child.lastName);
+    methods.setValue("childDateOfBirth", child.dateOfBirth);
+    methods.setValue(
+      "currentEducationLevel",
+      child.currentEducationLevel ?? "",
+      { shouldValidate: true },
     );
   }
 
+  function switchChildMode(mode: "existing" | "new") {
+    methods.setValue("childMode", mode, { shouldValidate: true });
+    if (mode === "existing") {
+      const child =
+        existingChildren.find((item) => item.id === existingStudentId) ??
+        existingChildren[0];
+      if (child) selectExistingChild(child.id);
+      return;
+    }
+    methods.setValue("existingStudentId", "");
+    methods.setValue("childFirstName", "");
+    methods.setValue("childLastName", "");
+    methods.setValue("childDateOfBirth", "");
+    methods.setValue("currentEducationLevel", "");
+  }
+
+  async function next() {
+    if (await trigger([...steps[currentStep].fields], { shouldFocus: true }))
+      setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+  }
+  async function onSubmit(values: EnrolmentFormValues) {
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/public/lesson-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const payload = await response.json();
+      if (!response.ok)
+        throw new Error(
+          payload?.error?.message ?? "Unable to submit your lesson request.",
+        );
+      setSubmitted(payload.data);
+    } catch (e) {
+      setSubmitError(
+        e instanceof Error
+          ? e.message
+          : "Unable to submit your lesson request.",
+      );
+    }
+  }
+  if (submitted)
+    return (
+      <div className="rounded-[2.5rem] bg-white p-7 text-center shadow-[0_25px_80px_-35px_rgba(56,116,189,0.32)] sm:p-10">
+        <span className="mx-auto grid size-16 place-items-center rounded-full bg-turquoise/15 text-teal-700">
+          <CheckCircle2 className="size-8" />
+        </span>
+        <h2 className="mt-5 font-display text-3xl font-extrabold">
+          Lesson request received
+        </h2>
+        <p className="mx-auto mt-3 max-w-lg leading-7 text-muted-foreground">
+          We&apos;ll review your request before making it available to a
+          suitable teacher for the selected subject.
+        </p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Reference:{" "}
+          <strong className="text-foreground">
+            {submitted.id.slice(0, 8).toUpperCase()}
+          </strong>
+        </p>
+        {submitted.requiresEmailConfirmation ? (
+          <div className="mx-auto mt-6 max-w-lg rounded-2xl bg-primary/5 p-4 text-sm text-muted-foreground">
+            <Mail className="mx-auto mb-2 size-5 text-primary" />
+            Please check your email and confirm your new parent account. Your
+            lesson request has already been saved.
+          </div>
+        ) : (
+          <Button asChild className="mt-7">
+            <Link href="/portal/parent">
+              <LayoutDashboard />
+              Go to parent portal
+            </Link>
+          </Button>
+        )}
+      </div>
+    );
+  const step = steps[currentStep].id;
+  const selectedProgramme = programmeOptions.find(
+    (p) => p.id === programmeId,
+  )?.name;
   return (
     <FormProvider {...methods}>
       <div className="mx-auto max-w-3xl">
-        <EnrolmentStepper steps={enrolmentSteps} currentStep={currentStep} />
-
+        <EnrolmentStepper steps={steps} currentStep={currentStep} />
         <form
           noValidate
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-8 rounded-[2.5rem] bg-white p-6
-            shadow-[0_25px_80px_-35px_rgba(56,116,189,0.32)]
-            sm:p-8 lg:p-10"
+          className="mt-8 rounded-[2.5rem] bg-white p-6 shadow-[0_25px_80px_-35px_rgba(56,116,189,0.32)] sm:p-8 lg:p-10"
         >
-          {currentStep === 0 && (
-            <section
-              aria-labelledby="child-details-heading"
-              className="space-y-5"
-            >
-              <div>
-                <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
-                  Step 1 of 4
-                </p>
-
-                <h2
-                  id="child-details-heading"
-                  className="mt-2 font-display text-2xl font-extrabold
-                    text-foreground sm:text-3xl"
-                >
-                  Tell us about your child
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  These details help us recommend the most suitable classes.
-                </p>
-              </div>
-
+          {step === "parent" && (
+            <section className="space-y-5">
+              <Header
+                kicker={`Step ${currentStep + 1} of ${steps.length}`}
+                title="Create your parent account"
+                text="Your account and lesson request are created as one enrolment journey."
+              />
               <div className="grid gap-5 sm:grid-cols-2">
                 <Input
-                  id="child-first-name"
-                  label="Child’s first name"
-                  placeholder="Maya"
-                  autoComplete="off"
+                  id="parent-first-name"
+                  label="First name"
                   required
-                  errorMessage={errors.childFirstName?.message}
-                  {...register("childFirstName")}
+                  errorMessage={errors.parentFirstName?.message}
+                  {...register("parentFirstName")}
                 />
-
                 <Input
-                  id="child-last-name"
-                  label="Child’s last name"
-                  placeholder="Taylor"
-                  autoComplete="off"
+                  id="parent-last-name"
+                  label="Last name"
                   required
-                  errorMessage={errors.childLastName?.message}
-                  {...register("childLastName")}
-                />
-
-                <Input
-                  id="child-date-of-birth"
-                  type="date"
-                  label="Date of birth"
-                  required
-                  max={new Date().toISOString().slice(0, 10)}
-                  errorMessage={errors.childDateOfBirth?.message}
-                  {...register("childDateOfBirth")}
+                  errorMessage={errors.parentLastName?.message}
+                  {...register("parentLastName")}
                 />
               </div>
+              <Input
+                id="parent-email"
+                type="email"
+                label="Email address"
+                required
+                errorMessage={errors.email?.message}
+                {...register("email")}
+              />
+              <Input
+                id="parent-phone"
+                label="Phone number"
+                required
+                errorMessage={errors.phone?.message}
+                {...register("phone")}
+              />
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Input
+                  id="parent-password"
+                  type="password"
+                  label="Password"
+                  required
+                  info="At least 8 characters, with uppercase, lowercase and a number."
+                  errorMessage={errors.password?.message}
+                  {...register("password")}
+                />
+                <Input
+                  id="parent-confirm-password"
+                  type="password"
+                  label="Confirm password"
+                  required
+                  errorMessage={errors.confirmPassword?.message}
+                  {...register("confirmPassword")}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Already have a parent account?{" "}
+                <Link
+                  className="font-semibold text-primary"
+                  href="/sign-in?next=/enrolment"
+                >
+                  Sign in first
+                </Link>
+                .
+              </p>
+            </section>
+          )}
+          {step === "child" && (
+            <section className="space-y-5">
+              <Header
+                kicker={`Step ${currentStep + 1} of ${steps.length}`}
+                title={
+                  hasParentAccount && parentName
+                    ? `Who is this lesson for, ${parentName}?`
+                    : "Tell us about your child"
+                }
+                text={
+                  hasParentAccount && parentEmail
+                    ? `Choose a child already linked to ${parentEmail}, or add another child.`
+                    : "These details identify the child this lesson request is for."
+                }
+              />
 
+              {hasParentAccount && existingChildren.length > 0 && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Button
+                    type="button"
+                    variant={childMode === "existing" ? "default" : "outline"}
+                    onClick={() => switchChildMode("existing")}
+                  >
+                    Existing child
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={childMode === "new" ? "default" : "outline"}
+                    onClick={() => switchChildMode("new")}
+                  >
+                    Add another child
+                  </Button>
+                </div>
+              )}
+
+              {childMode === "existing" && existingChildren.length > 0 ? (
+                <>
+                  <Controller
+                    name="existingStudentId"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <SelectField
+                        id="existing-student-id"
+                        name={field.name}
+                        label="Child"
+                        placeholder="Choose a child"
+                        options={existingChildren.map((child) => ({
+                          label: child.fullName,
+                          value: child.id,
+                        }))}
+                        value={field.value ?? ""}
+                        onValueChange={selectExistingChild}
+                        required
+                        errorMessage={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                  {existingStudentId && (
+                    <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4">
+                      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
+                        Existing child
+                      </p>
+                      <p className="mt-1 font-display text-lg font-extrabold">
+                        {existingChildren.find(
+                          (child) => child.id === existingStudentId,
+                        )?.fullName ?? "Selected child"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Their existing profile will be reused. This creates a
+                        new lesson request, not another child record.
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="current-education-level"
+                    label="Current class / education level"
+                    placeholder="e.g. Primary 5, JSS 2, Year 6"
+                    required
+                    info="Update this if your child has moved to a new class since the previous lesson."
+                    errorMessage={errors.currentEducationLevel?.message}
+                    {...register("currentEducationLevel")}
+                  />
+                </>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Input
+                    id="child-first-name"
+                    label="Child’s first name"
+                    required
+                    errorMessage={errors.childFirstName?.message}
+                    {...register("childFirstName")}
+                  />
+                  <Input
+                    id="child-last-name"
+                    label="Child’s last name"
+                    required
+                    errorMessage={errors.childLastName?.message}
+                    {...register("childLastName")}
+                  />
+                  <Input
+                    id="child-date-of-birth"
+                    type="date"
+                    label="Date of birth"
+                    max={new Date().toISOString().slice(0, 10)}
+                    required
+                    errorMessage={errors.childDateOfBirth?.message}
+                    {...register("childDateOfBirth")}
+                  />
+                  <Input
+                    id="current-education-level"
+                    label="Current class / education level"
+                    placeholder="e.g. Primary 5, JSS 2, Year 6"
+                    required
+                    errorMessage={errors.currentEducationLevel?.message}
+                    {...register("currentEducationLevel")}
+                  />
+                </div>
+              )}
+            </section>
+          )}
+          {step === "lesson" && (
+            <section className="space-y-6">
+              <Header
+                kicker={`Step ${currentStep + 1} of ${steps.length}`}
+                title="Tell us what lessons you need"
+                text="Choose the subject, the days that work for your child, your preferred time and how long you want the arrangement to run."
+              />
               <Controller
-                name="preferredFormat"
+                name="programmeId"
                 control={control}
                 render={({ field, fieldState }) => (
                   <SelectField
-                    id="preferred-format"
+                    id="programme-id"
                     name={field.name}
-                    label="Preferred format"
-                    placeholder="Choose a format"
-                    options={preferredFormatOptions}
+                    label="Subject"
+                    placeholder="Choose a subject"
+                    options={programmeOptions.map((p) => ({
+                      label: p.name,
+                      value: p.id,
+                    }))}
                     value={field.value}
                     onValueChange={field.onChange}
                     required
@@ -262,247 +426,156 @@ export function EnrolmentForm() {
                   />
                 )}
               />
-            </section>
-          )}
-
-          {currentStep === 1 && (
-            <section aria-labelledby="programmes-heading" className="space-y-5">
               <div>
-                <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
-                  Step 2 of 4
+                <p className="mb-3 text-sm font-semibold">
+                  Preferred days <span className="text-destructive">*</span>
                 </p>
-
-                <h2
-                  id="programmes-heading"
-                  className="mt-2 font-display text-2xl font-extrabold
-                    text-foreground sm:text-3xl"
-                >
-                  Which programmes interest you?
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Select one or more. Our team will help you confirm the best
-                  fit.
-                </p>
-              </div>
-
-              <Controller
-                name="programmes"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {programmeOptions.map((programme) => {
-                        const isChecked = field.value.includes(programme.id);
-
-                        return (
-                          <ProgrammeCheckbox
-                            key={programme.id}
-                            id={`programme-${programme.slug}`}
-                            label={programme.name}
-                            checked={isChecked}
-                            onCheckedChange={(checked: boolean) => {
-                              const nextValue = checked
-                                ? [...field.value, programme.id]
-                                : field.value.filter(
-                                    (value) => value !== programme.id,
-                                  );
-
-                              field.onChange(nextValue);
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
-
-                    {fieldState.error?.message && (
-                      <p
-                        role="alert"
-                        className="mt-2 text-xs font-medium
-                          text-destructive"
-                      >
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </section>
-          )}
-
-          {currentStep === 2 && (
-            <section
-              aria-labelledby="parent-details-heading"
-              className="space-y-5"
-            >
-              <div>
-                <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
-                  Step 3 of 4
-                </p>
-
-                <h2
-                  id="parent-details-heading"
-                  className="mt-2 font-display text-2xl font-extrabold
-                    text-foreground sm:text-3xl"
-                >
-                  Your details
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  We’ll use these details to contact you about the enrolment.
-                </p>
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Input
-                  id="parent-name"
-                  label="Parent or guardian name"
-                  placeholder="Rebecca Taylor"
-                  autoComplete="name"
-                  required
-                  errorMessage={errors.parentName?.message}
-                  {...register("parentName")}
-                />
-
-                <Input
-                  id="parent-email"
-                  type="email"
-                  label="Email address"
-                  placeholder="rebecca@example.com"
-                  autoComplete="email"
-                  required
-                  errorMessage={errors.email?.message}
-                  {...register("email")}
-                />
-              </div>
-
-              <Input
-                id="parent-phone"
-                type="tel"
-                label="Phone number"
-                placeholder="+44 0000 000000"
-                autoComplete="tel"
-                inputMode="tel"
-                required
-                errorMessage={errors.phone?.message}
-                {...register("phone")}
-              />
-
-              <Textarea
-                id="additional-information"
-                label="Anything we should know?"
-                placeholder="Learning goals, support needs, questions..."
-                rows={4}
-                className="resize-none"
-                info="Optional"
-                errorMessage={errors.additionalInformation?.message}
-                {...register("additionalInformation")}
-              />
-            </section>
-          )}
-
-          {currentStep === 3 && (
-            <section
-              aria-labelledby="confirmation-heading"
-              className="space-y-5"
-            >
-              <div>
-                <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
-                  Step 4 of 4
-                </p>
-
-                <h2
-                  id="confirmation-heading"
-                  className="mt-2 font-display text-2xl font-extrabold
-                    text-foreground sm:text-3xl"
-                >
-                  Almost there!
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Check that everything looks right before submitting your
-                  enrolment.
-                </p>
-              </div>
-
-              <EnrolmentSummary
-                values={getValues()}
-                programmeLabels={selectedProgrammesLabels}
-                formatLabel={preferredFormatLabel}
-              />
-
-              <div>
-                <label
-                  htmlFor="accepted-terms"
-                  className={cn(
-                    "flex cursor-pointer items-start gap-3",
-                    "rounded-2xl border px-4 py-4",
-                    errors.acceptedTerms
-                      ? "border-destructive bg-destructive/2.5"
-                      : "border-primary/10 bg-primary/4",
-                  )}
-                >
-                  <input
-                    id="accepted-terms"
-                    type="checkbox"
-                    className="mt-0.5 size-5 rounded-md accent-primary"
-                    {...register("acceptedTerms")}
-                  />
-
-                  <span className="text-sm leading-6 text-foreground">
-                    I agree to the terms and conditions and the child
-                    safeguarding policy.
-                  </span>
-                </label>
-
-                {errors.acceptedTerms?.message && (
-                  <p
-                    role="alert"
-                    className="mt-2 text-xs font-medium
-                      text-destructive"
-                  >
-                    {errors.acceptedTerms.message}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {lessonDays.map((day) => (
+                    <label
+                      key={day.value}
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm font-medium ${preferredDays.includes(day.value) ? "border-primary bg-primary/5" : "border-border"}`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="size-4 accent-primary"
+                        checked={preferredDays.includes(day.value)}
+                        onChange={(e) => {
+                          const next = e.target.checked
+                            ? [...preferredDays, day.value]
+                            : preferredDays.filter((v) => v !== day.value);
+                          methods.setValue("preferredDays", next, {
+                            shouldValidate: true,
+                          });
+                        }}
+                      />
+                      {day.label}
+                    </label>
+                  ))}
+                </div>
+                {errors.preferredDays?.message && (
+                  <p className="mt-2 text-xs font-medium text-destructive">
+                    {errors.preferredDays.message}
                   </p>
                 )}
               </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Input
+                  id="preferred-time"
+                  type="time"
+                  label="Preferred time"
+                  required
+                  errorMessage={errors.preferredTime?.message}
+                  {...register("preferredTime")}
+                />
+                <Controller
+                  name="durationMonths"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <SelectField
+                      id="duration-months"
+                      name={field.name}
+                      label="Lesson duration"
+                      options={durationOptions}
+                      value={String(field.value)}
+                      onValueChange={(v) => field.onChange(Number(v))}
+                      required
+                      errorMessage={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </div>
+              <Textarea
+                id="additional-message"
+                label="Additional message (optional)"
+                placeholder="Is there anything else you would like us to know about your child or their learning needs?"
+                rows={5}
+                errorMessage={errors.additionalMessage?.message}
+                {...register("additionalMessage")}
+              />
             </section>
           )}
-
-          {submitError && <p role="alert" className="mt-5 text-sm font-medium text-destructive">{submitError}</p>}
-
-          <div
-            className="mt-8 flex items-center justify-between
-              gap-3 border-t border-border/70 pt-6"
-          >
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={goToPreviousStep}
-              className={cn(
-                currentStep === 0 && "invisible pointer-events-none",
+          {step === "confirm" && (
+            <section className="space-y-5">
+              <Header
+                kicker={`Step ${currentStep + 1} of ${steps.length}`}
+                title="Review your lesson request"
+                text="Make sure the schedule and subject are correct before submitting."
+              />
+              <EnrolmentSummary
+                values={getValues()}
+                programmeLabel={selectedProgramme}
+              />
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  className="mt-1 size-4 accent-primary"
+                  {...register("acceptedTerms")}
+                />
+                <span>I agree to the terms of service and privacy policy.</span>
+              </label>
+              {errors.acceptedTerms?.message && (
+                <p className="text-xs font-medium text-destructive">
+                  {errors.acceptedTerms.message}
+                </p>
               )}
+            </section>
+          )}
+          {submitError && (
+            <p
+              role="alert"
+              className="mt-5 rounded-xl bg-destructive/5 p-3 text-sm text-destructive"
             >
-              <ArrowLeft aria-hidden="true" className="size-4" />
-              Back
-            </Button>
-
-            {currentStep < enrolmentSteps.length - 1 ? (
-              <Button type="button" onClick={goToNextStep}>
-                Continue
-                <ArrowRight aria-hidden="true" className="size-4" />
+              {submitError}
+            </p>
+          )}
+          <div className="mt-8 flex justify-between gap-3">
+            {currentStep > 0 ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCurrentStep((s) => s - 1)}
+              >
+                <ArrowLeft />
+                Back
               </Button>
             ) : (
-              <Button type="submit" variant="coral" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit enrolment"}
-
-                {!isSubmitting && (
-                  <Check aria-hidden="true" className="size-4" />
-                )}
+              <span />
+            )}
+            {currentStep < steps.length - 1 ? (
+              <Button type="button" onClick={next}>
+                Continue
+                <ArrowRight />
+              </Button>
+            ) : (
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit lesson request"}
               </Button>
             )}
           </div>
         </form>
       </div>
     </FormProvider>
+  );
+}
+function Header({
+  kicker,
+  title,
+  text,
+}: {
+  kicker: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div>
+      <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
+        {kicker}
+      </p>
+      <h2 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">
+        {title}
+      </h2>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p>
+    </div>
   );
 }

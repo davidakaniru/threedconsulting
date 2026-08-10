@@ -20,7 +20,9 @@ export function toApiError(error: unknown): ApiError {
     const body = error.response?.data;
     return new ApiError(
       body?.success === false ? body.error.code : "REQUEST_FAILED",
-      body?.success === false ? body.error.message : "The request could not be completed.",
+      body?.success === false
+        ? body.error.message
+        : "The request could not be completed.",
       error.response?.status ?? 500,
       body?.success === false ? body.error.details : undefined,
     );
@@ -30,5 +32,9 @@ export function toApiError(error: unknown): ApiError {
     return new ApiError("REQUEST_FAILED", error.message, 500);
   }
 
-  return new ApiError("REQUEST_FAILED", "The request could not be completed.", 500);
+  return new ApiError(
+    "REQUEST_FAILED",
+    "The request could not be completed.",
+    500,
+  );
 }

@@ -6,16 +6,24 @@ import { apiClient } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiSuccess } from "@/lib/api/types";
 import { queryKeys } from "@/lib/query/query-keys";
-import type { PasswordChangeRequest, ProfileUpdateRequest } from "@/lib/schemas/profile-schema";
+import type {
+  PasswordChangeRequest,
+  ProfileUpdateRequest,
+} from "@/lib/schemas/profile-schema";
 import type { AuthenticatedUser } from "@/types/auth";
 
 async function getProfile() {
-  const { data } = await apiClient.get<ApiSuccess<AuthenticatedUser>>(API_ENDPOINTS.profile.root);
+  const { data } = await apiClient.get<ApiSuccess<AuthenticatedUser>>(
+    API_ENDPOINTS.profile.root,
+  );
   return data.data;
 }
 
 async function updateProfile(values: ProfileUpdateRequest) {
-  const { data } = await apiClient.patch<ApiSuccess<AuthenticatedUser>>(API_ENDPOINTS.profile.root, values);
+  const { data } = await apiClient.patch<ApiSuccess<AuthenticatedUser>>(
+    API_ENDPOINTS.profile.root,
+    values,
+  );
   return data.data;
 }
 

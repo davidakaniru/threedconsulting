@@ -10,5 +10,8 @@ async function logout(): Promise<void> {
 
 export function useLogout() {
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: logout, onSuccess: () => queryClient.clear() });
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => queryClient.clear(),
+  });
 }

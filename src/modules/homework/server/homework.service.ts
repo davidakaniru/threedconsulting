@@ -1,7 +1,111 @@
-import { ApiError } from "@/lib/api/errors";import { writeAuditLog } from "@/lib/audit";import { normalizePagination } from "@/lib/modules";import type { HomeworkRequest } from "../schemas";import type { HomeworkListResult } from "../types";import { mapHomework } from "./homework.mapper";import * as repo from "./homework.repository";
-export async function getHomeworkList(params:any):Promise<HomeworkListResult>{const{page,pageSize,from,to}=normalizePagination(params);const r=await repo.listHomeworkRows(from,to,params);if(r.error)throw new ApiError("HOMEWORK_LOAD_FAILED","Homework could not be loaded.",500);return{homework:(r.data??[]).map(mapHomework),total:r.count??0,page,pageSize}}
-export async function getHomework(id:string){const r=await repo.getHomeworkRow(id);if(r.error)throw new ApiError("HOMEWORK_LOAD_FAILED","The homework could not be loaded.",500);if(!r.data)throw new ApiError("HOMEWORK_NOT_FOUND","Homework not found.",404);return mapHomework(r.data)}
-async function assertOwnership(sessionId:string,teacherId:string){const r=await repo.teacherOwnsSession(sessionId,teacherId);if(r.error||!r.data)throw new ApiError("FORBIDDEN","You can only manage homework for your own sessions.",403)}
-function input(v:HomeworkRequest){return{session_id:v.sessionId,title:v.title.trim(),instructions:v.instructions.trim(),due_at:new Date(v.dueAt).toISOString(),maximum_score:v.maximumScore??null,status:v.status}}
-export async function createHomework(v:HomeworkRequest,teacherId:string){await assertOwnership(v.sessionId,teacherId);const r=await repo.insertHomework({...input(v),created_by:teacherId});if(r.error||!r.data)throw new ApiError("HOMEWORK_CREATE_FAILED","The homework could not be created.",500);await writeAuditLog({actorId:teacherId,action:"homework.created",entityType:"homework",entityId:r.data.id,metadata:{title:r.data.title,status:r.data.status,sessionId:r.data.session_id}});return mapHomework(r.data)}
-export async function updateHomework(id:string,v:HomeworkRequest,teacherId:string){const current=await getHomework(id);if(current.session.cohort.teacher.id!==teacherId)throw new ApiError("FORBIDDEN","You can only manage your own homework.",403);await assertOwnership(v.sessionId,teacherId);const r=await repo.updateHomeworkRow(id,input(v));if(r.error||!r.data)throw new ApiError("HOMEWORK_UPDATE_FAILED","The homework could not be updated.",500);await writeAuditLog({actorId:teacherId,action:"homework.updated",entityType:"homework",entityId:id,metadata:{title:r.data.title,status:r.data.status,sessionId:r.data.session_id}});return mapHomework(r.data)}
+import { ApiError } from "@/lib/api/errors";
+import { writeAuditLog } from "@/lib/audit";
+import { normalizePagination } from "@/lib/modules";
+import type { HomeworkRequest } from "../schemas";
+import type { HomeworkListResult } from "../types";
+import { mapHomework } from "./homework.mapper";
+import * as repo from "./homework.repository";
+export async function getHomeworkList(
+  params: any,
+): Promise<HomeworkListResult> {
+  const { page, pageSize, from, to } = normalizePagination(params);
+  const r = await repo.listHomeworkRows(from, to, params);
+  if (r.error)
+    throw new ApiError(
+      "HOMEWORK_LOAD_FAILED",
+      "Homework could not be loaded.",
+      500,
+    );
+  return {
+    homework: (r.data ?? []).map(mapHomework),
+    total: r.count ?? 0,
+    page,
+    pageSize,
+  };
+}
+export async function getHomework(id: string) {
+  const r = await repo.getHomeworkRow(id);
+  if (r.error)
+    throw new ApiError(
+      "HOMEWORK_LOAD_FAILED",
+      "The homework could not be loaded.",
+      500,
+    );
+  if (!r.data)
+    throw new ApiError("HOMEWORK_NOT_FOUND", "Homework not found.", 404);
+  return mapHomework(r.data);
+}
+async function assertOwnership(sessionId: string, teacherId: string) {
+  const r = await repo.teacherOwnsSession(sessionId, teacherId);
+  if (r.error || !r.data)
+    throw new ApiError(
+      "FORBIDDEN",
+      "You can only manage homework for your own sessions.",
+      403,
+    );
+}
+function input(v: HomeworkRequest) {
+  return {
+    session_id: v.sessionId,
+    title: v.title.trim(),
+    instructions: v.instructions.trim(),
+    due_at: new Date(v.dueAt).toISOString(),
+    maximum_score: v.maximumScore ?? null,
+    status: v.status,
+  };
+}
+export async function createHomework(v: HomeworkRequest, teacherId: string) {
+  await assertOwnership(v.sessionId, teacherId);
+  const r = await repo.insertHomework({ ...input(v), created_by: teacherId });
+  if (r.error || !r.data)
+    throw new ApiError(
+      "HOMEWORK_CREATE_FAILED",
+      "The homework could not be created.",
+      500,
+    );
+  await writeAuditLog({
+    actorId: teacherId,
+    action: "homework.created",
+    entityType: "homework",
+    entityId: r.data.id,
+    metadata: {
+      title: r.data.title,
+      status: r.data.status,
+      sessionId: r.data.session_id,
+    },
+  });
+  return mapHomework(r.data);
+}
+export async function updateHomework(
+  id: string,
+  v: HomeworkRequest,
+  teacherId: string,
+) {
+  const current = await getHomework(id);
+  if (current.session.lesson.teacher.id !== teacherId)
+    throw new ApiError(
+      "FORBIDDEN",
+      "You can only manage your own homework.",
+      403,
+    );
+  await assertOwnership(v.sessionId, teacherId);
+  const r = await repo.updateHomeworkRow(id, input(v));
+  if (r.error || !r.data)
+    throw new ApiError(
+      "HOMEWORK_UPDATE_FAILED",
+      "The homework could not be updated.",
+      500,
+    );
+  await writeAuditLog({
+    actorId: teacherId,
+    action: "homework.updated",
+    entityType: "homework",
+    entityId: id,
+    metadata: {
+      title: r.data.title,
+      status: r.data.status,
+      sessionId: r.data.session_id,
+    },
+  });
+  return mapHomework(r.data);
+}

@@ -1,30 +1,4 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { AdminPage, PageHeader } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { CohortMetrics, CohortsTable } from "@/modules/cohorts";
-import { getCohortMetrics } from "@/modules/cohorts/server";
-export const metadata: Metadata = { title: "Cohorts | Admin Portal" };
-export default async function Page() {
-  const metrics = await getCohortMetrics();
-  return (
-    <AdminPage>
-      <PageHeader
-        eyebrow="Academic"
-        title="Cohorts"
-        description="Manage learner groups progressing together under each teaching assignment."
-        actions={
-          <Button asChild>
-            <Link href="/portal/admin/cohorts/new">
-              <Plus />
-              Add cohort
-            </Link>
-          </Button>
-        }
-      />
-      <CohortMetrics metrics={metrics} />
-      <CohortsTable />
-    </AdminPage>
-  );
+import { redirect } from "next/navigation";
+export default function LegacyAdminCohortPage() {
+  redirect("/portal/admin/programmes");
 }

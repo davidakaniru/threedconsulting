@@ -12,7 +12,10 @@ export interface RegisterResponse {
 }
 
 async function register(values: RegisterRequest): Promise<RegisterResponse> {
-  const { data } = await apiClient.post<ApiSuccess<RegisterResponse>>(API_ENDPOINTS.auth.register, values);
+  const { data } = await apiClient.post<ApiSuccess<RegisterResponse>>(
+    API_ENDPOINTS.auth.register,
+    values,
+  );
   return data.data;
 }
 

@@ -12,7 +12,11 @@ export interface NormalizedPagination {
 
 export function normalizePagination(
   input: PaginationInput,
-  options: { defaultPageSize?: number; minPageSize?: number; maxPageSize?: number } = {},
+  options: {
+    defaultPageSize?: number;
+    minPageSize?: number;
+    maxPageSize?: number;
+  } = {},
 ): NormalizedPagination {
   const defaultPageSize = options.defaultPageSize ?? 10;
   const minPageSize = options.minPageSize ?? 5;

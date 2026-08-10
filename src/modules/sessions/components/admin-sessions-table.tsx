@@ -23,18 +23,15 @@ type Option = { value: string; label: string };
 export function AdminSessionsTable({
   programmes,
   teachers,
-  cohorts,
 }: {
   programmes: Option[];
   teachers: Option[];
-  cohorts: Option[];
 }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [programmeId, setProgrammeId] = useState("all");
   const [teacherId, setTeacherId] = useState("all");
-  const [cohortId, setCohortId] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -47,7 +44,6 @@ export function AdminSessionsTable({
     dateTo: dateTo || undefined,
     programmeId: programmeId === "all" ? undefined : programmeId,
     teacherId: teacherId === "all" ? undefined : teacherId,
-    cohortId: cohortId === "all" ? undefined : cohortId,
   });
 
   const columns: DataTableColumn<ClassSession>[] = [
@@ -58,7 +54,7 @@ export function AdminSessionsTable({
         <div>
           <p className="font-bold">{session.title}</p>
           <p className="text-sm text-slate-500">
-            {session.cohort.code} · {session.cohort.programme.name}
+            {session.lessonAssignment.programme.name}
           </p>
         </div>
       ),
@@ -66,7 +62,7 @@ export function AdminSessionsTable({
     {
       id: "teacher",
       header: "Teacher",
-      cell: (session) => session.cohort.teacher.name,
+      cell: (session) => session.lessonAssignment.teacher.name,
     },
     {
       id: "date",
@@ -104,7 +100,10 @@ export function AdminSessionsTable({
                 setStatus(value);
                 setPage(1);
               }}
-              options={[{ value: "all", label: "All statuses" }, ...classSessionStatusOptions]}
+              options={[
+                { value: "all", label: "All statuses" },
+                ...classSessionStatusOptions,
+              ]}
             />
             <FilterSelect
               id="session-programme"
@@ -113,7 +112,10 @@ export function AdminSessionsTable({
                 setProgrammeId(value);
                 setPage(1);
               }}
-              options={[{ value: "all", label: "All programmes" }, ...programmes]}
+              options={[
+                { value: "all", label: "All programmes" },
+                ...programmes,
+              ]}
             />
             <FilterSelect
               id="session-teacher"
@@ -123,15 +125,6 @@ export function AdminSessionsTable({
                 setPage(1);
               }}
               options={[{ value: "all", label: "All teachers" }, ...teachers]}
-            />
-            <FilterSelect
-              id="session-cohort"
-              value={cohortId}
-              onValueChange={(value) => {
-                setCohortId(value);
-                setPage(1);
-              }}
-              options={[{ value: "all", label: "All cohorts" }, ...cohorts]}
             />
             <Input
               id="session-date-from"
@@ -176,7 +169,10 @@ export function AdminSessionsTable({
       {query.data && (
         <Pagination
           page={query.data.page}
-          totalPages={Math.max(1, Math.ceil(query.data.total / query.data.pageSize))}
+          totalPages={Math.max(
+            1,
+            Math.ceil(query.data.total / query.data.pageSize),
+          )}
           total={query.data.total}
           label="sessions"
           onPageChange={setPage}

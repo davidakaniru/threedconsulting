@@ -361,4 +361,3 @@ export function GraduationCapIllustration({ className }: IllustrationProps) {
     </svg>
   );
 }
-

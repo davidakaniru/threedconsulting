@@ -1,3 +1,6 @@
-import type { Tables } from "@/types/database";import type { CohortSummary } from "@/modules/cohorts/types";
-export type CohortRow=Tables<"cohorts"> & { teaching_assignments:{id:string;teacher_id:string;programme_id:string;teachers:{employee_id:string;profiles:{first_name:string|null;last_name:string|null;email:string}};programmes:{id:string;name:string;slug:string}};cohort_students?:Array<{count:number}> };
-export function mapCohort(row:CohortRow):CohortSummary{const p=row.teaching_assignments.teachers.profiles;return{id:row.id,teachingAssignmentId:row.teaching_assignment_id,code:row.code,name:row.name,description:row.description,capacity:row.capacity,startDate:row.start_date,expectedEndDate:row.expected_end_date,status:row.status,memberCount:Number(row.cohort_students?.[0]?.count??0),createdAt:row.created_at,updatedAt:row.updated_at,teacher:{id:row.teaching_assignments.teacher_id,name:[p.first_name,p.last_name].filter(Boolean).join(" ")||p.email,email:p.email,employeeId:row.teaching_assignments.teachers.employee_id},programme:{id:row.teaching_assignments.programme_id,name:row.teaching_assignments.programmes.name,slug:row.teaching_assignments.programmes.slug}};}
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};

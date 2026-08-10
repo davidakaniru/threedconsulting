@@ -1,7 +1,5 @@
 import type { Enums } from "@/types/database";
-
 export type AttendanceStatus = Enums<"attendance_status">;
-
 export interface AttendanceRecord {
   id: string;
   studentId: string;
@@ -11,7 +9,6 @@ export interface AttendanceRecord {
   notes: string | null;
   markedAt: string | null;
 }
-
 export interface AttendanceSummary {
   total: number;
   pending: number;
@@ -20,7 +17,6 @@ export interface AttendanceSummary {
   late: number;
   attendanceRate: number;
 }
-
 export interface SessionAttendanceSheet {
   session: {
     id: string;
@@ -29,13 +25,16 @@ export interface SessionAttendanceSheet {
     sessionDate: string;
     startTime: string;
     endTime: string;
-    cohort: { id: string; code: string; name: string; programmeName: string };
+    lesson: { id: string; studentName: string; programmeName: string };
   };
   records: AttendanceRecord[];
   summary: AttendanceSummary;
   editable: boolean;
 }
-
 export interface AttendanceUpdateRequest {
-  records: Array<{ attendanceId: string; status: AttendanceStatus; notes?: string | null }>;
+  records: Array<{
+    attendanceId: string;
+    status: AttendanceStatus;
+    notes?: string | null;
+  }>;
 }

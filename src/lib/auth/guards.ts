@@ -33,9 +33,16 @@ export const requireAdmin = () => requireRole("admin");
 export const requireTeacher = () => requireRole("teacher");
 export const requireParent = () => requireRole("parent");
 
-export async function requireApiRole(role: UserRole): Promise<AuthenticatedUser> {
+export async function requireApiRole(
+  role: UserRole,
+): Promise<AuthenticatedUser> {
   const user = await requireApiAuth();
-  if (user.role !== role) throw new ApiError("FORBIDDEN", "You do not have permission to perform this action.", 403);
+  if (user.role !== role)
+    throw new ApiError(
+      "FORBIDDEN",
+      "You do not have permission to perform this action.",
+      403,
+    );
   return user;
 }
 
@@ -49,7 +56,11 @@ export async function requireApiAuth(): Promise<AuthenticatedUser> {
   }
 
   if (user.status !== "active") {
-    throw new ApiError("ACCOUNT_UNAVAILABLE", "This account is not currently available.", 403);
+    throw new ApiError(
+      "ACCOUNT_UNAVAILABLE",
+      "This account is not currently available.",
+      403,
+    );
   }
 
   return user;

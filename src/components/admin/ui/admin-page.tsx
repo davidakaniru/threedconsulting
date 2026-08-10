@@ -17,7 +17,7 @@ export function AdminPage({
     <div
       data-slot="admin-page"
       className={cn(
-        "mx-auto w-full max-w-[1480px]",
+        "mx-auto w-full max-w-370",
         spacing === "default" ? "space-y-7" : "space-y-5",
         className,
       )}

@@ -9,7 +9,12 @@ interface TableToolbarProps {
   className?: string;
 }
 
-export function TableToolbar({ search, filters, actions, className }: TableToolbarProps) {
+export function TableToolbar({
+  search,
+  filters,
+  actions,
+  className,
+}: TableToolbarProps) {
   return (
     <div
       className={cn(
@@ -20,9 +25,13 @@ export function TableToolbar({ search, filters, actions, className }: TableToolb
     >
       <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row">
         {search}
-        {filters && <div className="flex flex-col gap-3 sm:flex-row">{filters}</div>}
+        {filters && (
+          <div className="flex flex-col gap-3 sm:flex-row">{filters}</div>
+        )}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex shrink-0 items-center gap-2">{actions}</div>
+      )}
     </div>
   );
 }

@@ -1,3 +1,3 @@
 # Teaching Assignments
 
-Teaching assignments connect an active teacher to a programme. Admins manage assignments from programme details; teacher details show assigned programmes; teachers can view them under `/portal/teacher/teaching`. Future cohorts reference `teaching_assignments.id`, preserving the programme–teacher authorization boundary.
+Teaching assignments connect an active teacher to a programme. Admins manage them from programme details. They define teacher eligibility for published enrolments: a teacher can only see and accept an enrolment for a programme they are actively assigned to.

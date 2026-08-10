@@ -1,5 +1,6 @@
-"use client";import { useMutation,useQuery,useQueryClient } from "@tanstack/react-query";import { apiClient } from "@/lib/api/client";import { API_ENDPOINTS } from "@/lib/api/endpoints";import { queryKeys } from "@/lib/query/query-keys";import type { ApiSuccess } from "@/lib/api/types";import type { CohortRequest } from "@/modules/cohorts/schemas";import type { CohortDetail,CohortListResult } from "@/modules/cohorts/types";
-export function useCohorts(filters?:Record<string,unknown>){return useQuery({queryKey:queryKeys.cohorts.list(filters??{}),queryFn:async()=> (await apiClient.get<ApiSuccess<CohortListResult>>(API_ENDPOINTS.admin.cohorts,{params:filters})).data.data});}
-export function useCohort(id:string){return useQuery({queryKey:queryKeys.cohorts.detail(id),queryFn:async()=> (await apiClient.get<ApiSuccess<CohortDetail>>(API_ENDPOINTS.admin.cohort(id))).data.data,enabled:!!id});}
-export function useCreateCohort(){const c=useQueryClient();return useMutation({mutationFn:async(v:CohortRequest)=>(await apiClient.post<ApiSuccess<CohortDetail>>(API_ENDPOINTS.admin.cohorts,v)).data.data,onSuccess:()=>c.invalidateQueries({queryKey:queryKeys.cohorts.all})});}
-export function useUpdateCohort(id:string){const c=useQueryClient();return useMutation({mutationFn:async(v:CohortRequest)=>(await apiClient.patch<ApiSuccess<CohortDetail>>(API_ENDPOINTS.admin.cohort(id),v)).data.data,onSuccess:()=>c.invalidateQueries({queryKey:queryKeys.cohorts.all})});}
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};

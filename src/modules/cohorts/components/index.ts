@@ -1,1 +1,6 @@
-export * from "./cohort-form";export * from "./cohort-metrics";export * from "./cohorts-table";export * from "./cohort-details";export * from "./programme-cohorts";export * from "./teacher-cohorts";
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};

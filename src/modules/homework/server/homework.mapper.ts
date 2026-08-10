@@ -2,16 +2,30 @@ import { firstRelation } from "@/lib/mappers";
 import type { Homework } from "../types";
 export function mapHomework(row: any): Homework {
   const s = firstRelation(row.class_sessions);
-  const c = firstRelation(s?.cohorts);
-  const ta = firstRelation(c?.teaching_assignments);
-  const p = firstRelation(ta?.programmes);
-  const t = firstRelation(ta?.teachers);
+  const la = firstRelation(s?.lesson_assignments);
+  const student = firstRelation(la?.students);
+  const p = firstRelation(la?.programmes);
+  const t = firstRelation(la?.teachers);
   const profile = firstRelation(t?.profiles);
+  const studentName =
+    [student?.first_name, student?.middle_name, student?.last_name]
+      .filter(Boolean)
+      .join(" ") || "Child";
+  const teacherName =
+    [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
+    profile?.email ||
+    "Teacher";
   const submissions = Array.isArray(row.homework_submissions)
     ? row.homework_submissions
     : [];
   const count = (status: string) =>
     submissions.filter((x: any) => x.status === status).length;
+  const lesson = {
+    id: la?.id ?? "",
+    student: { id: la?.student_id ?? "", name: studentName },
+    programme: { id: p?.id ?? "", name: p?.name ?? "Programme" },
+    teacher: { id: la?.teacher_id ?? "", name: teacherName },
+  };
   return {
     id: row.id,
     sessionId: row.session_id,
@@ -27,21 +41,7 @@ export function mapHomework(row: any): Homework {
       id: s?.id ?? "",
       title: s?.title ?? "",
       sessionDate: s?.session_date ?? "",
-      cohort: {
-        id: c?.id ?? "",
-        code: c?.code ?? "",
-        name: c?.name ?? "",
-        programme: { id: p?.id ?? "", name: p?.name ?? "Unknown programme" },
-        teacher: {
-          id: ta?.teacher_id ?? "",
-          name:
-            [profile?.first_name, profile?.last_name]
-              .filter(Boolean)
-              .join(" ") ||
-            profile?.email ||
-            "Unknown teacher",
-        },
-      },
+      lesson,
     },
     submissions: {
       pending: count("pending"),

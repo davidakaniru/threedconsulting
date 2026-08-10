@@ -13,7 +13,10 @@ export function ChildSwitcher() {
       label="Switch child"
       value={childId}
       onValueChange={setChildId}
-      options={children.map((child) => ({ value: child.id, label: child.fullName }))}
+      options={children.map((child) => ({
+        value: child.id,
+        label: child.fullName,
+      }))}
     />
   );
 }

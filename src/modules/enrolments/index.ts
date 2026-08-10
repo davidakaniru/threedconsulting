@@ -1,4 +1,6 @@
-export * from "./types";
-export * from "./schemas";
-export * from "./hooks/use-enrolments";
-export * from "./components";
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};

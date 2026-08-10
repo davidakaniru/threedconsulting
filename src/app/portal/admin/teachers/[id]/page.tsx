@@ -8,8 +8,13 @@ type Props = { params: Promise<{ id: string }> };
 export default async function TeacherDetailPage({ params }: Props) {
   const { id } = await params;
   return (
-    <AdminPage><PageBackButton />
-      <PageHeader eyebrow="Teachers" title="Teacher profile" description="Review professional details, account access and employment lifecycle." />
+    <AdminPage>
+      <PageBackButton />
+      <PageHeader
+        eyebrow="Teachers"
+        title="Teacher profile"
+        description="Review professional details, account access and employment lifecycle."
+      />
       <TeacherDetailClient id={id} />
     </AdminPage>
   );

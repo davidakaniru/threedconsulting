@@ -1,1 +1,4 @@
-import type { Metadata } from "next";import { AdminPage,PageBackButton,PageHeader } from "@/components/admin/ui";import { CohortDetails } from "@/modules/cohorts";import { getCohort } from "@/modules/cohorts/server";export const metadata:Metadata={title:"Cohort Details | Admin Portal"};export default async function Page({params}:{params:Promise<{id:string}>}){const c=await getCohort((await params).id);return <AdminPage><PageBackButton /><PageHeader eyebrow="Cohorts" title={c.name} description={`${c.code} · ${c.programme.name}`}/><CohortDetails cohort={c}/></AdminPage>}
+import { redirect } from "next/navigation";
+export default function LegacyAdminCohortPage() {
+  redirect("/portal/admin/programmes");
+}

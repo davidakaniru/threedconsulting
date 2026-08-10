@@ -13,20 +13,20 @@ import { classSessionSchema, type ClassSessionRequest } from "../schemas";
 import { classSessionStatusOptions } from "../constants";
 import { useCreateSession, useUpdateSession } from "../hooks";
 import type { ClassSession } from "../types";
-type CohortOption = {
+type LessonOption = {
   id: string;
-  code: string;
-  name: string;
+  studentName: string;
   programme: { name: string };
+  sessionTime: string;
 };
 export function SessionForm({
   session,
-  cohorts,
-  initialCohortId,
+  lessons,
+  initialLessonAssignmentId,
 }: {
   session?: ClassSession;
-  cohorts: CohortOption[];
-  initialCohortId?: string;
+  lessons: LessonOption[];
+  initialLessonAssignmentId?: string;
 }) {
   const router = useRouter();
   const create = useCreateSession();
@@ -40,7 +40,8 @@ export function SessionForm({
     resolver: yupResolver(classSessionSchema),
     mode: "onTouched",
     defaultValues: {
-      cohortId: session?.cohortId ?? initialCohortId ?? "",
+      lessonAssignmentId:
+        session?.lessonAssignmentId ?? initialLessonAssignmentId ?? "",
       title: session?.title ?? "",
       description: session?.description ?? "",
       sessionDate:
@@ -53,15 +54,11 @@ export function SessionForm({
   });
   const submit = handleSubmit(async (v) => {
     try {
-      if (session) {
-        const create = await update.mutateAsync(v);
-        toast.success("Session updated.");
-        router.push(`/portal/teacher/sessions/${create.id}`);
-      } else {
-        const saved = await create.mutateAsync(v);
-        toast.success("Session created.");
-        router.push(`/portal/teacher/sessions/${saved.id}`);
-      }
+      const saved = session
+        ? await update.mutateAsync(v)
+        : await create.mutateAsync(v);
+      toast.success(session ? "Session updated." : "Session created.");
+      router.push(`/portal/teacher/sessions/${saved.id}`);
     } catch (e) {
       toast.error(toApiError(e).message);
     }
@@ -70,20 +67,20 @@ export function SessionForm({
     <form onSubmit={submit} className="space-y-6">
       <div className="grid gap-5 sm:grid-cols-2">
         <Controller
-          name="cohortId"
+          name="lessonAssignmentId"
           control={control}
           render={({ field }) => (
             <SelectField
-              id="cohortId"
-              label="Cohort"
+              id="lessonAssignmentId"
+              label="Lesson"
               required
-              options={cohorts.map((c) => ({
-                value: c.id,
-                label: `${c.code} · ${c.name} · ${c.programme.name}`,
+              options={lessons.map((l) => ({
+                value: l.id,
+                label: `${l.studentName} · ${l.programme.name}`,
               }))}
               value={field.value}
               onValueChange={field.onChange}
-              errorMessage={errors.cohortId?.message}
+              errorMessage={errors.lessonAssignmentId?.message}
               className="sm:col-span-2"
             />
           )}

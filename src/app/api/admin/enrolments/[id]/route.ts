@@ -1,1 +1,13 @@
-import type {NextRequest} from "next/server";import {ApiError} from "@/lib/api/errors";import {apiError,apiSuccess} from "@/lib/api/responses";import {requireApiAdmin} from "@/lib/auth/guards";import {getAvailableCohorts,getEnrolment} from "@/modules/enrolments/server";export const runtime="nodejs";export async function GET(r:NextRequest,{params}:{params:Promise<{id:string}>}){try{await requireApiAdmin();const a=await getEnrolment((await params).id);if(r.nextUrl.searchParams.get("options")==="cohorts")return apiSuccess(await getAvailableCohorts(a.programmes.map(p=>p.id)));return apiSuccess(a)}catch(e){if(e instanceof ApiError)return apiError(e.code,e.message,e.status,e.details);console.error(e);return apiError("INTERNAL_SERVER_ERROR","Unable to load enrolment.",500)}}
+import { NextResponse } from "next/server";
+
+function retired() {
+  return NextResponse.json(
+    { error: { code: "RETIRED_ENDPOINT", message: "This legacy endpoint is no longer available." } },
+    { status: 410 },
+  );
+}
+
+export const GET = retired;
+export const POST = retired;
+export const PATCH = retired;
+export const DELETE = retired;

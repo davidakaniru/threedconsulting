@@ -24,10 +24,15 @@ export default async function ProfilePage() {
         </header>
 
         <div className="mb-7 mt-10">
-          <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">Account settings</p>
-          <h1 className="mt-2 font-display text-3xl font-extrabold text-foreground sm:text-4xl">Profile & security</h1>
+          <p className="font-display text-sm font-bold uppercase tracking-wider text-primary">
+            Account settings
+          </p>
+          <h1 className="mt-2 font-display text-3xl font-extrabold text-foreground sm:text-4xl">
+            Profile & security
+          </h1>
           <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-            Manage your personal details, profile photo, password, and account status.
+            Manage your personal details, profile photo, password, and account
+            status.
           </p>
         </div>
 

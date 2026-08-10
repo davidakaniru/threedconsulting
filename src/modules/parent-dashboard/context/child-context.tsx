@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import type { ParentDashboardChild } from "../types";
 
 const STORAGE_KEY = "threed-parent-current-child";
@@ -14,12 +21,19 @@ type ChildContextValue = {
 
 const ChildContext = createContext<ChildContextValue | null>(null);
 
-export function ChildProvider({ linkedChildren, children }: { linkedChildren: ParentDashboardChild[]; children: ReactNode }) {
+export function ChildProvider({
+  linkedChildren,
+  children,
+}: {
+  linkedChildren: ParentDashboardChild[];
+  children: ReactNode;
+}) {
   const [childId, setChildId] = useState(linkedChildren[0]?.id ?? "");
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (saved && linkedChildren.some((child) => child.id === saved)) setChildId(saved);
+    if (saved && linkedChildren.some((child) => child.id === saved))
+      setChildId(saved);
   }, [linkedChildren]);
 
   useEffect(() => {
@@ -27,13 +41,26 @@ export function ChildProvider({ linkedChildren, children }: { linkedChildren: Pa
   }, [childId]);
 
   const child = useMemo(
-    () => linkedChildren.find((item) => item.id === childId) ?? linkedChildren[0] ?? null,
+    () =>
+      linkedChildren.find((item) => item.id === childId) ??
+      linkedChildren[0] ??
+      null,
     [childId, linkedChildren],
   );
 
-  const value = useMemo(() => ({ child, children: linkedChildren, childId: child?.id ?? "", setChildId }), [child, linkedChildren]);
+  const value = useMemo(
+    () => ({
+      child,
+      children: linkedChildren,
+      childId: child?.id ?? "",
+      setChildId,
+    }),
+    [child, linkedChildren],
+  );
 
-  return <ChildContext.Provider value={value}>{children}</ChildContext.Provider>;
+  return (
+    <ChildContext.Provider value={value}>{children}</ChildContext.Provider>
+  );
 }
 
 export function useChild() {

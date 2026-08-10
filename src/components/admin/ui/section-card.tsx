@@ -55,7 +55,12 @@ export function SectionCard({
                 </p>
               )}
               {title && (
-                <h2 className={cn("font-display text-xl font-extrabold text-foreground", eyebrow && "mt-1")}>
+                <h2
+                  className={cn(
+                    "font-display text-xl font-extrabold text-foreground",
+                    eyebrow && "mt-1",
+                  )}
+                >
                   {title}
                 </h2>
               )}

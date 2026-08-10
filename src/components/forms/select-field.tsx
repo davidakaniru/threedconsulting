@@ -54,11 +54,16 @@ function SelectField({
       className={cn("flex w-full flex-col gap-2", className)}
     >
       {label && (
-        <label htmlFor={id} className="font-display text-sm font-bold text-foreground">
+        <label
+          htmlFor={id}
+          className="font-display text-sm font-bold text-foreground"
+        >
           {label}
           {required && (
             <>
-              <span aria-hidden="true" className="ml-1 text-coral">*</span>
+              <span aria-hidden="true" className="ml-1 text-coral">
+                *
+              </span>
               <span className="sr-only"> required</span>
             </>
           )}
@@ -77,14 +82,20 @@ function SelectField({
           id={id}
           errorMessage={errorMessage}
           className={triggerClassName}
-          aria-describedby={errorMessage ? errorId : info ? descriptionId : undefined}
+          aria-describedby={
+            errorMessage ? errorId : info ? descriptionId : undefined
+          }
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
         <SelectContent className={contentClassName}>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.label}
             </SelectItem>
           ))}
@@ -92,12 +103,19 @@ function SelectField({
       </Select>
 
       {errorMessage ? (
-        <p id={errorId} role="alert" className="text-xs font-medium text-destructive">
+        <p
+          id={errorId}
+          role="alert"
+          className="text-xs font-medium text-destructive"
+        >
           {errorMessage}
         </p>
       ) : (
         info && (
-          <p id={descriptionId} className="text-xs leading-relaxed text-muted-foreground">
+          <p
+            id={descriptionId}
+            className="text-xs leading-relaxed text-muted-foreground"
+          >
             {info}
           </p>
         )

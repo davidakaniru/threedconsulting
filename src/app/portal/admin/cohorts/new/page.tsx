@@ -1,1 +1,4 @@
-import type { Metadata } from "next";import { AdminPage,PageBackButton,PageHeader,SectionCard } from "@/components/admin/ui";import { CohortForm } from "@/modules/cohorts";import { getTeachingAssignments } from "@/modules/teaching-assignments/server";export const metadata:Metadata={title:"Create Cohort | Admin Portal"};export default async function Page({searchParams}:{searchParams:Promise<{programmeId?:string}>}){const p=await searchParams;const data=await getTeachingAssignments({programmeId:p.programmeId,status:"active"});return <AdminPage><PageBackButton /><PageHeader eyebrow="Cohorts" title="Create cohort" description="Create a learner group under an active teaching assignment."/><SectionCard contentClassName="p-6"><CohortForm assignments={data.assignments} defaultAssignmentId={data.assignments.length===1?data.assignments[0].id:undefined}/></SectionCard></AdminPage>}
+import { redirect } from "next/navigation";
+export default function LegacyAdminCohortPage() {
+  redirect("/portal/admin/programmes");
+}

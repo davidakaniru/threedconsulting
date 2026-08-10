@@ -1,1 +1,66 @@
-import type {SelectOption} from "@/types/form";import type {FieldPath} from "react-hook-form";import type {EnrolmentFormValues} from "@/lib/schemas/enrolment-schema";type EnrolmentStep={id:string;label:string;fields:readonly FieldPath<EnrolmentFormValues>[]};export const enrolmentSteps=[{id:"child",label:"Your child",fields:["childFirstName","childLastName","childDateOfBirth","preferredFormat"]},{id:"programmes",label:"Choose programmes",fields:["programmes"]},{id:"parent",label:"Your details",fields:["parentName","email","phone","additionalInformation"]},{id:"confirm",label:"Confirm",fields:["acceptedTerms"]}] as const satisfies readonly EnrolmentStep[];export const preferredFormatOptions:SelectOption[]=[{label:"In person",value:"in-person"},{label:"Online",value:"online"},{label:"A blend of both",value:"blended"}];
+import type { FieldPath } from "react-hook-form";
+import type { EnrolmentFormValues } from "@/lib/schemas/enrolment-schema";
+
+type EnrolmentStep = {
+  id: string;
+  label: string;
+  fields: readonly FieldPath<EnrolmentFormValues>[];
+};
+
+export function getEnrolmentSteps(hasParentAccount: boolean) {
+  const steps: EnrolmentStep[] = [];
+  if (!hasParentAccount)
+    steps.push({
+      id: "parent",
+      label: "Your account",
+      fields: [
+        "parentFirstName",
+        "parentLastName",
+        "email",
+        "phone",
+        "password",
+        "confirmPassword",
+      ],
+    });
+  steps.push(
+    {
+      id: "child",
+      label: "Your child",
+      fields: [
+        "childMode",
+        "existingStudentId",
+        "childFirstName",
+        "childLastName",
+        "childDateOfBirth",
+        "currentEducationLevel",
+      ],
+    },
+    {
+      id: "lesson",
+      label: "Lesson request",
+      fields: [
+        "programmeId",
+        "preferredDays",
+        "preferredTime",
+        "durationMonths",
+        "additionalMessage",
+      ],
+    },
+    { id: "confirm", label: "Review", fields: ["acceptedTerms"] },
+  );
+  return steps;
+}
+
+export const lessonDays = [
+  { label: "Monday", value: "monday" },
+  { label: "Tuesday", value: "tuesday" },
+  { label: "Wednesday", value: "wednesday" },
+  { label: "Thursday", value: "thursday" },
+  { label: "Friday", value: "friday" },
+  { label: "Saturday", value: "saturday" },
+] as const;
+
+export const durationOptions = [1, 2, 3, 6, 12].map((months) => ({
+  label: `${months} ${months === 1 ? "month" : "months"}`,
+  value: String(months),
+}));

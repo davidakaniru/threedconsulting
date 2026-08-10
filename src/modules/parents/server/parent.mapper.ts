@@ -1,5 +1,49 @@
-import type { ParentDetail,ParentSummary } from "@/modules/parents/types";
-type AnyRow=Record<string,any>;
-const one=(v:any)=>Array.isArray(v)?v[0]:v;
-export function mapParentDetail(row:AnyRow):ParentDetail{const p=one(row.profiles)??{};const links=(row.student_parents??[]).map((l:any)=>{const s=one(l.students)??{};return{id:s.id,admissionNumber:s.admission_number,firstName:s.first_name,middleName:s.middle_name,lastName:s.last_name,relationship:l.relationship,isPrimaryContact:l.is_primary_contact};});return{id:row.id,firstName:p.first_name??"",lastName:p.last_name??"",email:p.email,phone:p.phone,occupation:row.occupation,onboardingStatus:row.onboarding_status,accountStatus:p.status,address:p.address,invitedAt:row.invited_at,activatedAt:row.activated_at,students:links,studentsCount:links.length,createdAt:row.created_at};}
-export function mapParentSummary(row:AnyRow):ParentSummary{const d=mapParentDetail(row);return{id:d.id,firstName:d.firstName,lastName:d.lastName,email:d.email,phone:d.phone,occupation:d.occupation,onboardingStatus:d.onboardingStatus,accountStatus:d.accountStatus,studentsCount:d.studentsCount,createdAt:d.createdAt};}
+import type { ParentDetail, ParentSummary } from "@/modules/parents/types";
+type AnyRow = Record<string, any>;
+const one = (v: any) => (Array.isArray(v) ? v[0] : v);
+export function mapParentDetail(row: AnyRow): ParentDetail {
+  const p = one(row.profiles) ?? {};
+  const links = (row.student_parents ?? []).map((l: any) => {
+    const s = one(l.students) ?? {};
+    return {
+      id: s.id,
+      admissionNumber: s.admission_number,
+      firstName: s.first_name,
+      middleName: s.middle_name,
+      lastName: s.last_name,
+      relationship: l.relationship,
+      isPrimaryContact: l.is_primary_contact,
+    };
+  });
+  return {
+    id: row.id,
+    firstName: p.first_name ?? "",
+    lastName: p.last_name ?? "",
+    email: p.email,
+    phone: p.phone,
+    occupation: row.occupation,
+    onboardingStatus: row.onboarding_status,
+    accountStatus: p.status,
+    address: p.address,
+    invitedAt: row.invited_at,
+    activatedAt: row.activated_at,
+    students: links,
+    studentsCount: links.length,
+    createdAt: row.created_at,
+  };
+}
+export function mapParentSummary(row: AnyRow): ParentSummary {
+  const d = mapParentDetail(row);
+  return {
+    id: d.id,
+    firstName: d.firstName,
+    lastName: d.lastName,
+    email: d.email,
+    phone: d.phone,
+    occupation: d.occupation,
+    onboardingStatus: d.onboardingStatus,
+    accountStatus: d.accountStatus,
+    studentsCount: d.studentsCount,
+    createdAt: d.createdAt,
+  };
+}

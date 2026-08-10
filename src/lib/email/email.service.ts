@@ -6,12 +6,16 @@ type EmailInput = {
   html: string;
 };
 
-export async function sendTransactionalEmail(input: EmailInput): Promise<boolean> {
+export async function sendTransactionalEmail(
+  input: EmailInput,
+): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.TRANSACTIONAL_EMAIL_FROM;
 
   if (!apiKey || !from) {
-    console.warn("Transactional email skipped: RESEND_API_KEY or TRANSACTIONAL_EMAIL_FROM is not configured.");
+    console.warn(
+      "Transactional email skipped: RESEND_API_KEY or TRANSACTIONAL_EMAIL_FROM is not configured.",
+    );
     return false;
   }
 
@@ -22,7 +26,12 @@ export async function sendTransactionalEmail(input: EmailInput): Promise<boolean
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from, to: [input.to], subject: input.subject, html: input.html }),
+      body: JSON.stringify({
+        from,
+        to: [input.to],
+        subject: input.subject,
+        html: input.html,
+      }),
     });
 
     if (!response.ok) {

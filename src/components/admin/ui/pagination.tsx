@@ -16,7 +16,9 @@ interface PaginationProps {
 
 function visiblePages(page: number, totalPages: number) {
   const pages = new Set([1, totalPages, page - 1, page, page + 1]);
-  return [...pages].filter((value) => value >= 1 && value <= totalPages).sort((a, b) => a - b);
+  return [...pages]
+    .filter((value) => value >= 1 && value <= totalPages)
+    .sort((a, b) => a - b);
 }
 
 export function Pagination({
@@ -42,7 +44,10 @@ export function Pagination({
         {total} {total === 1 ? singularLabel : label}
       </span>
 
-      <nav aria-label={`${label} pagination`} className="flex items-center gap-1.5">
+      <nav
+        aria-label={`${label} pagination`}
+        className="flex items-center gap-1.5"
+      >
         <Button
           variant="outline"
           size="icon-sm"

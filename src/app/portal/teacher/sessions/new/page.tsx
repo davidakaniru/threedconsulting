@@ -1,43 +1,38 @@
 import type { Metadata } from "next";
-import { AdminPage, PageBackButton, PageHeader, SectionCard } from "@/components/admin/ui";
+import {
+  AdminPage,
+  PageBackButton,
+  PageHeader,
+  SectionCard,
+} from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
-import { getCohorts } from "@/modules/cohorts/server";
+import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 import { SessionForm } from "@/modules/sessions";
-
 export const metadata: Metadata = { title: "New Session | Teacher Portal" };
-
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ cohortId?: string }>;
+  searchParams: Promise<{ lessonAssignmentId?: string }>;
 }) {
   const teacher = await requireTeacher();
-  const [{ cohortId }, { cohorts }] = await Promise.all([
+  const [{ lessonAssignmentId }, assignments] = await Promise.all([
     searchParams,
-    getCohorts({ teacherId: teacher.id, pageSize: 100 }),
+    getTeacherLessonAssignments(teacher.id),
   ]);
-  const availableCohorts = cohorts.filter(
-    (cohort) => cohort.status === "open" || cohort.status === "active",
-  );
-  const initialCohortId = availableCohorts.some(
-    (cohort) => cohort.id === cohortId,
-  )
-    ? cohortId
+  const lessons = assignments.filter((a) => a.status === "active");
+  const initial = lessons.some((a) => a.id === lessonAssignmentId)
+    ? lessonAssignmentId
     : undefined;
-
   return (
     <AdminPage>
       <PageBackButton />
       <PageHeader
         eyebrow="Sessions"
         title="Create session"
-        description="Schedule a strictly online class session for one of your cohorts."
+        description="Schedule an online one-to-one session for one of your active lessons."
       />
       <SectionCard contentClassName="p-6">
-        <SessionForm
-          cohorts={availableCohorts}
-          initialCohortId={initialCohortId}
-        />
+        <SessionForm lessons={lessons} initialLessonAssignmentId={initial} />
       </SectionCard>
     </AdminPage>
   );

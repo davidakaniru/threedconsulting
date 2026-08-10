@@ -1,1 +1,6 @@
-import Link from "next/link";import { Layers3 } from "lucide-react";import { EmptyState,SectionCard,StatusBadge } from "@/components/admin/ui";import { getCohorts } from "@/modules/cohorts/server";export async function TeacherCohorts({teacherId}:{teacherId:string}){const data=await getCohorts({teacherId,pageSize:100});return <SectionCard title="My cohorts" description="Cohorts attached to your active teaching assignments." contentClassName="p-5">{data.cohorts.length?<div className="grid gap-4 md:grid-cols-2">{data.cohorts.map(c=><article key={c.id} className="rounded-2xl border bg-white p-5"><div className="flex justify-between"><div><p className="text-xs font-bold text-primary">{c.code}</p><h3 className="font-display text-lg font-extrabold">{c.name}</h3><p className="text-sm text-slate-500">{c.programme.name}</p></div><StatusBadge status={c.status}/></div><p className="mt-4 text-sm text-slate-600">{c.memberCount} / {c.capacity} students</p></article>)}</div>:<EmptyState icon={Layers3} title="No cohorts assigned" description="Cohorts created for your programmes will appear here."/>}</SectionCard>}
+/**
+ * RETIRED MODULE TOMBSTONE (RC-1)
+ * This file intentionally contains no implementation.
+ * It remains only so merge-based checkpoint extraction overwrites the pre-pivot module.
+ */
+export {};
