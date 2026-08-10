@@ -706,7 +706,7 @@ export type Database = {
         Insert: {
           activated_at?: string | null;
           created_at?: string;
-          employee_id: string;
+          employee_id?: string;
           employment_status?: Database["public"]["Enums"]["teacher_employment_status"];
           hire_date?: string;
           id: string;

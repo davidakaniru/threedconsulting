@@ -72,6 +72,32 @@ export async function createTeacherRecord(input: TablesInsert<"teachers">) {
     .single();
 }
 
+export async function createTeacherProgrammeAssignments(
+  teacherId: string,
+  programmeIds: string[],
+  actorId: string,
+) {
+  return createAdminClient()
+    .from("teaching_assignments")
+    .insert(
+      programmeIds.map((programmeId) => ({
+        teacher_id: teacherId,
+        programme_id: programmeId,
+        primary_instructor: false,
+        assigned_by: actorId,
+      })),
+    )
+    .select("id");
+}
+
+export async function getPublishedProgrammeIds(programmeIds: string[]) {
+  return createAdminClient()
+    .from("programmes")
+    .select("id")
+    .in("id", programmeIds)
+    .eq("status", "published");
+}
+
 export async function configureTeacherProfile(
   id: string,
   values: { first_name: string; last_name: string; email: string },

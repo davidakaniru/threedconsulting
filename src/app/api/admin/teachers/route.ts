@@ -21,9 +21,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    await requireApiAdmin();
+    const admin = await requireApiAdmin();
     const input = await createTeacherSchema.validate(await request.json(), { abortEarly: false, stripUnknown: true });
-    return apiSuccess(await inviteTeacher(input, request.nextUrl.origin), 201);
+    return apiSuccess(
+      await inviteTeacher(input, request.nextUrl.origin, admin.id),
+      201,
+    );
   } catch (error) {
     if (error instanceof SyntaxError) return apiError("INVALID_JSON", "The request body is invalid.", 400);
     if (error instanceof ValidationError) {

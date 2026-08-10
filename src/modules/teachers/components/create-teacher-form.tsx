@@ -14,7 +14,13 @@ import {
 import { useCreateTeacher } from "@/modules/teachers/hooks";
 import { toApiError } from "@/lib/api/errors";
 
-export function CreateTeacherForm() {
+type ProgrammeOption = { id: string; name: string };
+
+export function CreateTeacherForm({
+  programmes,
+}: {
+  programmes: ProgrammeOption[];
+}) {
   const router = useRouter();
   const mutation = useCreateTeacher();
   const {
@@ -27,9 +33,9 @@ export function CreateTeacherForm() {
       firstName: "",
       lastName: "",
       email: "",
-      employeeId: "",
       qualification: "",
       specialization: "",
+      programmeIds: [],
     },
     mode: "onTouched",
   });
@@ -68,14 +74,6 @@ export function CreateTeacherForm() {
           {...register("email")}
         />
         <Input
-          id="employeeId"
-          label="Employee ID"
-          required
-          placeholder="e.g. TCH-001"
-          errorMessage={errors.employeeId?.message}
-          {...register("employeeId")}
-        />
-        <Input
           id="qualification"
           label="Qualification"
           placeholder="e.g. B.Ed Early Childhood Education"
@@ -90,9 +88,49 @@ export function CreateTeacherForm() {
           {...register("specialization")}
         />
       </div>
+
+      <fieldset className="space-y-3">
+        <div>
+          <legend className="text-sm font-semibold text-foreground">
+            Programmes <span className="text-destructive">*</span>
+          </legend>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Select every programme this teacher is eligible to teach.
+          </p>
+        </div>
+        {programmes.length ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {programmes.map((programme) => (
+              <label
+                key={programme.id}
+                className="flex cursor-pointer items-center gap-3 rounded-xl border bg-background px-4 py-3 text-sm font-medium transition hover:bg-muted/50"
+              >
+                <input
+                  type="checkbox"
+                  value={programme.id}
+                  {...register("programmeIds")}
+                  className="size-4 accent-primary"
+                />
+                <span>{programme.name}</span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
+            No published programmes are available. Publish a programme before
+            adding a teacher.
+          </p>
+        )}
+        {errors.programmeIds?.message ? (
+          <p className="text-sm font-medium text-destructive">
+            {errors.programmeIds.message}
+          </p>
+        ) : null}
+      </fieldset>
+
       <div className="rounded-xl bg-muted/60 p-4 text-sm text-muted-foreground">
-        The teacher will receive an account invitation by email. No password is
-        sent or stored in plaintext.
+        The teacher ID is generated automatically. The teacher will receive an
+        account invitation by email; no password is sent or stored in plaintext.
       </div>
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" asChild>
@@ -101,7 +139,7 @@ export function CreateTeacherForm() {
             Cancel
           </Link>
         </Button>
-        <Button type="submit" disabled={mutation.isPending}>
+        <Button type="submit" disabled={mutation.isPending || programmes.length === 0}>
           {mutation.isPending ? (
             "Sending invitation..."
           ) : (

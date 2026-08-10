@@ -21,7 +21,9 @@ import {
 import {
   configureTeacherProfile,
   createTeacherRecord,
+  createTeacherProgrammeAssignments,
   employeeIdExists,
+  getPublishedProgrammeIds,
   getTeacherRow,
   listTeacherRows,
   markTeacherActivated,
@@ -101,20 +103,23 @@ export async function getTeacherMetrics(): Promise<TeacherMetricsI> {
 export async function inviteTeacher(
   input: CreateTeacherRequest,
   origin: string,
+  actorId: string,
 ) {
-  const duplicate = await employeeIdExists(input.employeeId.trim());
-  if (duplicate.error)
+  const programmeIds = [...new Set(input.programmeIds)];
+  const programmeResult = await getPublishedProgrammeIds(programmeIds);
+  if (programmeResult.error)
     throw new ApiError(
-      "TEACHER_CHECK_FAILED",
-      "Teacher details could not be validated.",
+      "PROGRAMMES_CHECK_FAILED",
+      "Programme assignments could not be validated.",
       500,
     );
-  if (duplicate.data)
+  if ((programmeResult.data ?? []).length !== programmeIds.length)
     throw new ApiError(
-      "EMPLOYEE_ID_EXISTS",
-      "That employee ID is already in use.",
-      409,
+      "PROGRAMME_NOT_AVAILABLE",
+      "One or more selected programmes are no longer available.",
+      422,
     );
+
   const admin = createAdminClient();
   const { data: invite, error: inviteError } =
     await admin.auth.admin.inviteUserByEmail(input.email, {
@@ -146,13 +151,18 @@ export async function inviteTeacher(
     if (profileResult.error) throw profileResult.error;
     const teacherResult = await createTeacherRecord({
       id: invite.user.id,
-      employee_id: input.employeeId.trim(),
       qualification: nullableText(input.qualification),
       specialization: nullableText(input.specialization),
       employment_status: "active",
       onboarding_status: "invited",
     });
     if (teacherResult.error) throw teacherResult.error;
+    const assignmentResult = await createTeacherProgrammeAssignments(
+      invite.user.id,
+      programmeIds,
+      actorId,
+    );
+    if (assignmentResult.error) throw assignmentResult.error;
     return { id: invite.user.id, email: input.email };
   } catch (error) {
     await admin.auth.admin.deleteUser(invite.user.id);
