@@ -11,36 +11,43 @@ export async function getTeacherDashboard(
   teacherId: string,
 ): Promise<TeacherDashboardData> {
   const [assignmentResult, lessons, sessionResult] = await Promise.all([
-      getTeachingAssignments({ teacherId, status: "active" }),
-      getTeacherLessonAssignments(teacherId),
-      getSessions({ teacherId, page: 1, pageSize: 100 }),
-    ]);
+    getTeachingAssignments({ teacherId, status: "active" }),
+    getTeacherLessonAssignments(teacherId),
+    getSessions({ teacherId, page: 1, pageSize: 100 }),
+  ]);
 
   const now = new Date();
-  const activeLessons = lessons.filter((lesson) => lesson.status === "active");
-  const upcomingSessions = sessionResult.sessions
+  const allActiveLessons = lessons.filter((lesson) => lesson.status === "active");
+  const activeLessons = [...allActiveLessons]
+    .sort(
+      (a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+    )
+    .slice(0, 5);
+
+  const allUpcomingSessions = sessionResult.sessions
     .filter(
       (session) =>
         session.status === "scheduled" && sessionStart(session) >= now,
     )
-    .sort((a, b) => sessionStart(a).getTime() - sessionStart(b).getTime())
-    .slice(0, 5);
-  const attendanceAttention = sessionResult.sessions
+    .sort((a, b) => sessionStart(a).getTime() - sessionStart(b).getTime());
+  const upcomingSessions = allUpcomingSessions.slice(0, 3);
+  const allAttendanceAttention = sessionResult.sessions
     .filter(
       (session) =>
         (session.status === "scheduled" || session.status === "completed") &&
         session.attendance.pending > 0 &&
         session.attendance.total > 0,
     )
-    .sort((a, b) => sessionStart(b).getTime() - sessionStart(a).getTime())
-    .slice(0, 5);
+    .sort((a, b) => sessionStart(b).getTime() - sessionStart(a).getTime());
+  const attendanceAttention = allAttendanceAttention.slice(0, 5);
 
   return {
     metrics: {
       programmes: assignmentResult.assignments.length,
-      activeLessons: activeLessons.length,
-      upcomingSessions: upcomingSessions.length,
-      attendancePending: attendanceAttention.length,
+      activeLessons: allActiveLessons.length,
+      upcomingSessions: allUpcomingSessions.length,
+      attendancePending: allAttendanceAttention.length,
     },
     assignments: assignmentResult.assignments,
     lessons: activeLessons,

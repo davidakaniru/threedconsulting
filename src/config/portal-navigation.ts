@@ -7,7 +7,6 @@ import {
   GraduationCap,
   Home,
   ListChecks,
-  MessageSquare,
   Settings,
   UserRound,
   Users,
@@ -113,12 +112,6 @@ export const portalNavigation: Record<
       enabled: true,
     },
     {
-      label: "Messages",
-      href: "/portal/teacher/messages",
-      icon: MessageSquare,
-      enabled: false,
-    },
-    {
       label: "Settings",
       href: "/portal/profile",
       icon: Settings,
@@ -132,12 +125,6 @@ export const portalNavigation: Record<
       href: "/portal/parent/enrolments",
       icon: FileCheck2,
       enabled: true,
-    },
-    {
-      label: "Messages",
-      href: "/portal/parent/messages",
-      icon: MessageSquare,
-      enabled: false,
     },
     {
       label: "Settings",
