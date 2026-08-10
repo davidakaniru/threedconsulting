@@ -1,4 +1,5 @@
 import { ApiError } from "@/lib/api/errors";
+import { writeAuditLog } from "@/lib/audit";
 import { nullableText } from "@/lib/mappers";
 import { normalizePagination } from "@/lib/modules";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -25,6 +26,8 @@ import {
   employeeIdExists,
   getPublishedProgrammeIds,
   getTeacherRow,
+  getTeacherDeletionDependencies,
+  deleteTeacherTeachingAssignments,
   listTeacherRows,
   markTeacherActivated,
   updateAccountStatus,
@@ -173,6 +176,74 @@ export async function inviteTeacher(
       500,
     );
   }
+}
+
+
+export async function deleteTeacher(id: string, actorId: string) {
+  const teacher = await getTeacher(id);
+  const dependencies = await getTeacherDeletionDependencies(id);
+
+  if (dependencies.error || !dependencies.data)
+    throw new ApiError(
+      "TEACHER_DELETE_CHECK_FAILED",
+      "The teacher account could not be checked for linked records.",
+      500,
+    );
+
+  const {
+    lessonAssignments,
+    matchedRequests,
+    sessions,
+    cohorts,
+  } = dependencies.data;
+
+  if (lessonAssignments || matchedRequests || sessions || cohorts) {
+    throw new ApiError(
+      "TEACHER_HAS_HISTORY",
+      "This teacher has teaching history and cannot be deleted. Mark the teacher as former and suspend the account instead.",
+      409,
+      {
+        lessonAssignments: String(lessonAssignments),
+        matchedRequests: String(matchedRequests),
+        sessions: String(sessions),
+        cohorts: String(cohorts),
+      },
+    );
+  }
+
+  const assignmentDelete = await deleteTeacherTeachingAssignments(id);
+  if (assignmentDelete.error)
+    throw new ApiError(
+      "TEACHER_ASSIGNMENTS_DELETE_FAILED",
+      "The teacher's programme assignments could not be removed.",
+      500,
+    );
+
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.deleteUser(id);
+  if (error)
+    throw new ApiError(
+      "TEACHER_DELETE_FAILED",
+      "The teacher account could not be deleted.",
+      500,
+    );
+
+  await writeAuditLog({
+    actorId,
+    action: "teacher.deleted",
+    entityType: "teacher",
+    entityId: id,
+    metadata: {
+      employeeId: teacher.employeeId,
+      email: teacher.email,
+    },
+  });
+
+  return {
+    id,
+    email: teacher.email,
+    employeeId: teacher.employeeId,
+  };
 }
 
 export async function updateTeacher(id: string, input: UpdateTeacherRequest) {

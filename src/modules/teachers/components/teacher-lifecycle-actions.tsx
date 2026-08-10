@@ -7,13 +7,15 @@ import {
   PlayCircle,
   ShieldBan,
   ShieldCheck,
+  Trash2,
   UserRoundX,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/admin/ui";
-import { useTeacherAction } from "@/hooks/admin/use-teachers";
+import { useDeleteTeacher, useTeacherAction } from "@/hooks/admin/use-teachers";
 import { toApiError } from "@/lib/api/errors";
 import type {
   TeacherDetail,
@@ -25,7 +27,9 @@ export function TeacherLifecycleActions({
 }: {
   teacher: TeacherDetail;
 }) {
+  const router = useRouter();
   const mutation = useTeacherAction(teacher.id);
+  const deleteMutation = useDeleteTeacher(teacher.id);
 
   async function run(
     action: Parameters<typeof mutation.mutateAsync>[0],
@@ -144,6 +148,38 @@ export function TeacherLifecycleActions({
           }
         />
       )}
+
+      <div className="my-1 border-t border-slate-200" />
+
+      <ConfirmDialog
+        trigger={
+          <Button variant="destructive" className="w-full justify-start">
+            <Trash2 />
+            Delete teacher account
+          </Button>
+        }
+        title="Delete this teacher account?"
+        description={
+          <>
+            This permanently deletes the teacher account and cannot be undone.
+            Teachers with lesson or session history cannot be deleted; use
+            <strong> Mark former</strong> instead to preserve historical records.
+          </>
+        }
+        confirmLabel="Delete teacher"
+        tone="destructive"
+        isPending={deleteMutation.isPending}
+        onConfirm={async () => {
+          try {
+            await deleteMutation.mutateAsync();
+            toast.success("Teacher account deleted.");
+            router.push("/portal/admin/teachers");
+          } catch (error) {
+            toast.error(toApiError(error).message);
+          }
+        }}
+      />
+
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { ApiError } from "@/lib/api/errors";
 import { apiError, apiSuccess } from "@/lib/api/responses";
 import { requireApiAdmin } from "@/lib/auth/guards";
 import { updateTeacherSchema } from "@/modules/teachers/schemas";
-import { getTeacher, updateTeacher } from "@/modules/teachers/server";
+import { deleteTeacher, getTeacher, updateTeacher } from "@/modules/teachers/server";
 
 export const runtime = "nodejs";
 
@@ -39,5 +39,22 @@ export async function PATCH(request: NextRequest, context: Context) {
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
     console.error("Teacher detail PATCH failed", error);
     return apiError("INTERNAL_SERVER_ERROR", "Unable to update the teacher.", 500);
+  }
+}
+
+export async function DELETE(_: NextRequest, context: Context) {
+  try {
+    const admin = await requireApiAdmin();
+    const { id } = await context.params;
+    return apiSuccess(await deleteTeacher(id, admin.id));
+  } catch (error) {
+    if (error instanceof ApiError)
+      return apiError(error.code, error.message, error.status, error.details);
+    console.error("Teacher DELETE failed", error);
+    return apiError(
+      "INTERNAL_SERVER_ERROR",
+      "Unable to delete the teacher account.",
+      500,
+    );
   }
 }
