@@ -8,7 +8,6 @@ import {
   GraduationCap,
   Plus,
   ListChecks,
-  Sparkles,
 } from "lucide-react";
 
 import {
@@ -52,21 +51,6 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               Review today&apos;s teaching priorities, prepare upcoming
               sessions, and keep attendance up to date.
             </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="outline">
-              <Link href="/portal/teacher/lessons?tab=available">
-                <Sparkles />
-                Available lessons
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/portal/teacher/sessions/new">
-                <Plus />
-                Create session
-              </Link>
-            </Button>
           </div>
         </div>
       </div>
