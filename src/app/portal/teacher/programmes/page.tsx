@@ -1,5 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function TeacherProgrammesRedirect() {
-  redirect("/portal/teacher/teaching");
-}
+export default function Page(){ redirect("/portal/teacher/lessons"); }

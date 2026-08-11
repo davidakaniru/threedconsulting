@@ -1,3 +1,2 @@
-export * from "./homework-form";
-export * from "./homework-list";
-export * from "./homework-details";
+/** Homework is currently out of product scope. */
+export {};

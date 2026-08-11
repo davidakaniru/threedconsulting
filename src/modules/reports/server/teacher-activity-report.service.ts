@@ -21,20 +21,61 @@ function monthRange(month: string) {
     }).format(new Date(Date.UTC(y, m - 1, 1))),
   };
 }
+export type TeacherReportOption = {
+  value: string;
+  label: string;
+};
+
+export async function getTeacherReportOptions(): Promise<TeacherReportOption[]> {
+  const db = createAdminClient() as any;
+  const { data, error } = await db
+    .from("teachers")
+    .select(
+      "id,employee_id,profiles!inner(first_name,last_name,email)",
+    )
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error("Teachers could not be loaded for reporting.");
+
+  return (data ?? [])
+    .map((row: any) => {
+      const profile = one(row.profiles);
+      const name =
+        [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
+        profile?.email ||
+        "Teacher";
+
+      return {
+        value: row.id as string,
+        label: `${name} · ${row.employee_id}`,
+      };
+    })
+    .sort((a: TeacherReportOption, b: TeacherReportOption) =>
+      a.label.localeCompare(b.label),
+    );
+}
+
 export async function getMonthlyTeacherActivityReport(
   rawMonth?: string,
+  teacherId?: string,
 ): Promise<MonthlyTeacherReport> {
   const month = normalizeReportMonth(rawMonth);
   const range = monthRange(month);
   const db = createAdminClient() as any;
-  const { data, error } = await db
+  let query = db
     .from("class_sessions")
     .select(
       "id,title,session_date,start_time,status,lesson_assignments!inner(teacher_id,student_id,students(first_name,middle_name,last_name),programmes(name),teachers(profiles(first_name,last_name,email)))",
     )
     .not("lesson_assignment_id", "is", null)
     .gte("session_date", range.from)
-    .lte("session_date", range.to)
+    .lte("session_date", range.to);
+
+  if (teacherId) {
+    query = query.eq("lesson_assignments.teacher_id", teacherId);
+  }
+
+  const { data, error } = await query
     .order("session_date", { ascending: false })
     .order("start_time", { ascending: false });
   if (error) throw new Error("Teacher activity report could not be loaded.");

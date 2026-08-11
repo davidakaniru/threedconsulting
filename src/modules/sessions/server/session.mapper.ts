@@ -25,11 +25,6 @@ export function mapSession(row: any): ClassSession {
     total: statuses.length,
   };
   statuses.forEach((x) => attendance[x.status]++);
-  const hw = (row.homework ?? []) as Array<{
-    status: "draft" | "published" | "closed";
-  }>;
-  const homework = { draft: 0, published: 0, closed: 0, total: hw.length };
-  hw.forEach((x) => homework[x.status]++);
   return {
     id: row.id,
     lessonAssignmentId: row.lesson_assignment_id,
@@ -53,6 +48,5 @@ export function mapSession(row: any): ClassSession {
       teacher: { id: la?.teacher_id ?? "", name: teacherName },
     },
     attendance,
-    homework,
   };
 }

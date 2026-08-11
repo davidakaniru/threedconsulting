@@ -19,14 +19,13 @@ export const createTeacherSchema = yup
       .lowercase()
       .email("Please enter a valid email address.")
       .required("Please enter an email address."),
-    employeeId: yup
-      .string()
-      .trim()
-      .required("Please enter an employee ID.")
-      .min(2)
-      .max(40),
     qualification: yup.string().trim().max(120).default(""),
     specialization: yup.string().trim().max(120).default(""),
+    programmeIds: yup
+      .array()
+      .of(yup.string().uuid().required())
+      .min(1, "Assign at least one programme.")
+      .required("Assign at least one programme."),
   })
   .required();
 

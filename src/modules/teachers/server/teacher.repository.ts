@@ -72,6 +72,97 @@ export async function createTeacherRecord(input: TablesInsert<"teachers">) {
     .single();
 }
 
+export async function createTeacherProgrammeAssignments(
+  teacherId: string,
+  programmeIds: string[],
+  actorId: string,
+) {
+  return createAdminClient()
+    .from("teaching_assignments")
+    .insert(
+      programmeIds.map((programmeId) => ({
+        teacher_id: teacherId,
+        programme_id: programmeId,
+        primary_instructor: false,
+        assigned_by: actorId,
+      })),
+    )
+    .select("id");
+}
+
+export async function getPublishedProgrammeIds(programmeIds: string[]) {
+  return createAdminClient()
+    .from("programmes")
+    .select("id")
+    .in("id", programmeIds)
+    .eq("status", "published");
+}
+
+
+export async function getTeacherDeletionDependencies(id: string) {
+  const admin = createAdminClient() as any;
+  const [lessonAssignments, matchedRequests, sessions, teachingAssignments] =
+    await Promise.all([
+      admin
+        .from("lesson_assignments")
+        .select("id", { count: "exact", head: true })
+        .eq("teacher_id", id),
+      admin
+        .from("lesson_requests")
+        .select("id", { count: "exact", head: true })
+        .eq("matched_teacher_id", id),
+      admin
+        .from("class_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("created_by", id),
+      admin
+        .from("teaching_assignments")
+        .select("id")
+        .eq("teacher_id", id),
+    ]);
+
+  const failed = [
+    lessonAssignments,
+    matchedRequests,
+    sessions,
+    teachingAssignments,
+  ].find((result) => result.error);
+
+  if (failed?.error) return { error: failed.error, data: null };
+
+  const assignmentIds = (
+    (teachingAssignments.data ?? []) as Array<{ id: string }>
+  ).map((assignment) => assignment.id);
+
+  let cohortCount = 0;
+  if (assignmentIds.length) {
+    const cohorts = await admin
+      .from("cohorts")
+      .select("id", { count: "exact", head: true })
+      .in("teaching_assignment_id", assignmentIds);
+    if (cohorts.error) return { error: cohorts.error, data: null };
+    cohortCount = cohorts.count ?? 0;
+  }
+
+  return {
+    error: null,
+    data: {
+      lessonAssignments: lessonAssignments.count ?? 0,
+      matchedRequests: matchedRequests.count ?? 0,
+      sessions: sessions.count ?? 0,
+      cohorts: cohortCount,
+      teachingAssignmentIds: assignmentIds,
+    },
+  };
+}
+
+export async function deleteTeacherTeachingAssignments(teacherId: string) {
+  return createAdminClient()
+    .from("teaching_assignments")
+    .delete()
+    .eq("teacher_id", teacherId);
+}
+
 export async function configureTeacherProfile(
   id: string,
   values: { first_name: string; last_name: string; email: string },

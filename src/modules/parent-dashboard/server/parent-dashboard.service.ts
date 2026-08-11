@@ -29,8 +29,7 @@ export async function getParentAcademicDashboard(
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
 
-  const [assignmentsResult, sessionsResult, homeworkResult, attendanceResult] =
-    await Promise.all([
+  const [assignmentsResult, sessionsResult, attendanceResult] = await Promise.all([
       supabase
         .from("lesson_assignments")
         .select(
@@ -52,15 +51,6 @@ export async function getParentAcademicDashboard(
         .order("session_date", { ascending: true })
         .order("start_time", { ascending: true }),
       supabase
-        .from("homework_submissions")
-        .select(
-          "id,student_id,status,homework!inner(id,title,instructions,due_at,maximum_score,status,class_sessions!inner(title,lesson_assignments!inner(programmes!inner(name))))",
-        )
-        .in("student_id", studentIds)
-        .eq("homework.status", "published")
-        .not("homework.class_sessions.lesson_assignment_id", "is", null)
-        .order("created_at", { ascending: false }),
-      supabase
         .from("session_attendance")
         .select(
           "id,student_id,status,class_sessions!inner(title,session_date,lesson_assignments!inner(programmes!inner(name)))",
@@ -73,7 +63,6 @@ export async function getParentAcademicDashboard(
   for (const result of [
     assignmentsResult,
     sessionsResult,
-    homeworkResult,
     attendanceResult,
   ]) {
     if (result.error) throw result.error;
@@ -133,34 +122,6 @@ export async function getParentAcademicDashboard(
       )
       .slice(0, 8);
 
-    const homework = (homeworkResult.data ?? [])
-      .filter((row: any) => row.student_id === student.id)
-      .flatMap((row: any) => {
-        const item = relationOne(row.homework) as any;
-        const session = relationOne(item?.class_sessions) as any;
-        const assignment = relationOne(session?.lesson_assignments) as any;
-        const programme = relationOne(assignment?.programmes) as any;
-        return item
-          ? [
-              {
-                id: item.id,
-                submissionId: row.id,
-                title: item.title,
-                instructions: item.instructions,
-                dueAt: item.due_at,
-                maximumScore:
-                  item.maximum_score == null
-                    ? null
-                    : Number(item.maximum_score),
-                status: row.status,
-                programmeName: programme?.name ?? "Programme",
-                sessionTitle: session?.title ?? "Session",
-              },
-            ]
-          : [];
-      })
-      .sort((a: any, b: any) => a.dueAt.localeCompare(b.dueAt));
-
     const attendanceRows = (attendanceResult.data ?? []).filter(
       (row: any) => row.student_id === student.id,
     );
@@ -194,7 +155,6 @@ export async function getParentAcademicDashboard(
         .join(" "),
       programmes,
       upcomingSessions,
-      homework,
       attendance: {
         ...counts,
         marked,
@@ -206,55 +166,4 @@ export async function getParentAcademicDashboard(
   });
 
   return { children };
-}
-
-export async function markParentHomeworkDone(
-  parentId: string,
-  submissionId: string,
-) {
-  const supabase = createAdminClient() as any;
-
-  const { data: submission, error: submissionError } = await supabase
-    .from("homework_submissions")
-    .select(
-      "id,student_id,status,homework!inner(id,status,class_sessions!inner(lesson_assignments!inner(parent_id,student_id)))",
-    )
-    .eq("id", submissionId)
-    .maybeSingle();
-
-  if (submissionError) throw submissionError;
-  if (!submission) throw new Error("Homework submission not found.");
-
-  const homework = relationOne(submission.homework) as any;
-  const session = relationOne(homework?.class_sessions) as any;
-  const assignment = relationOne(session?.lesson_assignments) as any;
-
-  if (
-    !assignment ||
-    assignment.parent_id !== parentId ||
-    assignment.student_id !== submission.student_id
-  ) {
-    throw new Error("You cannot update this homework submission.");
-  }
-
-  if (homework?.status !== "published") {
-    throw new Error("Only published homework can be marked as done.");
-  }
-
-  if (submission.status === "graded") return submission;
-  if (submission.status === "submitted") return submission;
-  if (submission.status !== "pending" && submission.status !== "late") {
-    throw new Error("This homework cannot be marked as done.");
-  }
-
-  const { data, error } = await supabase
-    .from("homework_submissions")
-    .update({ status: "submitted", submitted_at: new Date().toISOString() })
-    .eq("id", submissionId)
-    .eq("student_id", submission.student_id)
-    .select("id,status,submitted_at")
-    .single();
-
-  if (error) throw error;
-  return data;
 }

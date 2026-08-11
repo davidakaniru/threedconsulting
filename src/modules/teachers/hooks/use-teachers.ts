@@ -62,6 +62,23 @@ export function useCreateTeacher() {
   });
 }
 
+
+export function useDeleteTeacher(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await apiClient.delete<
+        ApiSuccess<{ id: string; email: string; employeeId: string }>
+      >(API_ENDPOINTS.admin.teacher(id));
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: queryKeys.teachers.detail(id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.teachers.lists() });
+    },
+  });
+}
+
 export function useUpdateTeacher(id: string) {
   const queryClient = useQueryClient();
   return useMutation({

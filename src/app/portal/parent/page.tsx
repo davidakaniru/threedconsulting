@@ -17,7 +17,7 @@ export default async function ParentPortalPage() {
       <PageHeader
         eyebrow="Parent portal"
         title="Academic dashboard"
-        description="Switch between your linked children to view upcoming sessions, homework and attendance."
+        description="Switch between your linked children to view upcoming sessions, active lessons and attendance."
       />
       <ParentAcademicDashboardView data={data} />
     </AdminPage>

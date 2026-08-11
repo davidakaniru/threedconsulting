@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert, TablesUpdate } from "@/types/database";
 import { sanitizeFilterTerm } from "@/lib/repositories";
 const SELECT =
-  "id,lesson_assignment_id,title,description,session_date,start_time,end_time,meeting_link,status,created_by,created_at,updated_at,lesson_assignments!inner(id,teacher_id,student_id,programme_id,status,students(id,first_name,middle_name,last_name),programmes(id,name),teachers(id,profiles(first_name,last_name,email))),session_attendance(status),homework(status)" as const;
+  "id,lesson_assignment_id,title,description,session_date,start_time,end_time,meeting_link,status,created_by,created_at,updated_at,lesson_assignments!inner(id,teacher_id,student_id,programme_id,status,students(id,first_name,middle_name,last_name),programmes(id,name),teachers(id,profiles(first_name,last_name,email))),session_attendance(status)" as const;
 export function listSessionRows(
   from: number,
   to: number,

@@ -4,7 +4,6 @@ import {
   CalendarCheck2,
   CalendarDays,
   CheckCircle2,
-  ClipboardList,
   Clock3,
   GraduationCap,
   Plus,
@@ -23,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   formatDate,
-  formatDateTime,
   formatRelative,
   formatTime,
 } from "@/lib/date";
@@ -52,27 +50,21 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
               Review today&apos;s teaching priorities, prepare upcoming
-              sessions, and keep attendance and homework moving.
+              sessions, and keep attendance up to date.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="outline">
-              <Link href="/portal/teacher/opportunities">
+              <Link href="/portal/teacher/lessons?tab=available">
                 <Sparkles />
-                Available enrolments
+                Available lessons
               </Link>
             </Button>
             <Button asChild>
               <Link href="/portal/teacher/sessions/new">
                 <Plus />
                 Create session
-              </Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/portal/teacher/homework/new">
-                <ClipboardList />
-                Create homework
               </Link>
             </Button>
           </div>
@@ -195,13 +187,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
               description="Complete pending attendance sheets."
             />
             <QuickAction
-              href="/portal/teacher/homework/new"
-              icon={ClipboardList}
-              title="Assign homework"
-              description="Create work linked to one of your sessions."
-            />
-            <QuickAction
-              href="/portal/teacher/teaching"
+              href="/portal/teacher/lessons"
               icon={GraduationCap}
               title="Review my teaching"
               description="See your active one-to-one lessons and agreed schedules."
@@ -210,7 +196,7 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
         </SectionCard>
       </div>
 
-      <div className="grid gap-7 lg:grid-cols-2">
+      <div className="grid gap-7">
         <SectionCard
           title="Attendance requiring attention"
           description="Scheduled or completed sessions with pending learner records."
@@ -257,58 +243,15 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
           )}
         </SectionCard>
 
-        <SectionCard
-          title="Published homework"
-          description="Assignments currently visible to your lesson students."
-          icon={ClipboardList}
-          action={
-            <Button asChild variant="outline" size="sm">
-              <Link href="/portal/teacher/homework">View all</Link>
-            </Button>
-          }
-        >
-          {data.homeworkDue.length === 0 ? (
-            <EmptyState
-              compact
-              icon={ClipboardList}
-              title="No published homework"
-              description="Published assignments will appear here with their due dates."
-            />
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {data.homeworkDue.map((homework) => (
-                <Link
-                  key={homework.id}
-                  href={`/portal/teacher/homework/${homework.id}`}
-                  className="flex items-center gap-3 py-4 first:pt-0 last:pb-0"
-                >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700">
-                    <BookOpen className="size-4" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-extrabold text-foreground">
-                      {homework.title}
-                    </span>
-                    <span className="mt-1 block text-xs text-muted-foreground">
-                      {homework.session.lesson.student.name} · Due{" "}
-                      {formatDateTime(homework.dueAt)}
-                    </span>
-                  </span>
-                  <StatusBadge status={homework.status} />
-                </Link>
-              ))}
-            </div>
-          )}
-        </SectionCard>
       </div>
 
       <SectionCard
-        title="My teaching"
+        title="My lessons"
         description="Your active one-to-one lessons and the next scheduled class for each child."
         icon={GraduationCap}
         action={
           <Button asChild variant="outline" size="sm">
-            <Link href="/portal/teacher/teaching">View all lessons</Link>
+            <Link href="/portal/teacher/lessons">View all lessons</Link>
           </Button>
         }
       >

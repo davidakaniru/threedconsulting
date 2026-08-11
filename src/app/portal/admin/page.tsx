@@ -131,7 +131,7 @@ export default async function AdminPortalPage() {
         >
           {overview.pendingLessonRequests.length ? (
             <div className="divide-y divide-slate-100">
-              {overview.pendingLessonRequests.map((application) => (
+              {overview.pendingLessonRequests.slice(0, 3).map((application) => (
                 <Link
                   key={application.id}
                   href={`/portal/admin/enrolments/${application.id}`}
@@ -176,7 +176,7 @@ export default async function AdminPortalPage() {
         >
           {overview.todaySessions.length ? (
             <div className="divide-y divide-slate-100">
-              {overview.todaySessions.map((session) => (
+              {overview.todaySessions.slice(0, 3).map((session) => (
                 <Link
                   key={session.id}
                   href={`/portal/admin/sessions/${session.id}`}
@@ -216,7 +216,7 @@ export default async function AdminPortalPage() {
       >
         {overview.recentActivity.length ? (
           <div className="divide-y divide-slate-100">
-            {overview.recentActivity.map((activity) => (
+            {overview.recentActivity.slice(0, 5).map((activity) => (
               <div
                 key={activity.id}
                 className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6"

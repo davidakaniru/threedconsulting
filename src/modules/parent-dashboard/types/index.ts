@@ -26,17 +26,6 @@ export type ParentDashboardChild = {
     startTime: string;
     endTime: string;
   }>;
-  homework: Array<{
-    id: string;
-    submissionId: string;
-    title: string;
-    instructions: string;
-    dueAt: string;
-    maximumScore: number | null;
-    status: "pending" | "submitted" | "graded" | "late";
-    programmeName: string;
-    sessionTitle: string;
-  }>;
   attendance: {
     present: number;
     absent: number;

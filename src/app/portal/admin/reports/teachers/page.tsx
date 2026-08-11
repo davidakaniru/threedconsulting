@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BarChart3, CalendarCheck2, GraduationCap, Users } from "lucide-react";
+import {
+  BarChart3,
+  CalendarCheck2,
+  CalendarX2,
+  Users,
+} from "lucide-react";
+
 import {
   AdminPage,
   EmptyState,
@@ -10,136 +16,172 @@ import {
   SectionCard,
   StatusBadge,
 } from "@/components/admin/ui";
-import { TeacherReportMonthPicker } from "@/modules/reports/teacher-report-month-picker";
-import { getMonthlyTeacherActivityReport } from "@/modules/reports/server";
+import { TeacherReportFilters } from "@/modules/reports/teacher-report-filters";
+import {
+  getMonthlyTeacherActivityReport,
+  getTeacherReportOptions,
+  normalizeReportMonth,
+} from "@/modules/reports/server";
+
 export const metadata: Metadata = {
   title: "Teacher Activity Reports | Admin Portal",
 };
+
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ month?: string }>;
+  searchParams: Promise<{ month?: string; teacherId?: string }>;
 }) {
   const params = await searchParams;
-  const report = await getMonthlyTeacherActivityReport(params.month);
+  const month = normalizeReportMonth(params.month);
+  const teachers = await getTeacherReportOptions();
+  const selectedTeacher = params.teacherId
+    ? teachers.find((teacher) => teacher.value === params.teacherId)
+    : undefined;
+
+  const report = selectedTeacher
+    ? await getMonthlyTeacherActivityReport(month, selectedTeacher.value)
+    : null;
+
+  const activity = report?.teachers[0] ?? null;
+
   return (
     <AdminPage>
       <PageHeader
         eyebrow="Reports"
         title="Teacher activity"
-        description={`Monthly teaching activity for ${report.label}, generated automatically from lesson sessions.`}
-        actions={<TeacherReportMonthPicker month={report.month} />}
+        description="Select a teacher and month to review their teaching activity."
       />
-      <MetricGrid>
-        <MetricCard
-          label="Active teachers"
-          value={report.totals.teachers}
-          icon={GraduationCap}
+
+      <SectionCard
+        title="Report filters"
+        description="Search by teacher name or ID, then choose the reporting month."
+      >
+        <TeacherReportFilters
+          month={month}
+          teacherId={selectedTeacher?.value}
+          teachers={teachers}
         />
-        <MetricCard
-          label="Students taught"
-          value={report.totals.students}
-          icon={Users}
-        />
-        <MetricCard
-          label="Sessions"
-          value={report.totals.sessions}
+      </SectionCard>
+
+      {!selectedTeacher ? (
+        <EmptyState
           icon={BarChart3}
+          title="Select a teacher"
+          description="Choose a teacher above to view their monthly activity report."
         />
-        <MetricCard
-          label="Completed"
-          value={report.totals.completed}
-          icon={CalendarCheck2}
-        />
-      </MetricGrid>
-      {report.teachers.length === 0 ? (
+      ) : !activity || !report ? (
         <EmptyState
           icon={BarChart3}
           title="No teacher activity"
-          description={`There are no lesson-assignment sessions recorded for ${report.label}.`}
+          description={`No lesson sessions were recorded for ${selectedTeacher.label} in ${new Intl.DateTimeFormat(
+            "en-NG",
+            { month: "long", year: "numeric", timeZone: "UTC" },
+          ).format(new Date(`${month}-01T00:00:00Z`))}.`}
         />
       ) : (
-        <div className="space-y-5">
-          {report.teachers.map((t) => (
-            <SectionCard
-              key={t.teacherId}
-              eyebrow="Teacher"
-              title={t.teacherName}
-              description={t.email}
-              action={
-                <Link
-                  className="text-sm font-bold text-primary hover:underline"
-                  href={`/portal/admin/teachers/${t.teacherId}`}
-                >
-                  View teacher
-                </Link>
-              }
-            >
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                <Mini label="Students" value={t.studentsTaught} />
-                <Mini label="Sessions" value={t.sessionsTotal} />
-                <Mini label="Completed" value={t.completed} />
-                <Mini label="Scheduled" value={t.scheduled} />
-                <Mini label="Cancelled" value={t.cancelled} />
+        <>
+          <MetricGrid>
+            <MetricCard
+              label="Students taught"
+              value={activity.studentsTaught}
+              icon={Users}
+            />
+            <MetricCard
+              label="Sessions"
+              value={activity.sessionsTotal}
+              icon={BarChart3}
+            />
+            <MetricCard
+              label="Completed"
+              value={activity.completed}
+              icon={CalendarCheck2}
+            />
+            <MetricCard
+              label="Cancelled"
+              value={activity.cancelled}
+              icon={CalendarX2}
+            />
+          </MetricGrid>
+
+          <SectionCard
+            eyebrow="Teacher"
+            title={activity.teacherName}
+            description={`${activity.email} · ${report.label}`}
+            action={
+              <Link
+                className="text-sm font-bold text-primary hover:underline"
+                href={`/portal/admin/teachers/${activity.teacherId}`}
+              >
+                View teacher
+              </Link>
+            }
+          >
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Mini label="Scheduled" value={activity.scheduled} />
+              <Mini label="Completed" value={activity.completed} />
+              <Mini label="Cancelled" value={activity.cancelled} />
+            </div>
+
+            <div className="mt-5">
+              <p className="text-xs font-extrabold uppercase tracking-[.14em] text-muted-foreground">
+                Subject breakdown
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {activity.programmes.map((programme) => (
+                  <span
+                    key={programme.name}
+                    className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary"
+                  >
+                    {programme.name} · {programme.sessions}
+                  </span>
+                ))}
               </div>
-              <div className="mt-5">
-                <p className="text-xs font-extrabold uppercase tracking-[.14em] text-muted-foreground">
-                  Subject breakdown
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {t.programmes.map((p) => (
-                    <span
-                      key={p.name}
-                      className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary"
+            </div>
+
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full min-w-175 text-left text-sm">
+                <thead className="border-b text-xs uppercase tracking-wide text-muted-foreground">
+                  <tr>
+                    <th className="py-3 pr-4">Date</th>
+                    <th className="py-3 pr-4">Session</th>
+                    <th className="py-3 pr-4">Child</th>
+                    <th className="py-3 pr-4">Subject</th>
+                    <th className="py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activity.sessions.map((session) => (
+                    <tr
+                      key={session.id}
+                      className="border-b border-slate-100 last:border-0"
                     >
-                      {p.name} · {p.sessions}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-5 overflow-x-auto">
-                <table className="w-full min-w-175 text-left text-sm">
-                  <thead className="border-b text-xs uppercase tracking-wide text-muted-foreground">
-                    <tr>
-                      <th className="py-3 pr-4">Date</th>
-                      <th className="py-3 pr-4">Session</th>
-                      <th className="py-3 pr-4">Child</th>
-                      <th className="py-3 pr-4">Subject</th>
-                      <th className="py-3">Status</th>
+                      <td className="py-3 pr-4">{session.date}</td>
+                      <td className="py-3 pr-4">
+                        <Link
+                          href={`/portal/admin/sessions/${session.id}`}
+                          className="font-semibold hover:text-primary"
+                        >
+                          {session.title}
+                        </Link>
+                      </td>
+                      <td className="py-3 pr-4">{session.studentName}</td>
+                      <td className="py-3 pr-4">{session.programmeName}</td>
+                      <td className="py-3">
+                        <StatusBadge status={session.status} />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {t.sessions.map((s) => (
-                      <tr
-                        key={s.id}
-                        className="border-b border-slate-100 last:border-0"
-                      >
-                        <td className="py-3 pr-4">{s.date}</td>
-                        <td className="py-3 pr-4">
-                          <Link
-                            href={`/portal/admin/sessions/${s.id}`}
-                            className="font-semibold hover:text-primary"
-                          >
-                            {s.title}
-                          </Link>
-                        </td>
-                        <td className="py-3 pr-4">{s.studentName}</td>
-                        <td className="py-3 pr-4">{s.programmeName}</td>
-                        <td className="py-3">
-                          <StatusBadge status={s.status} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </SectionCard>
-          ))}
-        </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </SectionCard>
+        </>
       )}
     </AdminPage>
   );
 }
+
 function Mini({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4">
