@@ -16,7 +16,7 @@ const stats = [
     label: "Parent satisfaction",
   },
   {
-    value: 120,
+    value: 10,
     suffix: "+",
     label: "Qualified teachers",
   },

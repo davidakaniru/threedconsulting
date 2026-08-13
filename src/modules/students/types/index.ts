@@ -10,6 +10,7 @@ export interface StudentSummary {
   middleName: string | null;
   lastName: string;
   dateOfBirth: string;
+  currentEducationLevel: string | null;
   gender: StudentGender | null;
   status: StudentStatus;
   admissionDate: string;

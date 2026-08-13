@@ -12,7 +12,7 @@ export async function getParentAcademicDashboard(
   const { data: links, error: linksError } = await supabase
     .from("student_parents")
     .select(
-      "student_id,students!inner(id,admission_number,first_name,middle_name,last_name,status)",
+      "student_id,students!inner(id,admission_number,first_name,middle_name,last_name,current_education_level,status)",
     )
     .eq("parent_id", parentId);
 
@@ -153,6 +153,7 @@ export async function getParentAcademicDashboard(
       fullName: [student.first_name, student.middle_name, student.last_name]
         .filter(Boolean)
         .join(" "),
+      currentEducationLevel: student.current_education_level ?? null,
       programmes,
       upcomingSessions,
       attendance: {

@@ -1,24 +1,5 @@
-import {
-  AdminPage,
-  PageBackButton,
-  PageHeader,
-  SectionCard,
-} from "@/components/admin/ui";
-import { ParentForm } from "@/modules/parents";
-import { getParentStudentOptions } from "@/modules/parents/server";
-export default async function Page() {
-  const students = await getParentStudentOptions();
-  return (
-    <AdminPage>
-      <PageBackButton />
-      <PageHeader
-        eyebrow="Families"
-        title="Add parent"
-        description="Create a parent account, link students and send an activation invitation."
-      />
-      <SectionCard contentClassName="p-6">
-        <ParentForm students={students} />
-      </SectionCard>
-    </AdminPage>
-  );
+import { redirect } from "next/navigation";
+
+export default function RetiredParentCreationPage() {
+  redirect("/portal/admin/parents");
 }

@@ -14,6 +14,7 @@ export function mapStudentSummary(
     middleName: row.middle_name,
     lastName: row.last_name,
     dateOfBirth: row.date_of_birth,
+    currentEducationLevel: row.current_education_level,
     gender: row.gender as StudentSummary["gender"],
     status: row.status,
     admissionDate: row.admission_date,

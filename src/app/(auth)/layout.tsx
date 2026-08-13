@@ -33,8 +33,8 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
         className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)]
           max-w-6xl items-center justify-center gap-10"
       >
-        <div className="mx-auto w-full">
-          <AuthLogo compact className="mb-7 lg:hidden" />
+        <div className="mx-auto w-full flex flex-col items-center justify-center">
+          <AuthLogo compact className="mb-7" />
           {children}
         </div>
       </div>

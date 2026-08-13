@@ -210,38 +210,19 @@ export async function listParentEnrolmentChildren(
   parentId: string,
 ): Promise<ParentEnrolmentChild[]> {
   const admin = createAdminClient() as any;
-  const [
-    { data: links, error: linksError },
-    { data: assignments, error: assignmentsError },
-  ] = await Promise.all([
-    admin
-      .from("student_parents")
-      .select(
-        "student_id,students!inner(id,first_name,middle_name,last_name,date_of_birth,status)",
-      )
-      .eq("parent_id", parentId),
-    admin
-      .from("lesson_assignments")
-      .select("student_id,current_education_level,created_at")
-      .eq("parent_id", parentId)
-      .order("created_at", { ascending: false }),
-  ]);
+  const { data: links, error: linksError } = await admin
+    .from("student_parents")
+    .select(
+      "student_id,students!inner(id,first_name,middle_name,last_name,date_of_birth,current_education_level,status)",
+    )
+    .eq("parent_id", parentId);
 
-  if (linksError || assignmentsError)
+  if (linksError)
     throw new ApiError(
       "PARENT_CHILDREN_LOAD_FAILED",
       "Your linked children could not be loaded.",
       500,
     );
-
-  const latestLevel = new Map<string, string>();
-  for (const assignment of assignments ?? []) {
-    if (!latestLevel.has(assignment.student_id))
-      latestLevel.set(
-        assignment.student_id,
-        assignment.current_education_level ?? "",
-      );
-  }
 
   return (links ?? [])
     .flatMap((link: any) => {
@@ -257,7 +238,7 @@ export async function listParentEnrolmentChildren(
             .filter(Boolean)
             .join(" "),
           dateOfBirth: student.date_of_birth,
-          currentEducationLevel: latestLevel.get(student.id) ?? "",
+          currentEducationLevel: student.current_education_level ?? "",
         },
       ];
     })

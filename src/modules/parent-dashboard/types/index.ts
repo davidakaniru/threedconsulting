@@ -5,6 +5,7 @@ export type ParentDashboardChild = {
   middleName: string | null;
   lastName: string;
   fullName: string;
+  currentEducationLevel: string | null;
   programmes: Array<{
     id: string;
     name: string;

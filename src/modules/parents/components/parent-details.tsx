@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Mail,
   Pencil,
@@ -16,10 +17,12 @@ import type { ParentDetail } from "@/modules/parents/types";
 import { toast } from "sonner";
 import { toApiError } from "@/lib/api/errors";
 export function ParentDetails({ parent }: { parent: ParentDetail }) {
+  const [currentParent, setCurrentParent] = useState(parent);
   const action = useParentAction(parent.id);
   async function run(v: any) {
     try {
-      await action.mutateAsync(v);
+      const updated = await action.mutateAsync(v);
+      setCurrentParent(updated);
       toast.success("Parent account updated.");
     } catch (e) {
       toast.error(toApiError(e).message);
@@ -32,12 +35,12 @@ export function ParentDetails({ parent }: { parent: ParentDetail }) {
           <div className="flex justify-between gap-4">
             <div>
               <h2 className="font-display text-2xl font-extrabold">
-                {parent.firstName} {parent.lastName}
+                {currentParent.firstName} {currentParent.lastName}
               </h2>
-              <p className="text-sm text-muted-foreground">{parent.email}</p>
+              <p className="text-sm text-muted-foreground">{currentParent.email}</p>
               <div className="mt-3 flex gap-2">
-                <StatusBadge status={parent.onboardingStatus} />
-                <StatusBadge status={parent.accountStatus} />
+                <StatusBadge status={currentParent.onboardingStatus} />
+                <StatusBadge status={currentParent.accountStatus} />
               </div>
             </div>
             <Button asChild variant="outline">
@@ -52,21 +55,21 @@ export function ParentDetails({ parent }: { parent: ParentDetail }) {
           title="Contact information"
           contentClassName="grid gap-4 p-6 sm:grid-cols-2"
         >
-          <InfoCard icon={Mail} title="Email" description={parent.email} />
+          <InfoCard icon={Mail} title="Email" description={currentParent.email} />
           <InfoCard
             icon={Phone}
             title="Phone"
-            description={parent.phone || "Not provided"}
+            description={currentParent.phone || "Not provided"}
           />
           <InfoCard
             icon={Briefcase}
             title="Occupation"
-            description={parent.occupation || "Not provided"}
+            description={currentParent.occupation || "Not provided"}
           />
           <InfoCard
             icon={ShieldCheck}
             title="Address"
-            description={parent.address || "Not provided"}
+            description={currentParent.address || "Not provided"}
           />
         </SectionCard>
         <SectionCard
@@ -74,8 +77,8 @@ export function ParentDetails({ parent }: { parent: ParentDetail }) {
           description="Children connected to this parent account."
           contentClassName="space-y-3 p-6"
         >
-          {parent.students.length ? (
-            parent.students.map((s) => (
+          {currentParent.students.length ? (
+            currentParent.students.map((s) => (
               <Link
                 key={s.id}
                 href={`/portal/admin/students/${s.id}`}
@@ -108,9 +111,9 @@ export function ParentDetails({ parent }: { parent: ParentDetail }) {
         <InfoCard
           icon={Users}
           title="Students"
-          description={`${parent.studentsCount} linked student${parent.studentsCount === 1 ? "" : "s"}.`}
+          description={`${currentParent.studentsCount} linked student${currentParent.studentsCount === 1 ? "" : "s"}.`}
         />
-        {parent.onboardingStatus === "invited" && (
+        {currentParent.onboardingStatus === "invited" && (
           <Button
             className="w-full"
             onClick={() => void run({ type: "resend_invitation" })}
@@ -122,18 +125,19 @@ export function ParentDetails({ parent }: { parent: ParentDetail }) {
         )}
         <Button
           variant={
-            parent.accountStatus === "suspended" ? "default" : "destructive"
+            currentParent.accountStatus === "suspended" ? "default" : "destructive"
           }
           className="w-full"
+          disabled={action.isPending}
           onClick={() =>
             void run({
               type: "account_status",
               status:
-                parent.accountStatus === "suspended" ? "active" : "suspended",
+                currentParent.accountStatus === "suspended" ? "active" : "suspended",
             })
           }
         >
-          {parent.accountStatus === "suspended"
+          {currentParent.accountStatus === "suspended"
             ? "Reactivate account"
             : "Suspend account"}
         </Button>

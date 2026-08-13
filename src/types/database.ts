@@ -588,6 +588,7 @@ export type Database = {
           admission_date: string;
           admission_number: string;
           created_at: string;
+          current_education_level: string | null;
           date_of_birth: string;
           first_name: string;
           gender: string | null;
@@ -603,6 +604,7 @@ export type Database = {
           admission_date?: string;
           admission_number: string;
           created_at?: string;
+          current_education_level?: string | null;
           date_of_birth: string;
           first_name: string;
           gender?: string | null;
@@ -618,6 +620,7 @@ export type Database = {
           admission_date?: string;
           admission_number?: string;
           created_at?: string;
+          current_education_level?: string | null;
           date_of_birth?: string;
           first_name?: string;
           gender?: string | null;

@@ -31,6 +31,10 @@ export const API_ENDPOINTS = {
     session: (id: string) => `/teacher/sessions/${id}`,
     sessionAttendance: (id: string) => `/teacher/sessions/${id}/attendance`,
   },
+  parent: {
+    student: (id: string) => `/parent/students/${id}`,
+    studentPhoto: (id: string) => `/parent/students/${id}/photo`,
+  },
   profile: {
     root: "/profile",
     avatar: "/profile/avatar",

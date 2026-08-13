@@ -4,18 +4,14 @@ import type { LucideIcon } from "lucide-react";
 import {
   Baby,
   CalendarDays,
-  Camera,
   FileText,
   GraduationCap,
   Pencil,
   School,
   UserRound,
 } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
-import { toApiError } from "@/lib/api/errors";
-import { useUploadStudentPhoto } from "@/modules/students/hooks";
 import type { StudentDetail } from "@/modules/students/types";
 import Image from "next/image";
 
@@ -43,16 +39,6 @@ export function StudentDetails({
   student: StudentDetail;
   parents?: StudentParent[];
 }) {
-  const upload = useUploadStudentPhoto(student.id);
-  async function choose(file?: File) {
-    if (!file) return;
-    try {
-      await upload.mutateAsync(file);
-      toast.success("Student photo updated.");
-    } catch (e) {
-      toast.error(toApiError(e).message);
-    }
-  }
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
       <div className="space-y-6">
@@ -92,25 +78,12 @@ export function StudentDetails({
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-4xl border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
-                <Camera className="size-4" />
-                {upload.isPending ? "Uploading..." : "Photo"}
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="sr-only"
-                  disabled={upload.isPending}
-                  onChange={(e) => void choose(e.target.files?.[0])}
-                />
-              </label>
-              <Button asChild variant="outline">
-                <Link href={`/portal/admin/students/${student.id}/edit`}>
-                  <Pencil />
-                  Edit
-                </Link>
-              </Button>
-            </div>
+            <Button asChild variant="outline">
+              <Link href={`/portal/admin/students/${student.id}/edit`}>
+                <Pencil />
+                Edit admission
+              </Link>
+            </Button>
           </div>
         </SectionCard>
         <SectionCard
@@ -146,7 +119,14 @@ export function StudentDetails({
             {student.notes || "No administrative notes have been added."}
           </p>
         </SectionCard>
-        <div className="grid gap-5 md:grid-cols-3">
+      </div>
+      <aside className="space-y-6">
+        <InfoCard
+          icon={GraduationCap}
+          title="Admission record"
+          description={`Created ${date(student.admissionDate)} with system-generated number ${student.admissionNumber}.`}
+        />
+        <div className="grid gap-5">
           <div className="rounded-2xl border bg-white p-5">
             <div className="mb-3 flex items-center gap-2 font-display font-extrabold">
               <UserRound className="size-4" />
@@ -176,24 +156,7 @@ export function StudentDetails({
               </p>
             )}
           </div>
-          <InfoCard
-            icon={School}
-            title="Class"
-            description="Class assignment will appear after the Classes and Enrollment modules."
-          />
-          <InfoCard
-            icon={FileText}
-            title="Documents"
-            description="Student document management will be added in a later checkpoint."
-          />
         </div>
-      </div>
-      <aside>
-        <InfoCard
-          icon={GraduationCap}
-          title="Admission record"
-          description={`Created ${date(student.admissionDate)} with system-generated number ${student.admissionNumber}.`}
-        />
       </aside>
     </div>
   );
