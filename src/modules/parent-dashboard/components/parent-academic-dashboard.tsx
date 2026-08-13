@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   GraduationCap,
   Plus,
@@ -19,6 +20,7 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu } from "radix-ui";
 import {
   formatDate,
   formatDateTime,
@@ -80,7 +82,7 @@ function DashboardContent() {
     <div className="space-y-6">
       <SectionCard
         className="overflow-visible"
-        contentClassName="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end"
+        contentClassName="grid gap-5 md:grid-cols-[minmax(0,1fr)_20rem] lg:items-end"
       >
         <div>
           <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
@@ -95,14 +97,46 @@ function DashboardContent() {
               "No active lessons yet"}
           </p>
         </div>
-        <div className="space-y-3">
+        <div className="h-full flex flex-col items-start justify-end gap-3 sm:flex-row sm:items-center sm:justify-end">
           <ChildSwitcher />
-          <Button asChild className="w-full sm:w-auto">
-            <Link href={`/enrolment?child=${child.id}`}>
-              <Plus />
-              Request another lesson
-            </Link>
-          </Button>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
+                Actions
+                <ChevronDown className="size-4" />
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                sideOffset={8}
+                align="end"
+                className="z-50 min-w-56 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl"
+              >
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href={`/portal/parent/children/${child.id}/edit`}
+                    className="flex cursor-default items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none data-highlighted:bg-slate-100"
+                  >
+                    <UserRound className="size-4" />
+                    Edit child profile
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href={`/enrolment?child=${child.id}`}
+                    className="flex cursor-default items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none data-highlighted:bg-slate-100"
+                  >
+                    <Plus className="size-4" />
+                    Request another lesson
+                  </Link>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       </SectionCard>
 
@@ -270,7 +304,6 @@ function DashboardContent() {
             </div>
           )}
         </SectionCard>
-
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">

@@ -1,1 +1,41 @@
-import type{NextRequest}from"next/server";import{ValidationError}from"yup";import{ApiError}from"@/lib/api/errors";import{apiError,apiSuccess}from"@/lib/api/responses";import{requireApiAdmin}from"@/lib/auth/guards";import{createParentSchema}from"@/modules/parents/schemas";import{createParent,getParents}from"@/modules/parents/server";export const runtime="nodejs";const validation=(e:ValidationError)=>apiError("VALIDATION_ERROR","Please correct the highlighted fields.",422,e.inner.reduce<Record<string,string>>((a,i)=>{if(i.path&&!a[i.path])a[i.path]=i.message;return a;},{}));export async function GET(r:NextRequest){try{await requireApiAdmin();const q=r.nextUrl.searchParams;return apiSuccess(await getParents({page:Number(q.get("page")||1),pageSize:Number(q.get("pageSize")||10),search:q.get("search")??undefined,status:q.get("status")??undefined}));}catch(e){if(e instanceof ApiError)return apiError(e.code,e.message,e.status,e.details);return apiError("INTERNAL_SERVER_ERROR","Unable to load parents.",500)}}export async function POST(r:NextRequest){try{const user=await requireApiAdmin();const input=await createParentSchema.validate(await r.json(),{abortEarly:false,stripUnknown:true});return apiSuccess(await createParent(input,r.nextUrl.origin,user.id),201);}catch(e){if(e instanceof ValidationError)return validation(e);if(e instanceof ApiError)return apiError(e.code,e.message,e.status,e.details);console.error(e);return apiError("INTERNAL_SERVER_ERROR","Unable to create parent.",500)}}
+import type { NextRequest } from "next/server";
+import { ApiError } from "@/lib/api/errors";
+import { apiError, apiSuccess } from "@/lib/api/responses";
+import { requireApiAdmin } from "@/lib/auth/guards";
+import { getParents } from "@/modules/parents/server";
+
+export const runtime = "nodejs";
+
+export async function GET(request: NextRequest) {
+  try {
+    await requireApiAdmin();
+    const query = request.nextUrl.searchParams;
+    return apiSuccess(
+      await getParents({
+        page: Number(query.get("page") || 1),
+        pageSize: Number(query.get("pageSize") || 10),
+        search: query.get("search") ?? undefined,
+        status: query.get("status") ?? undefined,
+      }),
+    );
+  } catch (error) {
+    if (error instanceof ApiError)
+      return apiError(error.code, error.message, error.status, error.details);
+    return apiError("INTERNAL_SERVER_ERROR", "Unable to load parents.", 500);
+  }
+}
+
+export async function POST() {
+  try {
+    await requireApiAdmin();
+    return apiError(
+      "PARENT_CREATION_DISABLED",
+      "Parent accounts are created through the enrolment process.",
+      403,
+    );
+  } catch (error) {
+    if (error instanceof ApiError)
+      return apiError(error.code, error.message, error.status, error.details);
+    return apiError("INTERNAL_SERVER_ERROR", "Unable to process request.", 500);
+  }
+}

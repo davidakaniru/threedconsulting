@@ -6,6 +6,7 @@ import { queryKeys } from "@/lib/query/query-keys";
 import type { ApiSuccess } from "@/lib/api/types";
 import type {
   CreateStudentRequest,
+  UpdateStudentPersonalRequest,
   UpdateStudentRequest,
 } from "@/modules/students/schemas";
 import type {
@@ -90,6 +91,43 @@ export function useUploadStudentPhoto(id: string) {
     onSuccess: (student) => {
       client.setQueryData(queryKeys.students.detail(id), student);
       client.invalidateQueries({ queryKey: queryKeys.students.lists() });
+    },
+  });
+}
+
+
+export function useUpdateParentStudent(id: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async (values: UpdateStudentPersonalRequest) =>
+      (
+        await apiClient.patch<ApiSuccess<StudentDetail>>(
+          API_ENDPOINTS.parent.student(id),
+          values,
+        )
+      ).data.data,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: queryKeys.students.detail(id) });
+    },
+  });
+}
+
+export function useUploadParentStudentPhoto(id: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const form = new FormData();
+      form.set("photo", file);
+      return (
+        await apiClient.post<ApiSuccess<StudentDetail>>(
+          API_ENDPOINTS.parent.studentPhoto(id),
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        )
+      ).data.data;
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: queryKeys.students.detail(id) });
     },
   });
 }

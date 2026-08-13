@@ -6,6 +6,7 @@ import { getStudentParents } from "@/modules/parents/server";
 import type {
   CreateStudentRequest,
   UpdateStudentRequest,
+  UpdateStudentPersonalRequest,
 } from "@/modules/students/schemas";
 import type {
   StudentDetail,
@@ -20,6 +21,7 @@ import {
 import {
   getStudentCount,
   getStudentRow,
+  getStudentParentLink,
   insertStudent,
   listStudentRows,
   updateStudentPhotoPath,
@@ -108,7 +110,7 @@ export async function getStudentMetrics(): Promise<StudentMetricsI> {
   };
 }
 
-function studentInput(input: CreateStudentRequest | UpdateStudentRequest) {
+function createStudentInput(input: CreateStudentRequest) {
   return {
     first_name: input.firstName.trim(),
     middle_name: nullableText(input.middleName),
@@ -121,12 +123,31 @@ function studentInput(input: CreateStudentRequest | UpdateStudentRequest) {
   };
 }
 
+function admissionStudentInput(input: UpdateStudentRequest) {
+  return {
+    admission_date: input.admissionDate,
+    status: input.status,
+    notes: nullableText(input.notes),
+  };
+}
+
+function personalStudentInput(input: UpdateStudentPersonalRequest) {
+  return {
+    first_name: input.firstName.trim(),
+    middle_name: nullableText(input.middleName),
+    last_name: input.lastName.trim(),
+    date_of_birth: input.dateOfBirth,
+    current_education_level: input.currentEducationLevel.trim(),
+    gender: input.gender || null,
+  };
+}
+
 export async function createStudent(
   input: CreateStudentRequest,
 ): Promise<StudentDetail> {
   const { data, error } = await insertStudent({
     admission_number: "",
-    ...studentInput(input),
+    ...createStudentInput(input),
   });
   if (error || !data)
     throw new ApiError(
@@ -142,7 +163,7 @@ export async function updateStudent(
   input: UpdateStudentRequest,
 ): Promise<StudentDetail> {
   await getStudent(id);
-  const { data, error } = await updateStudentRow(id, studentInput(input));
+  const { data, error } = await updateStudentRow(id, admissionStudentInput(input));
   if (error || !data)
     throw new ApiError(
       "STUDENT_UPDATE_FAILED",
@@ -154,6 +175,72 @@ export async function updateStudent(
     getStudentParents(id),
   ]);
   return { ...mapStudentDetail(data as StudentRow, photoUrl), parents };
+}
+
+export async function assertParentOwnsStudent(
+  parentId: string,
+  studentId: string,
+) {
+  const { data, error } = await getStudentParentLink(studentId, parentId);
+  if (error)
+    throw new ApiError(
+      "CHILD_ACCESS_CHECK_FAILED",
+      "The child relationship could not be verified.",
+      500,
+    );
+  if (!data)
+    throw new ApiError(
+      "CHILD_ACCESS_DENIED",
+      "You do not have permission to manage this child's profile.",
+      403,
+    );
+}
+
+export async function getParentStudent(
+  parentId: string,
+  studentId: string,
+): Promise<StudentDetail> {
+  await assertParentOwnsStudent(parentId, studentId);
+  const { data, error } = await getStudentRow(studentId);
+  if (error)
+    throw new ApiError(
+      "STUDENT_LOAD_FAILED",
+      "The child profile could not be loaded.",
+      500,
+    );
+  if (!data)
+    throw new ApiError("STUDENT_NOT_FOUND", "Child profile not found.", 404);
+
+  const photoUrl = await signedPhotoUrl(data.photo_path);
+  return mapStudentDetail(data as StudentRow, photoUrl);
+}
+
+export async function updateStudentPersonal(
+  parentId: string,
+  studentId: string,
+  input: UpdateStudentPersonalRequest,
+): Promise<StudentDetail> {
+  await assertParentOwnsStudent(parentId, studentId);
+  const { data, error } = await updateStudentRow(
+    studentId,
+    personalStudentInput(input),
+  );
+  if (error || !data)
+    throw new ApiError(
+      "STUDENT_PERSONAL_UPDATE_FAILED",
+      "The child's personal information could not be updated.",
+      500,
+    );
+  return getParentStudent(parentId, studentId);
+}
+
+export async function uploadParentStudentPhoto(
+  parentId: string,
+  studentId: string,
+  file: File,
+): Promise<StudentDetail> {
+  await assertParentOwnsStudent(parentId, studentId);
+  return uploadStudentPhoto(studentId, file);
 }
 
 export async function uploadStudentPhoto(

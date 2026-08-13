@@ -9,6 +9,7 @@ interface BrandLogoProps {
   compact?: boolean;
   inverse?: boolean;
   priority?: boolean;
+  showText?: boolean;
 }
 
 export function BrandLogo({
@@ -17,6 +18,7 @@ export function BrandLogo({
   compact = false,
   inverse = false,
   priority = false,
+  showText = true,
 }: BrandLogoProps) {
   return (
     <Link
@@ -46,18 +48,19 @@ export function BrandLogo({
         />
       </span>
 
-      <span
-        className={cn(
-          "font-display font-extrabold tracking-tight",
-          compact ? "text-base" : "text-xl",
-          inverse ? "text-white" : "text-foreground",
-        )}
+      {showText && (
+        <span
+          className={cn(
+            "font-display font-extrabold tracking-tight",
+            compact ? "text-base" : "text-xl",
+            inverse ? "text-white" : "text-foreground",
+          )}
       >
         ThreeD{" "}
         {/* <span className={inverse ? "text-primary" : "text-primary"}>
           Consulting
         </span> */}
-      </span>
+      </span>)}
     </Link>
   );
 }

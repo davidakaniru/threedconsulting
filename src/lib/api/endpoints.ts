@@ -3,6 +3,8 @@ export const API_ENDPOINTS = {
     login: "/auth/login",
     register: "/auth/register",
     logout: "/auth/logout",
+    forgotPassword: "/auth/forgot-password",
+    resetPassword: "/auth/reset-password",
     setPassword: "/auth/set-password",
   },
   admin: {
@@ -25,11 +27,16 @@ export const API_ENDPOINTS = {
       `/admin/lesson-requests/${id}/publish`,
     sessions: "/admin/sessions",
     session: (id: string) => `/admin/sessions/${id}`,
+    contactInquiry: (id: string) => `/admin/contact-inquiries/${id}`,
   },
   teacher: {
     sessions: "/teacher/sessions",
     session: (id: string) => `/teacher/sessions/${id}`,
     sessionAttendance: (id: string) => `/teacher/sessions/${id}/attendance`,
+  },
+  parent: {
+    student: (id: string) => `/parent/students/${id}`,
+    studentPhoto: (id: string) => `/parent/students/${id}/photo`,
   },
   profile: {
     root: "/profile",

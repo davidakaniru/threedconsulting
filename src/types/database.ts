@@ -12,6 +12,45 @@ export type Database = {
   };
   public: {
     Tables: {
+      contact_inquiries: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          subject: string;
+          message: string;
+          status: string;
+          read_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          phone?: string | null;
+          subject: string;
+          message: string;
+          status?: string;
+          read_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          phone?: string | null;
+          subject?: string;
+          message?: string;
+          status?: string;
+          read_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       class_sessions: {
         Row: {
           cohort_id: string | null;
@@ -588,6 +627,7 @@ export type Database = {
           admission_date: string;
           admission_number: string;
           created_at: string;
+          current_education_level: string | null;
           date_of_birth: string;
           first_name: string;
           gender: string | null;
@@ -603,6 +643,7 @@ export type Database = {
           admission_date?: string;
           admission_number: string;
           created_at?: string;
+          current_education_level?: string | null;
           date_of_birth: string;
           first_name: string;
           gender?: string | null;
@@ -618,6 +659,7 @@ export type Database = {
           admission_date?: string;
           admission_number?: string;
           created_at?: string;
+          current_education_level?: string | null;
           date_of_birth?: string;
           first_name?: string;
           gender?: string | null;

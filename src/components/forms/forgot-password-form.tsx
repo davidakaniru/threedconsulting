@@ -23,7 +23,7 @@ const defaultValues: ForgotPasswordFormValues = {
   email: "",
 };
 
-export function ForgotPasswordForm() {
+export function ForgotPasswordForm({ recoveryError }: { recoveryError?: string }) {
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const [serverError, setServerError] = useState<string | null>(null);
@@ -55,7 +55,8 @@ export function ForgotPasswordForm() {
 
       if (!response.ok) {
         throw new Error(
-          data?.message ??
+          data?.error?.message ??
+            data?.message ??
             "We couldn't process your request. Please try again.",
         );
       }
@@ -182,6 +183,19 @@ export function ForgotPasswordForm() {
           you a secure password-reset link.
         </p>
       </div>
+
+      {recoveryError === "invalid_or_expired_link" && (
+        <div
+          role="alert"
+          className="mt-6 flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+          <p>
+            That password-reset link is invalid or has expired. Enter your email
+            address below to request a new one.
+          </p>
+        </div>
+      )}
 
       {serverError && (
         <div

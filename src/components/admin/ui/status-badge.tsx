@@ -6,6 +6,8 @@ const tones = {
   success:
     "bg-emerald-50 text-emerald-700 ring-emerald-600/15 before:bg-emerald-500",
   invited: "bg-amber-50 text-amber-700 ring-amber-600/15 before:bg-amber-500",
+  unread: "bg-sky-50 text-sky-700 ring-sky-600/15 before:bg-sky-500",
+  read: "bg-emerald-50 text-emerald-700 ring-emerald-600/15 before:bg-emerald-500",
   under_review: "bg-sky-50 text-sky-700 ring-sky-600/15 before:bg-sky-500",
   approved:
     "bg-emerald-50 text-emerald-700 ring-emerald-600/15 before:bg-emerald-500",

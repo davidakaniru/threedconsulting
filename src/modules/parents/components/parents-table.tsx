@@ -1,8 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { Eye, Pencil, Plus, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Eye, Pencil, Users } from "lucide-react";
 import {
   DataTable,
   EmptyState,
@@ -110,14 +108,6 @@ export function ParentsTable() {
             options={opts}
           />
         }
-        actions={
-          <Button asChild className="sm:hidden">
-            <Link href="/portal/admin/parents/new">
-              <Plus />
-              Add parent
-            </Link>
-          </Button>
-        }
       />
       {q.isLoading ? (
         <TableLoading />
@@ -137,7 +127,7 @@ export function ParentsTable() {
             <EmptyState
               icon={Users}
               title="No parents found"
-              description="Invite the first parent account."
+              description="Parent accounts will appear here after they begin the enrolment process."
             />
           }
         />

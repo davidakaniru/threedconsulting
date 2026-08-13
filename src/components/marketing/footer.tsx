@@ -79,25 +79,28 @@ const footerLinks = {
 const socialLinks = [
   {
     label: "Instagram",
-    href: "https://instagram.com",
+    href: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM?.trim(),
     icon: FaInstagram,
   },
   {
     label: "Facebook",
-    href: "https://facebook.com",
+    href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK?.trim(),
     icon: FaFacebook,
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com",
+    href: process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN?.trim(),
     icon: FaLinkedin,
   },
   {
     label: "YouTube",
-    href: "https://youtube.com",
+    href: process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE?.trim(),
     icon: FaYoutube,
   },
-] as const;
+].filter(
+  (item): item is { label: string; href: string; icon: typeof FaInstagram } =>
+    Boolean(item.href),
+);
 
 type FooterLinkGroupProps = {
   title: string;
@@ -179,6 +182,10 @@ function DecorativeShapes() {
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
+  const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE?.trim();
+  const contactAddress = process.env.NEXT_PUBLIC_CONTACT_ADDRESS?.trim();
+  const phoneHref = contactPhone?.replace(/[^+\d]/g, "");
 
   return (
     <footer className="relative mt-24">
@@ -286,56 +293,61 @@ export function Footer() {
                 personalised and confidence-building learning experiences.
               </p>
 
-              <div className="mt-6 space-y-3">
-                <a
-                  href="mailto:hello@threedconsulting.com"
-                  className="group flex w-fit items-start gap-3 rounded-md
-                    text-sm text-white/70 transition-colors hover:text-white
-                    focus-visible:outline-none focus-visible:ring-2
-                    focus-visible:ring-white/70"
-                >
-                  <span
-                    className="mt-0.5 grid size-8 shrink-0 place-items-center
-                      rounded-full bg-white/10 text-primary transition-colors
-                      group-hover:bg-primary group-hover:text-white"
-                  >
-                    <Mail aria-hidden="true" className="size-4" />
-                  </span>
+              {(contactEmail || contactPhone || contactAddress) && (
+                <div className="mt-6 space-y-3">
+                  {contactEmail && (
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      className="group flex w-fit items-start gap-3 rounded-md
+                        text-sm text-white/70 transition-colors hover:text-white
+                        focus-visible:outline-none focus-visible:ring-2
+                        focus-visible:ring-white/70"
+                    >
+                      <span
+                        className="mt-0.5 grid size-8 shrink-0 place-items-center
+                          rounded-full bg-white/10 text-primary transition-colors
+                          group-hover:bg-primary group-hover:text-white"
+                      >
+                        <Mail aria-hidden="true" className="size-4" />
+                      </span>
+                      <span className="pt-1.5">{contactEmail}</span>
+                    </a>
+                  )}
 
-                  <span className="pt-1.5">hello@threedconsulting.com</span>
-                </a>
+                  {contactPhone && phoneHref && (
+                    <a
+                      href={`tel:${phoneHref}`}
+                      className="group flex w-fit items-start gap-3 rounded-md
+                        text-sm text-white/70 transition-colors hover:text-white
+                        focus-visible:outline-none focus-visible:ring-2
+                        focus-visible:ring-white/70"
+                    >
+                      <span
+                        className="mt-0.5 grid size-8 shrink-0 place-items-center
+                          rounded-full bg-white/10 text-coral transition-colors
+                          group-hover:bg-coral group-hover:text-white"
+                      >
+                        <Phone aria-hidden="true" className="size-4" />
+                      </span>
+                      <span className="pt-1.5">{contactPhone}</span>
+                    </a>
+                  )}
 
-                <a
-                  href="tel:+2340000000000"
-                  className="group flex w-fit items-start gap-3 rounded-md
-                    text-sm text-white/70 transition-colors hover:text-white
-                    focus-visible:outline-none focus-visible:ring-2
-                    focus-visible:ring-white/70"
-                >
-                  <span
-                    className="mt-0.5 grid size-8 shrink-0 place-items-center
-                      rounded-full bg-white/10 text-coral transition-colors
-                      group-hover:bg-coral group-hover:text-white"
-                  >
-                    <Phone aria-hidden="true" className="size-4" />
-                  </span>
-
-                  <span className="pt-1.5">+234 000 000 0000</span>
-                </a>
-
-                <div className="flex items-start gap-3 text-sm text-white/70">
-                  <span
-                    className="mt-0.5 grid size-8 shrink-0 place-items-center
-                      rounded-full bg-white/10 text-turquoise"
-                  >
-                    <MapPin aria-hidden="true" className="size-4" />
-                  </span>
-
-                  <span className="max-w-xs pt-1.5 leading-6">
-                    Lagos, Nigeria
-                  </span>
+                  {contactAddress && (
+                    <div className="flex items-start gap-3 text-sm text-white/70">
+                      <span
+                        className="mt-0.5 grid size-8 shrink-0 place-items-center
+                          rounded-full bg-white/10 text-turquoise"
+                      >
+                        <MapPin aria-hidden="true" className="size-4" />
+                      </span>
+                      <span className="max-w-xs pt-1.5 leading-6">
+                        {contactAddress}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
 
             <FooterLinkGroup title="Explore" links={footerLinks.explore} />
@@ -354,8 +366,9 @@ export function Footer() {
               © {currentYear} Three-D Managers Limited. All rights reserved.
             </p>
 
-            <div className="flex items-center justify-center gap-2 sm:justify-end">
-              {socialLinks.map(({ label, href, icon: Icon }) => (
+            {socialLinks.length > 0 && (
+              <div className="flex items-center justify-center gap-2 sm:justify-end">
+                {socialLinks.map(({ label, href, icon: Icon }) => (
                 <a
                   key={label}
                   href={href}
@@ -375,8 +388,9 @@ export function Footer() {
                 >
                   <Icon aria-hidden="true" className="size-4" />
                 </a>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

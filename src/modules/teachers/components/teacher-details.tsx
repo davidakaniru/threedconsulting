@@ -144,11 +144,6 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
             <TeacherLifecycleActions teacher={teacher} />
           </div>
         </SectionCard>
-        <InfoCard
-          icon={Info}
-          title="Lifecycle separation"
-          description="Employment status and account access are managed independently. Marking someone as former does not delete historical records."
-        />
       </aside>
     </div>
   );

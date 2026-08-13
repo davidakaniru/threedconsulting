@@ -19,7 +19,7 @@ export default async function Page({
       <PageHeader
         eyebrow="Students"
         title="Edit student"
-        description="Update personal, admission and administrative information."
+        description="Update admission status, admission date and administrative notes."
       />
       <SectionCard className="p-5 sm:p-8">
         <StudentEditClient id={id} />

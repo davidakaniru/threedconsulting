@@ -1,8 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { Eye, Pencil, Plus, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Eye, Pencil, Users } from "lucide-react";
 import {
   DataTable,
   type DataTableColumn,
@@ -146,14 +144,6 @@ export function StudentsTable() {
             placeholder="All statuses"
           />
         }
-        actions={
-          <Button asChild className="sm:hidden">
-            <Link href="/portal/admin/students/new">
-              <Plus />
-              Add student
-            </Link>
-          </Button>
-        }
       />
       {q.isLoading ? (
         <TableLoading />
@@ -173,15 +163,7 @@ export function StudentsTable() {
             <EmptyState
               icon={Users}
               title="No students found"
-              description="Add your first student or adjust the current filters."
-              action={
-                <Button asChild>
-                  <Link href="/portal/admin/students/new">
-                    <Plus />
-                    Add student
-                  </Link>
-                </Button>
-              }
+              description="Students will appear here after they are created through the enrolment and lesson-matching workflow."
             />
           }
           mobileCard={(s) => (

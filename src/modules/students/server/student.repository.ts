@@ -68,3 +68,13 @@ export function getStudentCount(status?: StudentStatus) {
   if (status) query = query.eq("status", status);
   return query;
 }
+
+
+export function getStudentParentLink(studentId: string, parentId: string) {
+  return createAdminClient()
+    .from("student_parents")
+    .select("student_id,parent_id")
+    .eq("student_id", studentId)
+    .eq("parent_id", parentId)
+    .maybeSingle();
+}

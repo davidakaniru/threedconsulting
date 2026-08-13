@@ -14,7 +14,7 @@ export default async function Page({
       <PageHeader
         eyebrow="Students"
         title="Student profile"
-        description="Review admission and learner information."
+        description="Review learner information and manage admission details."
       />
       <StudentDetailClient id={id} />
     </AdminPage>

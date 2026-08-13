@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import { CheckCircle2, Send } from "lucide-react";
+import { AlertCircle, CheckCircle2, Send } from "lucide-react";
 
 import { SelectField } from "@/components/forms/select-field";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ const defaultValues: ContactFormValues = {
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -40,19 +41,31 @@ export function ContactForm() {
 
   async function onSubmit(values: ContactFormValues) {
     setSubmitted(false);
+    setSubmitError(null);
 
     try {
-      // Replace this with your API request.
-      console.log(values);
-
-      await new Promise((resolve) => {
-        window.setTimeout(resolve, 800);
+      const response = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       });
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(
+          payload?.error?.message ||
+            "We couldn't send your message right now. Please try again.",
+        );
+      }
 
       reset(defaultValues);
       setSubmitted(true);
     } catch (error) {
-      console.error("Unable to submit contact form:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "We couldn't send your message right now. Please try again.",
+      );
     }
   }
 
@@ -114,7 +127,7 @@ export function ContactForm() {
             id="phone"
             type="tel"
             label="Phone number"
-            placeholder="+44 0000 000000"
+            placeholder="e.g. +234 800 000 0000"
             autoComplete="tel"
             inputMode="tel"
             required
@@ -180,6 +193,16 @@ export function ContactForm() {
           {!isSubmitting && <Send aria-hidden="true" className="size-4" />}
         </Button>
       </div>
+
+      {submitError && (
+        <div
+          role="alert"
+          className="mt-6 flex items-start gap-3 rounded-2xl bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive"
+        >
+          <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+          <p>{submitError}</p>
+        </div>
+      )}
 
       {submitted && (
         <div
