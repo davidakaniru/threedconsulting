@@ -8,10 +8,16 @@ export const metadata: Metadata = {
   description: "Request a secure link to reset your account password.",
 };
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <AuthCard size="sm">
-      <ForgotPasswordForm />
+      <ForgotPasswordForm recoveryError={params.error} />
     </AuthCard>
   );
 }

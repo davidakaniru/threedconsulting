@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 import { AuthDecorations } from "@/components/auth/auth-decorations";
 import { AuthLogo } from "@/components/auth/auth-logo";
@@ -12,9 +13,15 @@ interface AuthLayoutProps {
 }
 
 export default async function AuthLayout({ children }: AuthLayoutProps) {
+  const cookieStore = await cookies();
+  const passwordRecovery =
+    cookieStore.get("threed_password_recovery")?.value === "1";
   const user = await getCurrentUser();
 
-  if (user?.status === "active") {
+  // Supabase password recovery creates a temporary authenticated session.
+  // Let that session reach /reset-password instead of treating it like a
+  // normal login and redirecting it to the user's portal.
+  if (user?.status === "active" && !passwordRecovery) {
     redirect(getRoleRedirect(user.role));
   }
 

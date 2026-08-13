@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -28,12 +27,13 @@ const defaultValues: ResetPasswordFormValues = {
 type ResetPasswordErrorResponse = {
   message?: string;
   code?: string;
+  error?: {
+    message?: string;
+    code?: string;
+  };
 };
 
-export function ResetPasswordForm() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-
+export function ResetPasswordForm({ recoveryAllowed }: { recoveryAllowed: boolean }) {
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [serverError, setServerError] = useState<string | null>(null);
@@ -49,11 +49,6 @@ export function ResetPasswordForm() {
   });
 
   async function onSubmit(values: ResetPasswordFormValues) {
-    if (!token) {
-      setServerError("This password-reset link is incomplete.");
-      return;
-    }
-
     setServerError(null);
 
     try {
@@ -63,8 +58,8 @@ export function ResetPasswordForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token,
           password: values.password,
+          confirmPassword: values.confirmPassword,
         }),
       });
 
@@ -74,7 +69,10 @@ export function ResetPasswordForm() {
 
       if (!response.ok) {
         throw new Error(
-          getResetPasswordErrorMessage(data?.code, data?.message),
+          getResetPasswordErrorMessage(
+            data?.error?.code ?? data?.code,
+            data?.error?.message ?? data?.message,
+          ),
         );
       }
 
@@ -88,7 +86,7 @@ export function ResetPasswordForm() {
     }
   }
 
-  if (!token) {
+  if (!recoveryAllowed) {
     return <InvalidResetLink />;
   }
 
@@ -204,33 +202,21 @@ export function ResetPasswordForm() {
 function InvalidResetLink() {
   return (
     <div className="text-center">
-      <span
-        className="mx-auto grid size-16 place-items-center
-          rounded-full bg-coral/10 text-coral"
-      >
+      <span className="mx-auto grid size-16 place-items-center rounded-full bg-coral/10 text-coral">
         <AlertCircle aria-hidden="true" className="size-8" />
       </span>
 
-      <p
-        className="mt-5 font-display text-sm font-bold
-          uppercase tracking-wider text-coral"
-      >
-        Invalid reset link
+      <p className="mt-5 font-display text-sm font-bold uppercase tracking-wider text-coral">
+        Invalid reset session
       </p>
 
-      <h1
-        className="mt-2 font-display text-3xl font-extrabold
-          leading-tight text-foreground sm:text-4xl"
-      >
-        This link can’t be used
+      <h1 className="mt-2 font-display text-3xl font-extrabold leading-tight text-foreground sm:text-4xl">
+        Request a new reset link
       </h1>
 
-      <p
-        className="mx-auto mt-4 max-w-md leading-7
-          text-muted-foreground"
-      >
-        The password-reset link is missing or incomplete. Request a new link to
-        continue.
+      <p className="mx-auto mt-4 max-w-md leading-7 text-muted-foreground">
+        This password-reset session is missing or has expired. Request a new
+        link to continue securely.
       </p>
 
       <Button asChild size="lg" className="mt-7 w-full">
@@ -242,9 +228,7 @@ function InvalidResetLink() {
 
       <Link
         href="/sign-in"
-        className="mt-5 inline-flex items-center gap-2
-          text-sm font-semibold text-primary
-          transition-colors hover:text-primary/80"
+        className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
         Return to sign in
@@ -297,14 +281,8 @@ function ResetPasswordSuccess() {
 
 function getResetPasswordErrorMessage(code?: string, fallbackMessage?: string) {
   switch (code) {
-    case "RESET_TOKEN_EXPIRED":
-      return "This password-reset link has expired. Please request a new one.";
-
-    case "RESET_TOKEN_INVALID":
-      return "This password-reset link is invalid. Please request a new one.";
-
-    case "RESET_TOKEN_USED":
-      return "This password-reset link has already been used. Please request a new one.";
+    case "RESET_SESSION_INVALID":
+      return "This password-reset session is invalid or has expired. Please request a new link.";
 
     case "PASSWORD_REUSED":
       return "Please choose a password you haven’t used before.";

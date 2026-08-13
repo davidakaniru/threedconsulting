@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { cookies } from "next/headers";
 
 import { AuthCard } from "@/components/auth/auth-card";
-import { ResetPasswordFormSkeleton } from "@/components/forms/form-skeleton";
 import { ResetPasswordForm } from "@/components/forms/reset-password-form";
 
 export const metadata: Metadata = {
@@ -10,12 +9,14 @@ export const metadata: Metadata = {
   description: "Create a new password for your account.",
 };
 
-export default function ResetPasswordPage() {
+export default async function ResetPasswordPage() {
+  const cookieStore = await cookies();
+  const recoveryAllowed =
+    cookieStore.get("threed_password_recovery")?.value === "1";
+
   return (
     <AuthCard size="sm">
-      <Suspense fallback={<ResetPasswordFormSkeleton />}>
-        <ResetPasswordForm />
-      </Suspense>
+      <ResetPasswordForm recoveryAllowed={recoveryAllowed} />
     </AuthCard>
   );
 }
