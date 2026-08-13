@@ -25,6 +25,7 @@ import {
 } from "@/lib/schemas/profile-schema";
 import { parseError } from "@/lib/utils";
 import type { AuthenticatedUser } from "@/types/auth";
+import Image from "next/image";
 
 interface ProfileSettingsProps {
   initialProfile: AuthenticatedUser;
@@ -153,8 +154,10 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
           <div className="flex items-center gap-4">
             <div className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-3xl bg-primary/10 font-display text-2xl font-extrabold text-primary ring-1 ring-primary/10">
               {profile.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
+                  width={80}
+                  height={80}
+                  priority
                   src={profile.avatarUrl}
                   alt="Profile"
                   className="size-full object-cover"
