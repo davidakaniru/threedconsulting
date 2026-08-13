@@ -2,7 +2,7 @@
 
 ## Build and configuration
 
-- [ ] Clean `npm run build` from the complete repository.
+- [x] Clean `npm run build` from the complete repository — confirmed before this pass; rerun after integrating the inquiry inbox.
 - [ ] Automated tests pass.
 - [ ] Production Supabase URL and publishable key are configured.
 - [ ] `SUPABASE_SECRET_KEY` exists only in server-side deployment secrets.
@@ -12,7 +12,7 @@
 - [ ] Production Site URL and allowed redirect URLs are configured in Supabase Auth.
 - [ ] Production SMTP is configured for Supabase Auth emails.
 - [ ] Database backup/snapshot completed before migration/deployment.
-- [ ] All migrations are applied successfully.
+- [ ] Migration history is reconciled and the resulting chain is proven on a disposable database before enabling automated `db push`.
 
 ## Security and permissions
 
@@ -67,13 +67,15 @@
 - [ ] Admin cannot manually create student records; students originate from the enrolment/lesson workflow.
 - [ ] Admin can update only admission-related student information.
 - [ ] Teacher reports load only the selected teacher and selected month.
+- [ ] Admin can open Contact inquiries, read a submission, mark it unread/read, and archive it.
 
 ## Public website
 
 - [ ] Enrolment CTA reaches the unified enrolment flow.
 - [ ] Published programmes load successfully.
 - [ ] Contact page displays real configured contact information.
-- [ ] Contact form sends a real email and shows an error when delivery fails.
+- [ ] Contact form persists the inquiry in the admin inbox even if notification email delivery is unavailable.
+- [ ] When `CONTACT_EMAIL_TO`/Resend are configured, a notification email is also delivered.
 - [ ] Responsive/keyboard QA completed on critical public and portal pages.
 
 ## Post-deploy

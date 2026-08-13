@@ -22,7 +22,7 @@ TRANSACTIONAL_EMAIL_FROM="ThreeD <noreply@your-domain.com>"
 CONTACT_EMAIL_TO=
 ```
 
-`CONTACT_EMAIL_TO` receives public website enquiries. The contact form returns an unavailable state rather than pretending a message was sent when email delivery is not configured.
+`CONTACT_EMAIL_TO` receives an optional email notification for public website enquiries. The inquiry itself is persisted first and remains available in Admin → Contact inquiries even when notification email is not configured or delivery fails.
 
 ## Public contact details
 

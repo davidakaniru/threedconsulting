@@ -3,6 +3,7 @@ import { ValidationError } from "yup";
 
 import { apiError, apiSuccess } from "@/lib/api/responses";
 import { sendTransactionalEmail } from "@/lib/email/email.service";
+import { createContactInquiry } from "@/modules/contact-inquiries/server";
 import { contactSchema } from "@/lib/schemas/contact-schema";
 
 export const runtime = "nodejs";
@@ -23,17 +24,17 @@ export async function POST(request: NextRequest) {
       stripUnknown: true,
     });
 
-    const recipient = process.env.CONTACT_EMAIL_TO?.trim();
-    if (!recipient) {
-      console.error("Contact form unavailable: CONTACT_EMAIL_TO is not configured.");
-      return apiError(
-        "CONTACT_NOT_CONFIGURED",
-        "Our contact form is temporarily unavailable. Please try again shortly.",
-        503,
-      );
-    }
+    await createContactInquiry({
+      name: input.name,
+      email: input.email,
+      phone: input.phone,
+      subject: input.enquiryType,
+      message: input.message,
+    });
 
-    const sent = await sendTransactionalEmail({
+    const recipient = process.env.CONTACT_EMAIL_TO?.trim();
+    const sent = recipient
+      ? await sendTransactionalEmail({
       to: recipient,
       subject: `Website enquiry: ${input.enquiryType}`,
       html: `
@@ -45,16 +46,16 @@ export async function POST(request: NextRequest) {
         <p><strong>Message:</strong></p>
         <p>${escapeHtml(input.message).replaceAll("\n", "<br />")}</p>
       `,
-    });
+        })
+      : false;
 
-    if (!sent)
-      return apiError(
-        "CONTACT_SEND_FAILED",
-        "We couldn't send your message right now. Please try again shortly.",
-        503,
+    if (recipient && !sent) {
+      console.error(
+        "Contact enquiry was saved, but the notification email could not be sent.",
       );
+    }
 
-    return apiSuccess({ sent: true });
+    return apiSuccess({ saved: true, notified: sent });
   } catch (error) {
     if (error instanceof ValidationError) {
       const details = error.inner.reduce<Record<string, string>>(

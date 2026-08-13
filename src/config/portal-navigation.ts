@@ -7,6 +7,7 @@ import {
   GraduationCap,
   Home,
   ListChecks,
+  MessagesSquare,
   Settings,
   UserRound,
   Users,
@@ -82,6 +83,13 @@ export const portalNavigation: Record<
       icon: BarChart3,
       enabled: true,
       group: "Academics",
+    },
+    {
+      label: "Contact inquiries",
+      href: "/portal/admin/inquiries",
+      icon: MessagesSquare,
+      enabled: true,
+      group: "Communication",
     },
     {
       label: "Settings",

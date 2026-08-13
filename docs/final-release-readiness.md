@@ -27,3 +27,8 @@ The connected production project was checked during this pass:
 The live Supabase migration history and the timestamped SQL files in this archive are not aligned. Several logically equivalent migrations have different timestamps, the remote history contains corrective migrations that are not represented as separate local files, and the local folder contains historical entries that do not share the remote version IDs.
 
 Do **not** run `supabase db push` against the live project from this migration folder until the histories are reconciled. First use the Supabase CLI from the complete Git repository to compare local/remote history (`supabase migration list`). Then reconcile from the known-good live schema using the documented Supabase workflow (`db pull` and, only when the actual schema state has been verified, `migration repair`). Test the reconciled migration chain with a local reset or disposable branch before enabling database migration automation in CI.
+
+
+## Contact inquiry inbox follow-up
+
+Public Contact submissions are now persisted in `contact_inquiries` before optional email notification. Admin has a dedicated Contact inquiries inbox with unread/read/archived states. Opening an unread inquiry marks it read; Admin can mark it unread again or archive it. The table has RLS enabled and no browser-facing policies; application access is through authenticated Admin server code using the service-role client.
