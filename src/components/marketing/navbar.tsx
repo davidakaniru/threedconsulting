@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, LogIn, Menu, X } from "lucide-react";
+import { LogIn, Menu, X } from "lucide-react";
 import {
   useEffect,
   useId,
-  useRef,
   useState,
-  type MouseEvent as ReactMouseEvent,
 } from "react";
 
 import { cn } from "@/lib/utils";
@@ -21,21 +19,6 @@ const primaryLinks = [
     label: "Programmes",
     href: "/programmes",
   },
-  {
-    label: "Teachers",
-    href: "/teachers",
-  },
-  {
-    label: "Events",
-    href: "/events",
-  },
-  {
-    label: "Blog",
-    href: "/blog",
-  },
-] as const;
-
-const moreLinks = [
   {
     label: "About Us",
     href: "/about",
@@ -72,20 +55,17 @@ export function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const mobileMenuId = useId();
-  const moreMenuId = useId();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
-  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   const accountHref = isAuthenticated ? portalHref : "/sign-in";
   const accountLabel = isAuthenticated ? "My portal" : "Sign in";
 
-  const isMoreLinkActive = moreLinks.some(({ href }) =>
-    isActivePath(pathname, href),
-  );
+  // const isMoreLinkActive = moreLinks.some(({ href }) =>
+  //   isActivePath(pathname, href),
+  // );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -105,31 +85,19 @@ export function Navbar({
 
   useEffect(() => {
     setIsMobileOpen(false);
-    setIsMoreOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    function handlePointerDown(event: PointerEvent) {
-      if (
-        moreMenuRef.current &&
-        !moreMenuRef.current.contains(event.target as Node)
-      ) {
-        setIsMoreOpen(false);
-      }
-    }
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setIsMoreOpen(false);
         setIsMobileOpen(false);
       }
     }
 
-    document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
@@ -149,22 +117,6 @@ export function Navbar({
 
   function closeMobileMenu() {
     setIsMobileOpen(false);
-  }
-
-  function handleMoreMouseLeave(event: ReactMouseEvent<HTMLDivElement>) {
-    /**
-     * Do not close the dropdown while keyboard focus remains inside it.
-     */
-    const nextTarget = event.relatedTarget;
-
-    if (
-      nextTarget instanceof Node &&
-      moreMenuRef.current?.contains(nextTarget)
-    ) {
-      return;
-    }
-
-    setIsMoreOpen(false);
   }
 
   return (
@@ -209,7 +161,7 @@ export function Navbar({
             );
           })}
 
-          <div
+          {/* <div
             ref={moreMenuRef}
             className="relative"
             onMouseEnter={() => setIsMoreOpen(true)}
@@ -297,7 +249,7 @@ export function Navbar({
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </div> */}
         </div>
 
         {/* Desktop actions */}
@@ -397,7 +349,7 @@ export function Navbar({
                 overflow-y-auto px-4 py-4 sm:px-6"
             >
               <div className="grid gap-1">
-                {[...primaryLinks, ...moreLinks].map(
+                {[...primaryLinks].map(
                   ({ label, href }, index) => {
                     const active = isActivePath(pathname, href);
 

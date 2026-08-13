@@ -21,8 +21,6 @@ const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE?.trim();
 const whatsapp = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP?.trim();
 const address = process.env.NEXT_PUBLIC_CONTACT_ADDRESS?.trim();
 const weekdayHours = process.env.NEXT_PUBLIC_CONTACT_HOURS_WEEKDAYS?.trim();
-const saturdayHours = process.env.NEXT_PUBLIC_CONTACT_HOURS_SATURDAY?.trim();
-const sundayHours = process.env.NEXT_PUBLIC_CONTACT_HOURS_SUNDAY?.trim();
 
 const contactMethods: ContactMethod[] = [];
 
@@ -58,8 +56,6 @@ if (whatsapp) {
 
 const hours = [
   weekdayHours ? ["Monday – Friday", weekdayHours] : null,
-  saturdayHours ? ["Saturday", saturdayHours] : null,
-  sundayHours ? ["Sunday", sundayHours] : null,
 ].filter((item): item is [string, string] => Boolean(item));
 
 export function ContactDetails() {

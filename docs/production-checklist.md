@@ -2,13 +2,16 @@
 
 ## Build and configuration
 
-- [x] Clean `npm run build` from the complete repository — confirmed before this pass; rerun after integrating the inquiry inbox.
+- [x] Clean `npm run build` from the complete repository — confirmed after the Contact inquiries integration and user fixes.
 - [ ] Automated tests pass.
 - [ ] Production Supabase URL and publishable key are configured.
+- [ ] `node scripts/production-preflight.mjs` passes with production environment loaded.
 - [ ] `SUPABASE_SECRET_KEY` exists only in server-side deployment secrets.
 - [ ] `ADMIN_BOOTSTRAP_EMAIL` and `ADMIN_BOOTSTRAP_PASSWORD` are removed after bootstrap.
 - [ ] Resend variables are configured if transactional website email is enabled.
 - [ ] Public contact environment variables contain real client details; no placeholder contact data is displayed.
+- [ ] Footer contact details match the Contact page.
+- [ ] Social links are either real client profile URLs or omitted.
 - [ ] Production Site URL and allowed redirect URLs are configured in Supabase Auth.
 - [ ] Production SMTP is configured for Supabase Auth emails.
 - [ ] Database backup/snapshot completed before migration/deployment.

@@ -1,11 +1,8 @@
-import { EventsSection } from "@/components/home/events-section";
 import { FAQPreview } from "@/components/home/faq-preview";
 import { HeroSection } from "@/components/home/hero-section";
 import { LearningJourney } from "@/components/home/learning-journey";
 import { ProgrammesSection } from "@/components/home/programmes-section";
 import { StatsBar } from "@/components/home/stats-bar";
-import { TeachersSection } from "@/components/home/teachers-section";
-import { Testimonials } from "@/components/home/testimonials";
 import { WhyParents } from "@/components/home/why-parents";
 
 export default function HomePage() {
@@ -16,9 +13,9 @@ export default function HomePage() {
       <WhyParents />
       <ProgrammesSection />
       <LearningJourney />
-      <TeachersSection />
-      <Testimonials />
-      <EventsSection />
+      {/* <TeachersSection /> */}
+      {/* <Testimonials /> */}
+      {/* <EventsSection /> */}
       {/* <PlatformPreview /> */}
       {/* <GalleryPreview /> */}
       <FAQPreview />

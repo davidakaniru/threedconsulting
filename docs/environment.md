@@ -48,3 +48,26 @@ Only set these while running the one-time bootstrap script; remove them from the
 ADMIN_BOOTSTRAP_EMAIL=
 ADMIN_BOOTSTRAP_PASSWORD=
 ```
+
+## Optional public social profiles
+
+Only configure profiles the client actually uses. Missing values are hidden from the footer.
+
+```env
+NEXT_PUBLIC_SOCIAL_INSTAGRAM=
+NEXT_PUBLIC_SOCIAL_FACEBOOK=
+NEXT_PUBLIC_SOCIAL_LINKEDIN=
+NEXT_PUBLIC_SOCIAL_YOUTUBE=
+```
+
+Use complete `https://` profile URLs rather than generic social-network homepages.
+
+## Preflight
+
+From the complete repository with production environment variables loaded:
+
+```bash
+node scripts/production-preflight.mjs
+```
+
+A non-zero exit code means required production configuration is missing or malformed.
