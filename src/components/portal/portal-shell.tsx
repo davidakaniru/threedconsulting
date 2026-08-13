@@ -182,7 +182,6 @@ function getPageContext(pathname: string, role: UserRole) {
   if (pathname.endsWith("/new")) {
     const createTitles: Partial<Record<string, string>> = {
       Teachers: "Add teacher",
-      Students: "Add student",
       Programmes: "Create programme",
       Sessions: "Create session",
     };

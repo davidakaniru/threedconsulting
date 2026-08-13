@@ -15,3 +15,4 @@ Security/UX notes:
 - Reset passwords require at least 8 characters, an uppercase letter, a lowercase letter, and a number.
 - Invalid or expired recovery links send the user back to the forgot-password screen with a request-new-link message.
 - The Supabase Auth redirect URL used by the recovery email must be allowed in the project's Authentication URL Configuration.
+- Supabase recommends custom SMTP for production password-reset email delivery.

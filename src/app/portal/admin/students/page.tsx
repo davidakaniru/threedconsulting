@@ -10,7 +10,7 @@ export default async function StudentsPage() {
       <PageHeader
         eyebrow="Admissions"
         title="Students"
-        description="Create and manage learner records, admission details, photos and lifecycle status."
+        description="Review learner records and manage admission details and lifecycle status."
       />
       <StudentMetrics metrics={metrics} />
       <StudentsTable />

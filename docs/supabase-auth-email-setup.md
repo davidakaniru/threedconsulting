@@ -1,18 +1,21 @@
-# Supabase Auth email setup
+# Supabase Auth Email Setup
 
-Phase 2.1 uses Supabase's SSR/PKCE confirmation flow.
+The application uses Supabase Auth with SSR/PKCE for parent confirmation, teacher invitations and password recovery.
 
 ## URL configuration
 
 In Supabase Dashboard → Authentication → URL Configuration:
 
-- Set **Site URL** to your production origin.
-- Add `http://localhost:3000/**` for local development.
-- Add your production origin pattern, for example `https://example.com/**`.
+- Set **Site URL** to the canonical production origin, not localhost or a preview deployment.
+- Add `http://localhost:3000/**` only for local development.
+- Add the canonical production origin pattern, for example `https://your-domain.com/**`.
+- Add preview URL patterns only when preview authentication is intentionally supported.
+
+The application's recovery flow sends users through `/auth/recovery` and then `/reset-password`, so the production origin must be allowed by Supabase Auth.
 
 ## Confirm signup template
 
-In Authentication → Email Templates → Confirm signup, use a confirmation link that sends the token hash to the Next.js route:
+The confirmation template should return the token to the application confirmation route. Keep the existing Supabase template variables intact.
 
 ```html
 <h2>Confirm your email address</h2>
@@ -24,4 +27,12 @@ In Authentication → Email Templates → Confirm signup, use a confirmation lin
 </p>
 ```
 
-The application verifies the token in `src/app/auth/confirm/route.ts`, writes the Supabase session cookies, and redirects to the parent portal.
+## Password recovery
+
+The application calls `resetPasswordForEmail` with `/auth/recovery?next=/reset-password`. The recovery route exchanges/verifies the Supabase recovery credential, creates the temporary recovery session, and then allows the user to choose a new password.
+
+Request a fresh recovery email during production smoke testing and verify the link resolves to the canonical production domain.
+
+## Production mail delivery
+
+Configure production SMTP/email delivery in Supabase Auth before launch and verify confirmation, invitation and recovery messages with real inboxes.
