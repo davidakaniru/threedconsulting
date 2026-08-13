@@ -173,10 +173,24 @@ function SidebarContent({
 
 function getPageContext(pathname: string, role: UserRole) {
   const match = findPortalNavigationItem(pathname, role);
-  if (pathname.endsWith("/new"))
-    return { title: "Add teacher", section: "Teachers" };
+
   if (pathname === "/portal/profile")
     return { title: "Account settings", section: "Portal" };
+
+  if (pathname.endsWith("/new")) {
+    const createTitles: Partial<Record<string, string>> = {
+      Teachers: "Add teacher",
+      Parents: "Add parent",
+      Students: "Add student",
+      Programmes: "Create programme",
+      Sessions: "Create session",
+    };
+    return {
+      title: createTitles[match?.label ?? ""] ?? `Create ${match?.label?.toLowerCase() ?? "record"}`,
+      section: match?.label ?? roleStyles[role].label,
+    };
+  }
+
   return { title: match?.label ?? "Portal", section: roleStyles[role].label };
 }
 

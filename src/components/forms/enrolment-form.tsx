@@ -151,14 +151,14 @@ export function EnrolmentForm({
       const payload = await response.json();
       if (!response.ok)
         throw new Error(
-          payload?.error?.message ?? "Unable to submit your lesson request.",
+          payload?.error?.message ?? "Unable to submit your enrolment.",
         );
       setSubmitted(payload.data);
     } catch (e) {
       setSubmitError(
         e instanceof Error
           ? e.message
-          : "Unable to submit your lesson request.",
+          : "Unable to submit your enrolment.",
       );
     }
   }
@@ -169,7 +169,7 @@ export function EnrolmentForm({
           <CheckCircle2 className="size-8" />
         </span>
         <h2 className="mt-5 font-display text-3xl font-extrabold">
-          Lesson request received
+          Enrolment received
         </h2>
         <p className="mx-auto mt-3 max-w-lg leading-7 text-muted-foreground">
           We&apos;ll review your request before making it available to a
@@ -185,7 +185,7 @@ export function EnrolmentForm({
           <div className="mx-auto mt-6 max-w-lg rounded-2xl bg-primary/5 p-4 text-sm text-muted-foreground">
             <Mail className="mx-auto mb-2 size-5 text-primary" />
             Please check your email and confirm your new parent account. Your
-            lesson request has already been saved.
+            enrolment has already been saved.
           </div>
         ) : (
           <Button asChild className="mt-7">
@@ -215,7 +215,7 @@ export function EnrolmentForm({
               <Header
                 kicker={`Step ${currentStep + 1} of ${steps.length}`}
                 title="Create your parent account"
-                text="Your account and lesson request are created as one enrolment journey."
+                text="Your parent account and enrolment are created in one journey."
               />
               <div className="grid gap-5 sm:grid-cols-2">
                 <Input
@@ -291,7 +291,7 @@ export function EnrolmentForm({
                 text={
                   hasParentAccount && parentEmail
                     ? `Choose a child already linked to ${parentEmail}, or add another child.`
-                    : "These details identify the child this lesson request is for."
+                    : "These details identify the child this enrolment is for."
                 }
               />
 
@@ -348,7 +348,7 @@ export function EnrolmentForm({
                       </p>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Their existing profile will be reused. This creates a
-                        new lesson request, not another child record.
+                        new enrolment, not another child record.
                       </p>
                     </div>
                   )}
@@ -499,7 +499,7 @@ export function EnrolmentForm({
             <section className="space-y-5">
               <Header
                 kicker={`Step ${currentStep + 1} of ${steps.length}`}
-                title="Review your lesson request"
+                title="Review your enrolment"
                 text="Make sure the schedule and subject are correct before submitting."
               />
               <EnrolmentSummary
@@ -549,7 +549,7 @@ export function EnrolmentForm({
               </Button>
             ) : (
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit lesson request"}
+                {isSubmitting ? "Submitting..." : "Submit enrolment"}
               </Button>
             )}
           </div>
