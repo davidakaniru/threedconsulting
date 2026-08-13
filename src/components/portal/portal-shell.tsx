@@ -29,19 +29,19 @@ const roleStyles: Record<
   { label: string; soft: string; text: string; solid: string }
 > = {
   admin: {
-    label: "Admin portal",
+    label: "Admin",
     soft: "bg-primary/10",
     text: "text-primary",
     solid: "bg-primary",
   },
   teacher: {
-    label: "Teacher portal",
+    label: "Teacher",
     soft: "bg-orange-50",
     text: "text-orange-600",
     solid: "bg-orange-500",
   },
   parent: {
-    label: "Parent portal",
+    label: "Parent",
     soft: "bg-emerald-50",
     text: "text-emerald-700",
     solid: "bg-emerald-600",
@@ -82,7 +82,7 @@ function SidebarContent({
             ThreeD
           </span>
           <span className={cn("mt-1 block text-xs font-bold", meta.text)}>
-            {meta.label}
+            {meta.label} Portal
           </span>
         </span>
       </Link>
@@ -144,29 +144,31 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="mt-auto rounded-3xl bg-[#fff8eb] p-4">
-        <span
-          className={cn(
-            "grid size-9 place-items-center rounded-xl text-white",
-            meta.solid,
-          )}
-        >
-          <CircleHelp className="size-5" />
-        </span>
-        <p className="mt-3 font-display text-sm font-extrabold text-slate-950">
-          Need a hand?
-        </p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-500">
-          Our support team is here Monday–Saturday.
-        </p>
-        <Link
-          href="/contact"
-          onClick={onNavigate}
-          className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-primary hover:underline"
-        >
-          Get support <ExternalLink className="size-3.5" />
-        </Link>
-      </div>
+      {user.role !== "admin" && (
+        <div className="mt-auto rounded-3xl bg-[#fff8eb] p-4">
+          <span
+            className={cn(
+              "grid size-9 place-items-center rounded-xl text-white",
+              meta.solid,
+            )}
+          >
+            <CircleHelp className="size-5" />
+          </span>
+          <p className="mt-3 font-display text-sm font-extrabold text-slate-950">
+            Need a hand?
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            Our support team is here Monday–Saturday.
+          </p>
+          <Link
+            href="/contact"
+            onClick={onNavigate}
+            className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-primary hover:underline"
+          >
+            Get support <ExternalLink className="size-3.5" />
+          </Link>
+        </div>
+      )}
     </aside>
   );
 }
@@ -186,7 +188,9 @@ function getPageContext(pathname: string, role: UserRole) {
       Sessions: "Create session",
     };
     return {
-      title: createTitles[match?.label ?? ""] ?? `Create ${match?.label?.toLowerCase() ?? "record"}`,
+      title:
+        createTitles[match?.label ?? ""] ??
+        `Create ${match?.label?.toLowerCase() ?? "record"}`,
       section: match?.label ?? roleStyles[role].label,
     };
   }
@@ -251,7 +255,6 @@ function Topbar({
         <p className="truncate font-display text-lg font-extrabold leading-tight text-slate-950">
           {context.title}
         </p>
-        <p className="text-sm text-slate-500">{context.section}</p>
       </div>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -264,11 +267,22 @@ function Topbar({
           >
             <span
               className={cn(
-                "grid size-9 place-items-center rounded-xl font-display text-sm font-extrabold text-white",
+                "grid size-9 shrink-0 place-items-center overflow-hidden rounded-xl font-display text-sm font-extrabold text-white",
                 meta.solid,
               )}
             >
-              {initials}
+              {user.avatarUrl ? (
+                <Image
+                  width={36}
+                  height={36}
+                  priority
+                  src={user.avatarUrl}
+                  alt={`${name} profile`}
+                  className="size-full object-cover"
+                />
+              ) : (
+                initials.slice(0, 2)
+              )}
             </span>
             <span className="hidden max-w-36 text-left sm:block">
               <span className="block truncate text-sm font-extrabold text-slate-900">
