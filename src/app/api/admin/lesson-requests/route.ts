@@ -19,6 +19,6 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
     console.error(error);
-    return apiError("INTERNAL_SERVER_ERROR", "Unable to load lesson requests.", 500);
+    return apiError("INTERNAL_SERVER_ERROR", "Unable to load enrolments.", 500);
   }
 }

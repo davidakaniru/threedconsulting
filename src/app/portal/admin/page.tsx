@@ -24,9 +24,19 @@ import { getAdminDashboardOverview } from "@/modules/dashboard/server";
 
 function activityLabel(action: string) {
   return action
+    .replaceAll("lesson_request", "enrolment")
+    .replaceAll("teaching_assignment", "programme assignment")
     .replaceAll("_", " ")
     .replaceAll(".", " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function activityEntityLabel(entityType: string) {
+  const labels: Record<string, string> = {
+    lesson_request: "Enrolment",
+    teaching_assignment: "Programme assignment",
+  };
+  return labels[entityType] ?? entityType.replaceAll("_", " ");
 }
 
 export default async function AdminPortalPage() {
@@ -226,7 +236,7 @@ export default async function AdminPortalPage() {
                     {activityLabel(activity.action)}
                   </p>
                   <p className="mt-1 text-sm capitalize text-slate-500">
-                    {activity.entityType.replaceAll("_", " ")}
+                    {activityEntityLabel(activity.entityType)}
                   </p>
                 </div>
                 <span className="shrink-0 text-xs font-semibold text-slate-400">

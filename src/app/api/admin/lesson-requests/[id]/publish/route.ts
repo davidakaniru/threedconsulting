@@ -12,6 +12,6 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
   } catch (error) {
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
     console.error(error);
-    return apiError("INTERNAL_SERVER_ERROR", "Unable to publish the lesson request.", 500);
+    return apiError("INTERNAL_SERVER_ERROR", "Unable to publish the enrolment.", 500);
   }
 }

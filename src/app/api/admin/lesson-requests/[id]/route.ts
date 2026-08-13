@@ -12,6 +12,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   } catch (error) {
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
     console.error(error);
-    return apiError("INTERNAL_SERVER_ERROR", "Unable to load the lesson request.", 500);
+    return apiError("INTERNAL_SERVER_ERROR", "Unable to load the enrolment.", 500);
   }
 }
