@@ -2,6 +2,7 @@ import "server-only";
 
 import { ApiError } from "@/lib/api/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyAdminLessonAccepted } from "@/lib/email/admin-notifications";
 
 const db = () => createAdminClient() as any;
 
@@ -110,5 +111,7 @@ export async function claimTeacherOpportunity(id: string, teacherId: string) {
       500,
     );
   }
+
+  await notifyAdminLessonAccepted(id, teacherId);
   return data;
 }

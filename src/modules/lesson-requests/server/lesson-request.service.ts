@@ -1,6 +1,7 @@
 import { ApiError } from "@/lib/api/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { notifyAdminNewLessonRequest } from "@/lib/email/admin-notifications";
 import type { SubmitLessonRequest } from "@/modules/lesson-requests/schemas";
 import type {
   ParentEnrolmentChild,
@@ -166,6 +167,8 @@ export async function submitUnifiedLessonRequest(
       500,
     );
   }
+
+  await notifyAdminNewLessonRequest(request.id as string);
 
   return {
     id: request.id as string,
