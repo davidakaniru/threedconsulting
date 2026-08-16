@@ -9,6 +9,7 @@ import {
   ListChecks,
   MessagesSquare,
   Settings,
+  Star,
   UserRound,
   Users,
 } from "lucide-react";
@@ -83,6 +84,13 @@ export const portalNavigation: Record<
       icon: BarChart3,
       enabled: true,
       group: "Academics",
+    },
+    {
+      label: "Reviews",
+      href: "/portal/admin/reviews",
+      icon: Star,
+      enabled: true,
+      group: "Quality",
     },
     {
       label: "Contact inquiries",

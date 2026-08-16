@@ -51,6 +51,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      lesson_reviews: {
+        Row: {
+          id: string;
+          lesson_assignment_id: string;
+          parent_id: string;
+          rating: number;
+          lesson_outcome: string;
+          teacher_feedback: string;
+          would_recommend: boolean;
+          additional_comments: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          lesson_assignment_id: string;
+          parent_id: string;
+          rating: number;
+          lesson_outcome: string;
+          teacher_feedback: string;
+          would_recommend: boolean;
+          additional_comments?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          lesson_assignment_id?: string;
+          parent_id?: string;
+          rating?: number;
+          lesson_outcome?: string;
+          teacher_feedback?: string;
+          would_recommend?: boolean;
+          additional_comments?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_reviews_lesson_assignment_id_fkey";
+            columns: ["lesson_assignment_id"];
+            isOneToOne: true;
+            referencedRelation: "lesson_assignments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_reviews_parent_id_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "parents";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       class_sessions: {
         Row: {
           cohort_id: string | null;

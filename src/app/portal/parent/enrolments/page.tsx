@@ -7,6 +7,7 @@ import {
   GraduationCap,
   Hourglass,
   Plus,
+  Star,
 } from "lucide-react";
 import {
   AdminPage,
@@ -20,17 +21,22 @@ import { requireParent } from "@/lib/auth/guards";
 import { formatDate, formatTime } from "@/lib/date";
 import { listParentLessonRequests } from "@/modules/lesson-requests/server";
 import { getParentLessonAssignments } from "@/modules/lesson-assignments/server";
+import { listParentReviewStates } from "@/modules/lesson-reviews/server";
 
 export const metadata: Metadata = { title: "My Enrolments | Parent Portal" };
 const day = (v: string) => v.charAt(0).toUpperCase() + v.slice(1);
 export default async function Page() {
   const parent = await requireParent();
-  const [requests, assignments] = await Promise.all([
+  const [requests, assignments, reviewStates] = await Promise.all([
     listParentLessonRequests(parent.id),
     getParentLessonAssignments(parent.id),
+    listParentReviewStates(parent.id),
   ]);
   const assignmentByRequest = new Map(
     assignments.map((a) => [a.lessonRequestId, a]),
+  );
+  const reviewStateByAssignment = new Map(
+    reviewStates.map((state) => [state.assignmentId, state]),
   );
   return (
     <AdminPage>
@@ -108,33 +114,56 @@ export default async function Page() {
                   </div>
                   {assignment ? (
                     <div className="mt-4 rounded-xl bg-primary/6 p-4">
-                      <div className="flex items-start gap-3">
-                        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-                          <GraduationCap className="size-4" />
-                        </span>
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                            Matched teacher
-                          </p>
-                          <p className="mt-1 font-extrabold">
-                            {assignment.teacherName}
-                          </p>
-                          {assignment.teacherSpecialization ||
-                          assignment.teacherQualification ? (
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {[
-                                assignment.teacherSpecialization,
-                                assignment.teacherQualification,
-                              ]
-                                .filter(Boolean)
-                                .join(" · ")}
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex items-start gap-3">
+                          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                            <GraduationCap className="size-4" />
+                          </span>
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                              Matched teacher
                             </p>
-                          ) : null}
-                          <p className="mt-2 text-xs font-semibold text-muted-foreground">
-                            Active {formatDate(assignment.startDate)} –{" "}
-                            {formatDate(assignment.endDate)}
-                          </p>
+                            <p className="mt-1 font-extrabold">
+                              {assignment.teacherName}
+                            </p>
+                            {assignment.teacherSpecialization ||
+                            assignment.teacherQualification ? (
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {[
+                                  assignment.teacherSpecialization,
+                                  assignment.teacherQualification,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ")}
+                              </p>
+                            ) : null}
+                            <p className="mt-2 text-xs font-semibold text-muted-foreground">
+                              Active {formatDate(assignment.startDate)} –{" "}
+                              {formatDate(assignment.endDate)}
+                            </p>
+                          </div>
                         </div>
+
+                        {(() => {
+                          const reviewState = reviewStateByAssignment.get(
+                            assignment.id,
+                          );
+                          if (!reviewState?.eligible && !reviewState?.reviewId)
+                            return null;
+
+                          return (
+                            <Button asChild size="sm" variant="outline">
+                              <Link
+                                href={`/portal/parent/enrolments/${assignment.id}/feedback`}
+                              >
+                                <Star />
+                                {reviewState.reviewId
+                                  ? "View / edit feedback"
+                                  : "Give feedback"}
+                              </Link>
+                            </Button>
+                          );
+                        })()}
                       </div>
                     </div>
                   ) : null}
