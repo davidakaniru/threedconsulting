@@ -1,10 +1,8 @@
 import Link from "next/link";
 import {
   BookOpen,
-  CalendarCheck2,
   CalendarDays,
   CheckCircle2,
-  Clock3,
   GraduationCap,
   Plus,
   ListChecks,
@@ -78,9 +76,9 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
           tone="green"
         />
         <MetricCard
-          label="Attendance to complete"
+          label="Attendance records"
           value={data.metrics.attendancePending}
-          helper="Sessions with pending records"
+          helper="Recorded automatically from meeting joins"
           icon={ListChecks}
           tone="orange"
         />
@@ -167,8 +165,8 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             <QuickAction
               href="/portal/teacher/attendance"
               icon={ListChecks}
-              title="Take attendance"
-              description="Complete pending attendance sheets."
+              title="View attendance"
+              description="Review attendance recorded automatically from meeting joins."
             />
             <QuickAction
               href="/portal/teacher/lessons"
@@ -178,55 +176,6 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             />
           </div>
         </SectionCard>
-      </div>
-
-      <div className="grid gap-7">
-        <SectionCard
-          title="Attendance requiring attention"
-          description="Scheduled or completed sessions with pending learner records."
-          icon={CalendarCheck2}
-          action={
-            <Button asChild variant="outline" size="sm">
-              <Link href="/portal/teacher/attendance">Open attendance</Link>
-            </Button>
-          }
-        >
-          {data.attendanceAttention.length === 0 ? (
-            <EmptyState
-              compact
-              icon={CheckCircle2}
-              title="Attendance is up to date"
-              description="There are no sessions with pending attendance records."
-            />
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {data.attendanceAttention.map((session) => (
-                <Link
-                  key={session.id}
-                  href={`/portal/teacher/sessions/${session.id}/attendance`}
-                  className="flex items-center gap-3 py-4 first:pt-0 last:pb-0"
-                >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-orange-100 text-orange-700">
-                    <Clock3 className="size-4" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-extrabold text-foreground">
-                      {session.title}
-                    </span>
-                    <span className="mt-1 block text-xs text-muted-foreground">
-                      {session.lessonAssignment.student.name} ·{" "}
-                      {formatDate(session.sessionDate)}
-                    </span>
-                  </span>
-                  <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-extrabold text-orange-700">
-                    {session.attendance.pending} pending
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </SectionCard>
-
       </div>
 
       <SectionCard

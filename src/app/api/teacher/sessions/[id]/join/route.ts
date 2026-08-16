@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireApiRole } from "@/lib/auth/guards";
+import { requireTeacher } from "@/lib/auth/guards";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -16,17 +16,17 @@ export async function GET(
   _: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const parent = await requireApiRole("parent");
+  const teacher = await requireTeacher();
   const { id } = await params;
   const supabase = createAdminClient() as any;
 
   const { data: session, error } = await supabase
     .from("class_sessions")
     .select(
-      "id,session_date,start_time,end_time,meeting_link,status,lesson_assignments!inner(parent_id)",
+      "id,session_date,start_time,end_time,meeting_link,status,lesson_assignments!inner(teacher_id)",
     )
     .eq("id", id)
-    .eq("lesson_assignments.parent_id", parent.id)
+    .eq("lesson_assignments.teacher_id", teacher.id)
     .maybeSingle();
 
   if (error || !session) {
@@ -67,7 +67,7 @@ export async function GET(
 
   const { error: joinError } = await supabase.rpc("record_session_join", {
     p_session_id: id,
-    p_participant_type: "student",
+    p_participant_type: "teacher",
     p_joined_at: new Date().toISOString(),
   });
 

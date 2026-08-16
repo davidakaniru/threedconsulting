@@ -1,76 +1,24 @@
 "use client";
-import { useEffect } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { CheckCheck, Clock3, Save, UserCheck, UserRoundX } from "lucide-react";
-import { toast } from "sonner";
+import { CheckCheck, UserCheck, UserRoundX } from "lucide-react";
 import { MetricCard, MetricGrid, SectionCard } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { SelectField } from "@/components/forms/select-field";
-import { attendanceUpdateSchema, type AttendanceUpdateInput } from "../schemas";
 import type { SessionAttendanceSheet } from "../types";
-import { useSaveAttendance } from "../hooks";
-
-const options = [
-  { label: "Pending", value: "pending" },
-  { label: "Present", value: "present" },
-  { label: "Late", value: "late" },
-  { label: "Absent", value: "absent" },
-];
 
 export function AttendanceSheet({
   sheet,
-  readOnly = false,
 }: {
   sheet: SessionAttendanceSheet;
   readOnly?: boolean;
 }) {
-  const mutation = useSaveAttendance(sheet.session.id);
-  const editable = sheet.editable && !readOnly;
-  const form = useForm<AttendanceUpdateInput>({
-    resolver: yupResolver(attendanceUpdateSchema),
-    defaultValues: {
-      records: sheet.records.map((r) => ({
-        attendanceId: r.id,
-        status: r.status,
-        notes: r.notes ?? "",
-      })),
-    },
-  });
-  const fields = useFieldArray({ control: form.control, name: "records" });
-  useEffect(() => {
-    form.reset({
-      records: sheet.records.map((r) => ({
-        attendanceId: r.id,
-        status: r.status,
-        notes: r.notes ?? "",
-      })),
-    });
-  }, [sheet.records, form]);
-  const values = form.watch("records");
+  const values = sheet.records;
   const counts = values.reduce(
-    (acc, r) => ({ ...acc, [r.status]: acc[r.status] + 1 }),
-    { pending: 0, present: 0, absent: 0, late: 0 } as Record<string, number>,
+    (acc, r) => {
+      acc[r.status] += 1;
+      return acc;
+    },
+    { present: 0, absent: 0 } as Record<"present" | "absent", number>,
   );
-  const marked = counts.present + counts.absent + counts.late;
-  const rate = marked
-    ? Math.round(((counts.present + counts.late) / marked) * 100)
-    : 0;
-  const markAllPresent = () =>
-    fields.fields.forEach((_, index) =>
-      form.setValue(`records.${index}.status`, "present", {
-        shouldDirty: true,
-      }),
-    );
-  const submit = form.handleSubmit(async (data) => {
-    try {
-      await mutation.mutateAsync({ records: data.records });
-      toast.success("Attendance saved successfully.");
-    } catch (error: any) {
-      toast.error(error?.message ?? "Attendance could not be saved.");
-    }
-  });
+  const marked = counts.present + counts.absent;
+  const rate = marked ? Math.round((counts.present / marked) * 100) : 0;
   return (
     <div className="space-y-6">
       <MetricGrid>
@@ -81,18 +29,11 @@ export function AttendanceSheet({
           tone="green"
         />
         <MetricCard
-          label="Late"
-          value={counts.late}
-          icon={Clock3}
-          tone="orange"
-        />
-        <MetricCard
           label="Absent"
           value={counts.absent}
           icon={UserRoundX}
           tone="rose"
         />
-        <MetricCard label="Pending" value={counts.pending} icon={Clock3} />
         <MetricCard
           label="Attendance rate"
           value={`${rate}%`}
@@ -102,79 +43,36 @@ export function AttendanceSheet({
       </MetricGrid>
       <SectionCard
         title="Attendance sheet"
-        description={
-          editable
-            ? "Mark each learner, then save the full sheet once."
-            : "Attendance is read-only."
-        }
+        description="Attendance is recorded automatically when the learner joins the meeting."
         contentClassName="p-0"
       >
-        <form onSubmit={submit}>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b p-4">
+        <div>
+          <div className="flex items-center justify-between gap-3 border-b p-4">
             <p className="text-sm font-medium text-slate-600">
-              {sheet.records.length} learner
-              {sheet.records.length === 1 ? "" : "s"}
+              {sheet.records.length} learner{sheet.records.length === 1 ? "" : "s"}
             </p>
-            {editable && (
-              <Button type="button" variant="outline" onClick={markAllPresent}>
-                <CheckCheck />
-                Mark everyone present
-              </Button>
-            )}
+            <p className="text-sm text-slate-500">Automatic attendance</p>
           </div>
           <div className="divide-y">
-            {fields.fields.map((field, index) => {
-              const student = sheet.records[index];
-              return (
-                <div
-                  key={field.id}
-                  className="grid gap-4 p-4 md:grid-cols-[1fr_180px_1fr] md:items-end"
-                >
-                  <div>
-                    <p className="font-bold text-slate-950">
-                      {student.studentName}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {student.admissionNumber}
-                    </p>
-                  </div>
-                  <Controller
-                    control={form.control}
-                    name={`records.${index}.status`}
-                    render={({ field: statusField }) => (
-                      <SelectField
-                        id={`status-${student.id}`}
-                        label="Status"
-                        options={options}
-                        value={statusField.value}
-                        onValueChange={statusField.onChange}
-                        disabled={!editable}
-                      />
-                    )}
-                  />
-                  <Input
-                    id={`notes-${student.id}`}
-                    label="Notes"
-                    placeholder="Optional note"
-                    disabled={!editable}
-                    {...form.register(`records.${index}.notes`)}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          {editable && (
-            <div className="flex justify-end border-t p-4">
-              <Button
-                type="submit"
-                disabled={!form.formState.isDirty || mutation.isPending}
+            {sheet.records.map((record) => (
+              <div
+                key={record.id}
+                className="grid gap-4 p-4 md:grid-cols-[1fr_180px_1fr] md:items-center"
               >
-                <Save />
-                {mutation.isPending ? "Saving..." : "Save attendance"}
-              </Button>
-            </div>
-          )}
-        </form>
+                <div>
+                  <p className="font-bold text-slate-950">{record.studentName}</p>
+                  <p className="text-xs text-slate-500">{record.admissionNumber}</p>
+                </div>
+                <div className="font-medium capitalize">{record.status}</div>
+                <p className="text-sm text-slate-500">
+                  {record.status === "present"
+                    ? "Joined the meeting."
+                    : "Did not join before the session ended."}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </SectionCard>
     </div>
   );

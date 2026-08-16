@@ -51,6 +51,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      lesson_reviews: {
+        Row: {
+          id: string;
+          lesson_assignment_id: string;
+          parent_id: string;
+          rating: number;
+          lesson_outcome: string;
+          teacher_feedback: string;
+          would_recommend: boolean;
+          additional_comments: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          lesson_assignment_id: string;
+          parent_id: string;
+          rating: number;
+          lesson_outcome: string;
+          teacher_feedback: string;
+          would_recommend: boolean;
+          additional_comments?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          lesson_assignment_id?: string;
+          parent_id?: string;
+          rating?: number;
+          lesson_outcome?: string;
+          teacher_feedback?: string;
+          would_recommend?: boolean;
+          additional_comments?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_reviews_lesson_assignment_id_fkey";
+            columns: ["lesson_assignment_id"];
+            isOneToOne: true;
+            referencedRelation: "lesson_assignments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_reviews_parent_id_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "parents";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       class_sessions: {
         Row: {
           cohort_id: string | null;
@@ -117,6 +171,38 @@ export type Database = {
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      session_joins: {
+        Row: {
+          id: string;
+          session_id: string;
+          participant_type: string;
+          joined_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          participant_type: string;
+          joined_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          participant_type?: string;
+          joined_at?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "session_joins_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "class_sessions";
             referencedColumns: ["id"];
           },
         ];
@@ -807,13 +893,17 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: string;
       };
-      update_session_attendance: {
-        Args: { p_session_id: string; p_teacher_id: string; p_records: Json };
+      record_session_join: {
+        Args: { p_session_id: string; p_participant_type: string; p_joined_at?: string };
+        Returns: Database["public"]["Tables"]["class_sessions"]["Row"];
+      };
+      finalize_expired_class_sessions: {
+        Args: Record<PropertyKey, never>;
         Returns: number;
       };
     };
     Enums: {
-      attendance_status: "pending" | "present" | "absent" | "late";
+      attendance_status: "present" | "absent";
       class_session_status: "draft" | "scheduled" | "completed" | "cancelled";
       homework_status: "draft" | "published" | "closed";
       homework_submission_status: "pending" | "submitted" | "graded" | "late";
@@ -967,7 +1057,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      attendance_status: ["pending", "present", "absent", "late"],
+      attendance_status: ["present", "absent"],
       class_session_status: ["draft", "scheduled", "completed", "cancelled"],
       cohort_membership_status: [
         "active",

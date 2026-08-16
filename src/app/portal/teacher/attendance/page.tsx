@@ -11,7 +11,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Teaching"
         title="Attendance"
-        description="Mark and review attendance for your scheduled and completed sessions."
+        description="Review attendance recorded automatically from learner meeting joins."
         icon={CalendarCheck2}
       />
       <AttendanceDashboard />

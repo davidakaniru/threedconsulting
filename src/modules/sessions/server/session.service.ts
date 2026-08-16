@@ -2,7 +2,7 @@ import { ApiError } from "@/lib/api/errors";
 import { writeAuditLog } from "@/lib/audit";
 import { nullableText } from "@/lib/mappers";
 import { normalizePagination } from "@/lib/modules";
-import type { ClassSessionRequest } from "../schemas";
+import type { ClassSessionRequest, UpdateSessionInput } from "../schemas";
 import type { ClassSession, SessionListResult, SessionMetrics } from "../types";
 import { mapSession } from "./session.mapper";
 import * as repo from "./session.repository";
@@ -65,7 +65,9 @@ async function assertOwnership(id: string, teacherId: string) {
       403,
     );
 }
-function input(v: ClassSessionRequest) {
+type SessionStatus = "draft" | "scheduled" | "completed" | "cancelled";
+
+function input(v: ClassSessionRequest, status: SessionStatus) {
   return {
     lesson_assignment_id: v.lessonAssignmentId,
     title: v.title.trim(),
@@ -74,12 +76,12 @@ function input(v: ClassSessionRequest) {
     start_time: v.startTime,
     end_time: v.endTime,
     meeting_link: v.meetingLink.trim(),
-    status: v.status,
+    status,
   };
 }
-export async function createSession(v: ClassSessionRequest, teacherId: string) {
+export async function createSession(v: ClassSessionRequest, teacherId: string, status: "draft" | "scheduled") {
   await assertOwnership(v.lessonAssignmentId, teacherId);
-  const r = await repo.insertSession({ ...input(v), created_by: teacherId });
+  const r = await repo.insertSession({ ...input(v, status), created_by: teacherId });
   if (r.error || !r.data)
     throw new ApiError(
       "SESSION_CREATE_FAILED",
@@ -101,7 +103,7 @@ export async function createSession(v: ClassSessionRequest, teacherId: string) {
 }
 export async function updateSession(
   id: string,
-  v: ClassSessionRequest,
+  v: UpdateSessionInput,
   teacherId: string,
 ) {
   const current = await getSession(id);
@@ -112,7 +114,10 @@ export async function updateSession(
       403,
     );
   await assertOwnership(v.lessonAssignmentId, teacherId);
-  const r = await repo.updateSessionRow(id, input(v));
+  const nextStatus = current.status === "draft" && v.action === "schedule" ? "scheduled" : current.status;
+  if (v.action === "schedule" && current.status !== "draft")
+    throw new ApiError("SESSION_STATUS_CHANGE_FORBIDDEN", "Only draft sessions can be scheduled.", 409);
+  const r = await repo.updateSessionRow(id, input(v, nextStatus));
   if (r.error || !r.data)
     throw new ApiError(
       "SESSION_UPDATE_FAILED",

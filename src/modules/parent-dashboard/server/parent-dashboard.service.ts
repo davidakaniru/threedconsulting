@@ -112,6 +112,7 @@ export async function getParentAcademicDashboard(
             sessionDate: row.session_date,
             startTime: row.start_time,
             endTime: row.end_time,
+            status: row.status,
           },
         ];
       })
@@ -125,12 +126,12 @@ export async function getParentAcademicDashboard(
     const attendanceRows = (attendanceResult.data ?? []).filter(
       (row: any) => row.student_id === student.id,
     );
-    const counts = { present: 0, absent: 0, late: 0, pending: 0 };
+    const counts = { present: 0, absent: 0 };
     attendanceRows.forEach((row: any) => {
       if (row.status in counts) counts[row.status as keyof typeof counts] += 1;
     });
-    const marked = counts.present + counts.absent + counts.late;
-    const attended = counts.present + counts.late;
+    const marked = counts.present + counts.absent;
+    const attended = counts.present;
     const recent = attendanceRows.slice(0, 8).map((row: any) => {
       const session = relationOne(row.class_sessions) as any;
       const assignment = relationOne(session?.lesson_assignments) as any;

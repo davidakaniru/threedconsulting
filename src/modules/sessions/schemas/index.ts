@@ -18,10 +18,8 @@ export const classSessionSchema = yup
       .url("Enter a valid meeting link.")
       .matches(/^https:\/\//i, "Meeting link must use HTTPS.")
       .required("Enter the meeting link."),
-    status: yup
-      .mixed<"draft" | "scheduled" | "completed" | "cancelled">()
-      .oneOf(["draft", "scheduled", "completed", "cancelled"])
-      .required(),
   })
   .required();
 export type ClassSessionRequest = yup.InferType<typeof classSessionSchema>;
+export type CreateSessionInput = ClassSessionRequest & { action: "draft" | "schedule" };
+export type UpdateSessionInput = ClassSessionRequest & { action?: "save" | "schedule" };

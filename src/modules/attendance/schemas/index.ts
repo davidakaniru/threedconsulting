@@ -9,7 +9,7 @@ export const attendanceUpdateSchema = yup
           attendanceId: yup.string().uuid().required(),
           status: yup
             .string()
-            .oneOf(["pending", "present", "absent", "late"])
+            .oneOf(["present", "absent"])
             .required(),
           notes: yup.string().trim().max(500).nullable().optional(),
         }),

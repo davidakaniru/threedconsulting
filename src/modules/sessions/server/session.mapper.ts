@@ -15,13 +15,11 @@ export function mapSession(row: any): ClassSession {
     profile?.email ||
     "Teacher";
   const statuses = (row.session_attendance ?? []) as Array<{
-    status: "pending" | "present" | "absent" | "late";
+    status: "present" | "absent";
   }>;
   const attendance = {
-    pending: 0,
     present: 0,
     absent: 0,
-    late: 0,
     total: statuses.length,
   };
   statuses.forEach((x) => attendance[x.status]++);
