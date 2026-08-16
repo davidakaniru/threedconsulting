@@ -4,7 +4,7 @@ import { AdminPage, PageBackButton, PageHeader } from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
 import { AttendanceSheet } from "@/modules/attendance";
 import { getSessionAttendance } from "@/modules/attendance/server";
-export const metadata: Metadata = { title: "Take Attendance | Teacher Portal" };
+export const metadata: Metadata = { title: "View Attendance | Teacher Portal" };
 export default async function Page({
   params,
 }: {

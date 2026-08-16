@@ -57,7 +57,7 @@ export function SessionDetails({
                     href={`/portal/teacher/sessions/${session.id}/attendance`}
                   >
                     <CalendarCheck2 />
-                    Take attendance
+                    View attendance
                   </Link>
                 </Button>
                 <Button variant="outline" asChild>

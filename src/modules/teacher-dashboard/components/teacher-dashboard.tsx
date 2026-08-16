@@ -23,6 +23,7 @@ import {
   formatTime,
 } from "@/lib/date";
 import type { TeacherDashboardData } from "../types";
+import { SessionJoinButton } from "@/modules/sessions/components/session-join-button";
 
 interface TeacherDashboardProps {
   firstName: string | null;
@@ -111,39 +112,48 @@ export function TeacherDashboard({ firstName, data }: TeacherDashboardProps) {
             />
           ) : (
             <div className="space-y-3">
-              {data.upcomingSessions.map((session) => {
-                const start = sessionDateTime(session);
+              {data.upcomingSessions.slice(0, 2).map((session, index) => {
                 return (
-                  <Link
+                  <div
                     key={session.id}
-                    href={`/portal/teacher/sessions/${session.id}`}
-                    className="group flex flex-col gap-4 rounded-2xl border border-slate-200/80 p-4 transition hover:border-primary/25 hover:bg-primary/2.5 sm:flex-row sm:items-center"
+                    className={`rounded-2xl border p-4 ${index === 0 ? "border-primary/30 bg-primary/5" : "border-slate-200"}`}
                   >
-                    <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
-                      <CalendarDays className="size-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-display font-extrabold text-foreground group-hover:text-primary">
-                          {session.title}
-                        </h3>
-                        <StatusBadge status={session.status} />
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-extrabold">{session.title}</p>
+                          {index === 0 && (
+                            <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary">
+                              Next
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {session.lessonAssignment.programme.name} · {""}
+                          {session.lessonAssignment.student.name}
+                        </p>
+                        <p className="mt-2 text-sm font-semibold">
+                          {formatDate(session.sessionDate)} · {""}
+                          {formatTime(session.startTime)}–
+                          {formatTime(session.endTime)}
+                        </p>
+                        <p className="mt-1 text-xs font-bold text-primary">
+                          {formatRelative(
+                            `${session.sessionDate}T${session.startTime}`,
+                          )}
+                        </p>
                       </div>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {session.lessonAssignment.programme.name} ·{" "}
-                        {session.lessonAssignment.student.name}
-                      </p>
+                      <SessionJoinButton
+                        sessionId={session.id}
+                        sessionDate={session.sessionDate}
+                        startTime={session.startTime}
+                        endTime={session.endTime}
+                        status={session.status}
+                        role="teacher"
+                        className="shrink-0"
+                      />
                     </div>
-                    <div className="shrink-0 text-left sm:text-right">
-                      <p className="text-sm font-bold text-foreground">
-                        {formatDate(session.sessionDate)} ·{" "}
-                        {formatTime(session.startTime)}
-                      </p>
-                      <p className="mt-1 text-xs font-medium text-primary">
-                        {formatRelative(start)}
-                      </p>
-                    </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
