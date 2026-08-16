@@ -10,14 +10,3 @@ export function getAttendanceRows(sessionId: string) {
     .eq("session_id", sessionId);
 }
 
-export function updateAttendanceSheet(
-  sessionId: string,
-  teacherId: string,
-  records: unknown,
-) {
-  return createAdminClient().rpc("update_session_attendance", {
-    p_session_id: sessionId,
-    p_teacher_id: teacherId,
-    p_records: records as never,
-  });
-}

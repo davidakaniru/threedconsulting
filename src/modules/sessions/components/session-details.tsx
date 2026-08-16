@@ -16,6 +16,7 @@ import {
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import type { ClassSession } from "../types";
+import { SessionJoinButton } from "./session-join-button";
 export function SessionDetails({
   session,
   admin = false,
@@ -67,12 +68,22 @@ export function SessionDetails({
                 </Button>
               </>
             )}
-            <Button asChild>
-              <a href={session.meetingLink} target="_blank" rel="noreferrer">
-                <ExternalLink />
-                Join meeting
-              </a>
-            </Button>
+            {admin ? (
+              <Button asChild>
+                <a href={session.meetingLink} target="_blank" rel="noreferrer">
+                  <ExternalLink />
+                  Join meeting
+                </a>
+              </Button>
+            ) : (
+              <SessionJoinButton
+                sessionId={session.id}
+                sessionDate={session.sessionDate}
+                startTime={session.startTime}
+                endTime={session.endTime}
+                status={session.status}
+              />
+            )}
           </div>
         </div>
       </SectionCard>
@@ -125,18 +136,13 @@ export function SessionDetails({
             icon={Users}
           />
           <MetricCard
-            label="Pending"
-            value={session.attendance.pending}
-            icon={Clock}
-          />
-          <MetricCard
             label="Present"
             value={session.attendance.present}
             icon={Users}
           />
           <MetricCard
-            label="Absent / Late"
-            value={session.attendance.absent + session.attendance.late}
+            label="Absent"
+            value={session.attendance.absent}
             icon={Users}
           />
         </MetricGrid>

@@ -175,6 +175,38 @@ export type Database = {
           },
         ];
       };
+      session_joins: {
+        Row: {
+          id: string;
+          session_id: string;
+          participant_type: string;
+          joined_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          participant_type: string;
+          joined_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          participant_type?: string;
+          joined_at?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "session_joins_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "class_sessions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       session_attendance: {
         Row: {
           created_at: string;
@@ -861,13 +893,17 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: string;
       };
-      update_session_attendance: {
-        Args: { p_session_id: string; p_teacher_id: string; p_records: Json };
+      record_session_join: {
+        Args: { p_session_id: string; p_participant_type: string; p_joined_at?: string };
+        Returns: Database["public"]["Tables"]["class_sessions"]["Row"];
+      };
+      finalize_expired_class_sessions: {
+        Args: Record<PropertyKey, never>;
         Returns: number;
       };
     };
     Enums: {
-      attendance_status: "pending" | "present" | "absent" | "late";
+      attendance_status: "present" | "absent";
       class_session_status: "draft" | "scheduled" | "completed" | "cancelled";
       homework_status: "draft" | "published" | "closed";
       homework_submission_status: "pending" | "submitted" | "graded" | "late";
@@ -1021,7 +1057,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      attendance_status: ["pending", "present", "absent", "late"],
+      attendance_status: ["present", "absent"],
       class_session_status: ["draft", "scheduled", "completed", "cancelled"],
       cohort_membership_status: [
         "active",
