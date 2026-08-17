@@ -34,7 +34,25 @@ export function ProgrammesGrid({ subjects }: { subjects: PublicSubject[] }) {
               }}
               className="h-full"
             >
-              <div className="h-full"><a href={`/programmes/${subject.slug}`} className="block h-full"><article className="flex h-full flex-col rounded-3xl border border-sky-50 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><h2 className="font-display text-xl font-extrabold text-foreground">{subject.name}</h2><p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted-foreground">{subject.description || `Explore our ${subject.name} tutoring.`}</p><span className="mt-4 font-display font-bold text-sky-600">Learn more →</span></article></a></div>
+              <div className="h-full">
+                <a
+                  href={`/programmes/${subject.slug}`}
+                  className="block h-full"
+                >
+                  <article className="flex h-full flex-col rounded-3xl border border-sky-50 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <h2 className="font-display text-xl font-extrabold text-foreground">
+                      {subject.name}
+                    </h2>
+                    <p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted-foreground">
+                      {subject.description ||
+                        `Explore our ${subject.name} tutoring.`}
+                    </p>
+                    <span className="mt-4 font-display font-bold text-sky-600">
+                      Learn more →
+                    </span>
+                  </article>
+                </a>
+              </div>
             </motion.div>
           ))}
         </div>

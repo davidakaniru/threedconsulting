@@ -93,7 +93,7 @@ export function ContactForm() {
         </h2>
 
         <p
-          className="mt-3 max-w-xl leading-7
+          className="mt-3 max-w-sm leading-7
             text-muted-foreground"
         >
           Tell us what you’re looking for and a member of our friendly team will

@@ -13,7 +13,11 @@ export default async function ProgrammesPage() {
     <>
       <PageHero
         eyebrow="Our subjects"
-        title={<>Explore our <span className="text-sky-500">subjects</span></>}
+        title={
+          <>
+            Explore our <span className="text-sky-500">subjects</span>
+          </>
+        }
         subtitle="Explore the subjects currently offered by Three-dmanagers, taught by specialists in supportive one-to-one classes."
       />
       <ProgrammesGrid subjects={subjects ?? []} />

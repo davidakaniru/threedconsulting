@@ -55,12 +55,13 @@ export function BrandLogo({
             compact ? "text-base" : "text-xl",
             inverse ? "text-white" : "text-foreground",
           )}
-      >
-        ThreeD{" "}
-        {/* <span className={inverse ? "text-primary" : "text-primary"}>
-          Consulting
-        </span> */}
-      </span>)}
+        >
+          Three-D{" "}
+          <span className={inverse ? "text-primary" : "text-primary"}>
+            Managers
+          </span>
+        </span>
+      )}
     </Link>
   );
 }

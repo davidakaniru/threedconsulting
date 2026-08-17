@@ -136,7 +136,7 @@ function SectionHeading() {
 
       <p
         className="mt-4 text-lg leading-relaxed
-          text-muted-foreground"
+          text-muted-foreground max-w-md mx-auto"
       >
         From first hello to graduation day — a clear, supportive path you and
         your child take together.

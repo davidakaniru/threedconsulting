@@ -298,5 +298,5 @@ export const programmes: Programme[] = [
 ];
 
 export function getProgrammeBySlug(slug: string) {
-  return programmes.find((programme) => subject.slug === slug);
+  return programmes.find((programme) => programme.slug === slug);
 }
