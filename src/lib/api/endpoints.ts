@@ -9,6 +9,9 @@ export const API_ENDPOINTS = {
   },
   admin: {
     teachers: "/admin/teachers",
+    tutorApplications: "/admin/tutor-applications",
+    tutorApplication: (id: string) => `/admin/tutor-applications/${id}`,
+    tutorApplicationActions: (id: string) => `/admin/tutor-applications/${id}`,
     teacher: (id: string) => `/admin/teachers/${id}`,
     teacherActions: (id: string) => `/admin/teachers/${id}/actions`,
     students: "/admin/students",

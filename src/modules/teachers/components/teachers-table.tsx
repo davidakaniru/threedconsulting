@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { Copy, Eye, Pencil, Plus, Users } from "lucide-react";
+import { Copy, Eye, Pencil, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -19,9 +18,9 @@ import {
   TableLoading,
   TableToolbar,
 } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
 import { useTeachers } from "@/modules/teachers/hooks";
 import type { TeacherSummary } from "@/modules/teachers/types";
+import Image from "next/image";
 
 const teacherStatusOptions = [
   { label: "All statuses", value: "all" },
@@ -73,8 +72,18 @@ export function TeachersTable() {
         header: "Tutor",
         cell: (teacher) => (
           <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/10 font-display text-xs font-extrabold text-primary">
-              {teacherInitials(teacher)}
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl overflow-hidden bg-primary/10 font-display text-xs font-extrabold text-primary">
+              {teacher.avatarUrl ? (
+                <Image
+                  src={teacher.avatarUrl}
+                  alt={teacherName(teacher)}
+                  width={40}
+                  height={40}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <span className="text-lg">{teacherInitials(teacher)}</span>
+              )}
             </span>
             <div className="min-w-0">
               <p className="truncate font-extrabold text-slate-900">
@@ -130,11 +139,6 @@ export function TeachersTable() {
                 href: `/portal/admin/teachers/${teacher.id}`,
               },
               {
-                label: "Edit tutor",
-                icon: Pencil,
-                href: `/portal/admin/teachers/${teacher.id}/edit`,
-              },
-              {
                 label: "Copy email",
                 icon: Copy,
                 onSelect: async () => {
@@ -176,14 +180,6 @@ export function TeachersTable() {
             placeholder="All statuses"
           />
         }
-        actions={
-          <Button asChild className="sm:hidden">
-            <Link href="/portal/admin/teachers/new">
-              <Plus />
-              Add teacher
-            </Link>
-          </Button>
-        }
       />
 
       {isLoading ? (
@@ -205,14 +201,6 @@ export function TeachersTable() {
               icon={Users}
               title="No tutors found"
               description="Add your first tutor or adjust the current search and status filter."
-              action={
-                <Button asChild>
-                  <Link href="/portal/admin/teachers/new">
-                    <Plus />
-                    Add teacher
-                  </Link>
-                </Button>
-              }
             />
           }
           mobileCard={(teacher) => (

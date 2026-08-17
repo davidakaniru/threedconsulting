@@ -20,7 +20,7 @@ create table public.tutor_applications (
   postcode text,
   country text not null,
 
-  gender text not null check (gender in ('female', 'male', 'non_binary', 'prefer_not_to_say')),
+  gender text not null check (gender in ('female', 'male')),
   date_of_birth date not null,
   profile_image_path text not null,
   summary text not null,

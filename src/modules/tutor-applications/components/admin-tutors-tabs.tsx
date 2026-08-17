@@ -2,15 +2,23 @@
 
 import { useState } from "react";
 import { AdminTutorApplications } from "./admin-tutor-applications";
-import type { AdminTutorApplication } from "@/modules/tutor-applications/types";
+import type { TutorApplicationSummary } from "@/modules/tutor-applications/types";
 import { TeachersTable } from "@/modules/teachers";
 
-export function AdminTutorsTabs({ applications }: { applications: AdminTutorApplication[] }) {
+export function AdminTutorsTabs({
+  applications,
+}: {
+  applications: TutorApplicationSummary[];
+}) {
   const [tab, setTab] = useState<"applications" | "active">("applications");
 
   return (
     <div className="space-y-6">
-      <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1" role="tablist" aria-label="Tutor management">
+      <div
+        className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1"
+        role="tablist"
+        aria-label="Tutor management"
+      >
         <button
           type="button"
           role="tab"
@@ -31,7 +39,11 @@ export function AdminTutorsTabs({ applications }: { applications: AdminTutorAppl
         </button>
       </div>
 
-      {tab === "applications" ? <AdminTutorApplications applications={applications} /> : <TeachersTable />}
+      {tab === "applications" ? (
+        <AdminTutorApplications applications={applications} />
+      ) : (
+        <TeachersTable />
+      )}
     </div>
   );
 }

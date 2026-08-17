@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Eye, FileText, Search, UserRound } from "lucide-react";
 
 import { SectionCard, StatusBadge } from "@/components/admin/ui";
-import type { AdminTutorApplication } from "@/modules/tutor-applications/types";
+import type { TutorApplicationSummary } from "@/modules/tutor-applications/types";
 import { Input } from "@/components/ui/input";
 
 function formatDate(value: string) {
@@ -16,7 +16,7 @@ function formatDate(value: string) {
 export function AdminTutorApplications({
   applications,
 }: {
-  applications: AdminTutorApplication[];
+  applications: TutorApplicationSummary[];
 }) {
   const [search, setSearch] = useState("");
 
@@ -25,7 +25,8 @@ export function AdminTutorApplications({
     if (!query) return applications;
     return applications.filter((application) =>
       [
-        application.name,
+        application.firstName,
+        application.lastName,
         application.email,
         application.phone,
         application.expertise,
@@ -83,7 +84,7 @@ export function AdminTutorApplications({
                 </span>
                 <div className="min-w-0">
                   <p className="truncate font-extrabold text-slate-900">
-                    {application.name}
+                    {application.firstName} {application.lastName}
                   </p>
                   <p className="truncate text-xs text-slate-500">
                     {application.email}
@@ -94,7 +95,7 @@ export function AdminTutorApplications({
                 </div>
               </div>
 
-              <div className="grid gap-2 text-sm text-slate-600 sm:grid-cols-2 lg:min-w-[30rem]">
+              <div className="grid gap-2 text-sm text-slate-600 sm:grid-cols-2 lg:min-w-120">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">
                     Expertise

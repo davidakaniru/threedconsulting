@@ -1,3 +1,1 @@
-export { BecomeATutorForm } from "./become-a-tutor-form";
-export { AdminTutorApplications } from "./admin-tutor-applications";
-export { AdminTutorsTabs } from "./admin-tutors-tabs";
+export { BecomeATutorForm } from "@/modules/tutor-applications/components/become-a-tutor-form";

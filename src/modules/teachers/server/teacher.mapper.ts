@@ -25,6 +25,10 @@ export function mapTeacherSummary(row: TeacherJoinedRow): TeacherSummary {
   return {
     id: row.id,
     employeeId: row.employee_id,
+    applicationId: row.application_id,
+    gender: row.gender === "male" || row.gender === "female" ? row.gender : null,
+    summary: row.summary,
+    cvPath: row.cv_path,
     firstName: profile?.first_name ?? null,
     lastName: profile?.last_name ?? null,
     email: textOrFallback(profile?.email),

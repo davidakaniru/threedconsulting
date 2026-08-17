@@ -101,10 +101,10 @@ export default async function AdminPortalPage() {
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <QuickAction
-            href="/portal/admin/teachers/new"
+            href="/portal/admin/teachers?tab=applications"
             icon={GraduationCap}
-            title="Add tutor"
-            description="Create a tutor account and send their invitation."
+            title="Review tutor applications"
+            description="Review applications and accept suitable tutors."
           />
           <QuickAction
             href="/portal/admin/programmes/new"
@@ -116,7 +116,7 @@ export default async function AdminPortalPage() {
             href="/portal/admin/enrolments"
             icon={FileCheck2}
             title="Review enrolments"
-            description="Review parent enrolments and publish suitable opportunities to tutors."
+            description="Review parent enrolments and review suitable enrolments."
           />
           <QuickAction
             href="/portal/admin/sessions"

@@ -759,6 +759,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      tutor_applications: {
+        Row: {
+          id: string; first_name: string; last_name: string; email: string; phone: string;
+          address_line_1: string; address_line_2: string | null; city: string; postcode: string | null; country: string;
+          gender: string; date_of_birth: string; profile_image_path: string; summary: string; expertise: string; qualifications: string; cv_path: string | null;
+          status: Database["public"]["Enums"]["tutor_application_status"]; reviewed_at: string | null; reviewed_by: string | null; rejection_reason: string | null; created_at: string; updated_at: string;
+        };
+        Insert: {
+          id?: string; first_name: string; last_name: string; email: string; phone: string; address_line_1: string; address_line_2?: string | null; city: string; postcode?: string | null; country: string;
+          gender: string; date_of_birth: string; profile_image_path: string; summary: string; expertise: string; qualifications: string; cv_path?: string | null;
+          status?: Database["public"]["Enums"]["tutor_application_status"]; reviewed_at?: string | null; reviewed_by?: string | null; rejection_reason?: string | null; created_at?: string; updated_at?: string;
+        };
+        Update: {
+          id?: string; first_name?: string; last_name?: string; email?: string; phone?: string; address_line_1?: string; address_line_2?: string | null; city?: string; postcode?: string | null; country?: string;
+          gender?: string; date_of_birth?: string; profile_image_path?: string; summary?: string; expertise?: string; qualifications?: string; cv_path?: string | null;
+          status?: Database["public"]["Enums"]["tutor_application_status"]; reviewed_at?: string | null; reviewed_by?: string | null; rejection_reason?: string | null; created_at?: string; updated_at?: string;
+        };
+        Relationships: [];
+      };
       teaching_assignments: {
         Row: {
           assigned_at: string;
@@ -820,8 +839,11 @@ export type Database = {
       teachers: {
         Row: {
           activated_at: string | null;
+          application_id: string | null;
           created_at: string;
+          cv_path: string | null;
           employee_id: string;
+          gender: string | null;
           employment_status: Database["public"]["Enums"]["teacher_employment_status"];
           hire_date: string;
           id: string;
@@ -829,12 +851,16 @@ export type Database = {
           onboarding_status: Database["public"]["Enums"]["teacher_onboarding_status"];
           qualification: string | null;
           specialization: string | null;
+          summary: string | null;
           updated_at: string;
         };
         Insert: {
           activated_at?: string | null;
+          application_id?: string | null;
           created_at?: string;
+          cv_path?: string | null;
           employee_id?: string;
+          gender?: string | null;
           employment_status?: Database["public"]["Enums"]["teacher_employment_status"];
           hire_date?: string;
           id: string;
@@ -842,12 +868,16 @@ export type Database = {
           onboarding_status?: Database["public"]["Enums"]["teacher_onboarding_status"];
           qualification?: string | null;
           specialization?: string | null;
+          summary?: string | null;
           updated_at?: string;
         };
         Update: {
           activated_at?: string | null;
+          application_id?: string | null;
           created_at?: string;
+          cv_path?: string | null;
           employee_id?: string;
+          gender?: string | null;
           employment_status?: Database["public"]["Enums"]["teacher_employment_status"];
           hire_date?: string;
           id?: string;
@@ -855,6 +885,7 @@ export type Database = {
           onboarding_status?: Database["public"]["Enums"]["teacher_onboarding_status"];
           qualification?: string | null;
           specialization?: string | null;
+          summary?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -863,6 +894,13 @@ export type Database = {
             columns: ["id"];
             isOneToOne: true;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "teachers_application_id_fkey";
+            columns: ["application_id"];
+            isOneToOne: false;
+            referencedRelation: "tutor_applications";
             referencedColumns: ["id"];
           },
         ];
@@ -923,6 +961,7 @@ export type Database = {
       profile_status: "active" | "inactive" | "suspended";
       programme_status: "draft" | "published" | "archived";
       student_status: "active" | "inactive" | "graduated" | "withdrawn";
+      tutor_application_status: "pending" | "reviewing" | "accepted" | "rejected";
       teaching_assignment_status: "active" | "inactive";
       teacher_employment_status: "active" | "on_leave" | "former";
       teacher_onboarding_status: "invited" | "active";

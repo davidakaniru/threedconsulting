@@ -5,6 +5,7 @@ import {
   GraduationCap,
   Info,
   Mail,
+  FileText,
   MapPin,
   Pencil,
   Phone,
@@ -16,6 +17,7 @@ import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
 import { TeacherLifecycleActions } from "@/modules/teachers/components/teacher-lifecycle-actions";
 import { TeacherProgrammes } from "@/modules/teaching-assignments";
 import type { TeacherDetail } from "@/modules/teachers/types";
+import Image from "next/image";
 
 function fullName(teacher: TeacherDetail) {
   return (
@@ -38,10 +40,20 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
         <SectionCard contentClassName="p-6 sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-center gap-4">
-              <span className="grid size-16 place-items-center rounded-[1.4rem] bg-primary/10 font-display text-xl font-extrabold text-primary">
-                {(teacher.firstName?.[0] ?? "T") +
-                  (teacher.lastName?.[0] ?? "")}
-              </span>
+              {teacher.avatarUrl ? (
+                <Image
+                  src={teacher.avatarUrl}
+                  width={112}
+                  height={112}
+                  alt={`${fullName(teacher)} profile`}
+                  className="size-28 shrink-0 overflow-hidden rounded-2xl object-cover"
+                />
+              ) : (
+                <div className="grid size-28 shrink-0 place-items-center rounded-2xl bg-slate-900 text-2xl font-extrabold text-slate-400">
+                  {teacher.firstName?.[0]}
+                  {teacher.lastName?.[0]}
+                </div>
+              )}
               <div>
                 <h2 className="font-display text-2xl font-extrabold text-slate-900">
                   {fullName(teacher)}
@@ -62,12 +74,6 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
                 </div>
               </div>
             </div>
-            <Button asChild variant="outline">
-              <Link href={`/portal/admin/teachers/${teacher.id}/edit`}>
-                <Pencil />
-                Edit
-              </Link>
-            </Button>
           </div>
         </SectionCard>
 
@@ -113,6 +119,17 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
               value={teacher.specialization || "Not provided"}
             />
             <Detail
+              icon={UserRound}
+              label="Gender"
+              value={
+                teacher.gender === "female"
+                  ? "Female"
+                  : teacher.gender === "male"
+                    ? "Male"
+                    : "Not provided"
+              }
+            />
+            <Detail
               icon={CalendarDays}
               label="Hire date"
               value={formatDate(teacher.hireDate)}
@@ -129,6 +146,22 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
               }
             />
           </dl>
+          {teacher.summary && (
+            <div className="mt-6 rounded-2xl bg-slate-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Profile summary
+              </p>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                {teacher.summary}
+              </p>
+            </div>
+          )}
+          {teacher.cvPath && (
+            <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-slate-600">
+              <FileText className="size-4" /> CV is available from the original
+              tutor application.
+            </p>
+          )}
         </SectionCard>
 
         <TeacherProgrammes teacherId={teacher.id} />
