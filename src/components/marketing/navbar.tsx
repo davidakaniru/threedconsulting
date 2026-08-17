@@ -20,6 +20,10 @@ const primaryLinks = [
     href: "/programmes",
   },
   {
+    label: "Become a Tutor",
+    href: "/become-a-tutor",
+  },
+  {
     label: "About Us",
     href: "/about",
   },

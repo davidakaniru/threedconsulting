@@ -34,9 +34,15 @@ export function TeachersSection({ tutors }: { tutors: PublicTutor[] }) {
             Our tutor profiles will appear here soon.
           </p>
         )}
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button variant="outline" size="lg" asChild>
             <Link href="/teachers">Meet our tutors</Link>
+          </Button>
+          <Button size="lg" asChild>
+            <Link href="/become-a-tutor">
+              Become a tutor
+              <span aria-hidden="true">→</span>
+            </Link>
           </Button>
         </div>
       </div>

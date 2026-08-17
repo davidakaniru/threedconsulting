@@ -1,33 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { TeachersTable } from "@/modules/teachers";
 import { AdminPage, PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { getTeacherMetrics } from "@/modules/teachers/server/teacher.service";
 import { TeacherMetrics } from "@/modules/teachers/components";
+import { AdminTutorsTabs } from "@/modules/tutor-applications/components";
+import { getTutorApplicationsForAdmin } from "@/modules/tutor-applications/server/admin-tutor-application.service";
 
 export const metadata: Metadata = { title: "Tutors | Admin Portal" };
 
 export default async function TeachersPage() {
-  const metrics = await getTeacherMetrics();
+  const [metrics, applications] = await Promise.all([
+    getTeacherMetrics(),
+    getTutorApplicationsForAdmin(),
+  ]);
+
   return (
     <AdminPage>
       <PageHeader
         eyebrow="People"
         title="Tutors"
-        description="Invite tutors and manage account onboarding, professional details and employment lifecycle."
+        description="Review tutor applications and manage active tutors."
         actions={
           <Button asChild>
             <Link href="/portal/admin/teachers/new">
               <Plus />
-              Add teacher
+              Add tutor
             </Link>
           </Button>
         }
       />
       <TeacherMetrics metrics={metrics} />
-      <TeachersTable />
+      <AdminTutorsTabs applications={applications} />
     </AdminPage>
   );
 }
