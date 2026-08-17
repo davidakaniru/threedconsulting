@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AdminPage, PageBackButton, PageHeader } from "@/components/admin/ui";
 import { TeacherEditClient } from "@/modules/teachers/components/teacher-edit-client";
 
-export const metadata: Metadata = { title: "Edit Teacher | Admin Portal" };
+export const metadata: Metadata = { title: "Edit Tutor | Admin Portal" };
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EditTeacherPage({ params }: Props) {
@@ -11,8 +11,8 @@ export default async function EditTeacherPage({ params }: Props) {
     <AdminPage className="max-w-5xl">
       <PageBackButton />
       <PageHeader
-        eyebrow="Teachers"
-        title="Edit teacher"
+        eyebrow="Tutors"
+        title="Edit tutor"
         description="Update personal, employment and professional information."
       />
       <TeacherEditClient id={id} />

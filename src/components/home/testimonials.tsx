@@ -11,7 +11,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Rebecca T.",
     review:
-      "My daughter went from dreading maths to asking for extra worksheets. The teachers are wonderful and I love the progress reports.",
+      "My daughter went from dreading maths to asking for extra worksheets. The tutors are wonderful and I love the progress reports.",
     rating: 5,
     childAge: "Parent of Maya, age 8",
     tone: "sky",

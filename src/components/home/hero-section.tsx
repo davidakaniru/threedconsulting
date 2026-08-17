@@ -123,7 +123,7 @@ export function HeroSection() {
             className="mt-5 max-w-xl text-lg leading-relaxed
               text-muted-foreground md:text-xl"
           >
-            Bright, safe and inspiring learning programmes that make children
+            Bright, safe and inspiring learning subjects that make children
             excited to learn — and give parents complete confidence in every
             step of the journey.
           </motion.p>
@@ -160,7 +160,7 @@ export function HeroSection() {
             >
               <Link href="/programmes">
                 <CirclePlay data-icon="inline-start" className="text-primary" />
-                Explore programmes
+                Explore subjects
               </Link>
             </Button>
           </motion.div>
@@ -184,7 +184,7 @@ export function HeroSection() {
                 aria-hidden="true"
                 className="size-5 text-[#22c55e]"
               />
-              DBS-checked teachers
+              DBS-checked tutors
             </span>
 
             <span className="flex items-center gap-1.5">

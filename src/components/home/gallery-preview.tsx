@@ -12,7 +12,7 @@ type GalleryTile = {
 const tiles: GalleryTile[] = [
   {
     src: "/imgs/img1.jpg",
-    alt: "Children learning together with their teacher",
+    alt: "Children learning together with their tutor",
     tall: true,
   },
   {

@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 
 const primaryLinks = [
   {
-    label: "Programmes",
+    label: "Subjects",
     href: "/programmes",
   },
   {

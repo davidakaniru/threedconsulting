@@ -21,7 +21,7 @@ import type { LessonRequestDetail } from "@/modules/lesson-requests";
 import { TeacherOpportunityAcceptButton } from "@/modules/lesson-requests/components/teacher-opportunity-accept-button";
 import { listTeacherOpportunities } from "@/modules/lesson-requests/server";
 
-export const metadata: Metadata = { title: "Lessons | Teacher Portal" };
+export const metadata: Metadata = { title: "Lessons | Tutor Portal" };
 
 const day = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 

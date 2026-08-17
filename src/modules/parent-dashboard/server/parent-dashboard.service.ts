@@ -86,7 +86,7 @@ export async function getParentAcademicDashboard(
                 teacherName:
                   [profile?.first_name, profile?.last_name]
                     .filter(Boolean)
-                    .join(" ") || "Teacher",
+                    .join(" ") || "Tutor",
                 teacherQualification: teacher?.qualification ?? null,
                 teacherSpecialization: teacher?.specialization ?? null,
                 currentEducationLevel: row.current_education_level,
@@ -108,7 +108,7 @@ export async function getParentAcademicDashboard(
           {
             id: row.id,
             title: row.title,
-            programmeName: programme?.name ?? "Programme",
+            programmeName: programme?.name ?? "Subject",
             sessionDate: row.session_date,
             startTime: row.start_time,
             endTime: row.end_time,
@@ -140,7 +140,7 @@ export async function getParentAcademicDashboard(
         id: row.id,
         status: row.status,
         sessionTitle: session?.title ?? "Session",
-        programmeName: programme?.name ?? "Programme",
+        programmeName: programme?.name ?? "Subject",
         sessionDate: session?.session_date ?? "",
       };
     });

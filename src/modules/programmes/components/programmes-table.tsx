@@ -43,7 +43,7 @@ export function ProgrammesTable() {
     () => [
       {
         id: "programme",
-        header: "Programme",
+        header: "Subject",
         cell: (p) => (
           <div>
             <p className="font-extrabold text-slate-900">{p.name}</p>
@@ -80,12 +80,12 @@ export function ProgrammesTable() {
             label={`Actions for ${p.name}`}
             actions={[
               {
-                label: "View programme",
+                label: "View subject",
                 icon: Eye,
                 href: `/portal/admin/programmes/${p.id}`,
               },
               {
-                label: "Edit programme",
+                label: "Edit subject",
                 icon: Pencil,
                 href: `/portal/admin/programmes/${p.id}/edit`,
               },
@@ -107,7 +107,7 @@ export function ProgrammesTable() {
               setSearch(v);
               setPage(1);
             }}
-            placeholder="Search programmes..."
+            placeholder="Search subjects..."
           />
         }
         filters={
@@ -125,7 +125,7 @@ export function ProgrammesTable() {
           <Button asChild className="sm:hidden">
             <Link href="/portal/admin/programmes/new">
               <Plus />
-              Add programme
+              Add subject
             </Link>
           </Button>
         }
@@ -134,7 +134,7 @@ export function ProgrammesTable() {
         <TableLoading />
       ) : q.isError ? (
         <TableError
-          title="Programmes could not be loaded"
+          title="Subjects could not be loaded"
           description="Please try again."
           onRetry={() => void q.refetch()}
         />
@@ -147,13 +147,13 @@ export function ProgrammesTable() {
           emptyState={
             <EmptyState
               icon={BookOpen}
-              title="No programmes found"
-              description="Create a programme or adjust the filters."
+              title="No subjects found"
+              description="Create a subject or adjust the filters."
               action={
                 <Button asChild>
                   <Link href="/portal/admin/programmes/new">
                     <Plus />
-                    Add programme
+                    Add subject
                   </Link>
                 </Button>
               }
@@ -170,12 +170,12 @@ export function ProgrammesTable() {
                   label={`Actions for ${p.name}`}
                   actions={[
                     {
-                      label: "View programme",
+                      label: "View subject",
                       icon: Eye,
                       href: `/portal/admin/programmes/${p.id}`,
                     },
                     {
-                      label: "Edit programme",
+                      label: "Edit subject",
                       icon: Pencil,
                       href: `/portal/admin/programmes/${p.id}/edit`,
                     },

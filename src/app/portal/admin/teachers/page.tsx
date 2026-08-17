@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getTeacherMetrics } from "@/modules/teachers/server/teacher.service";
 import { TeacherMetrics } from "@/modules/teachers/components";
 
-export const metadata: Metadata = { title: "Teachers | Admin Portal" };
+export const metadata: Metadata = { title: "Tutors | Admin Portal" };
 
 export default async function TeachersPage() {
   const metrics = await getTeacherMetrics();
@@ -15,8 +15,8 @@ export default async function TeachersPage() {
     <AdminPage>
       <PageHeader
         eyebrow="People"
-        title="Teachers"
-        description="Invite teachers and manage account onboarding, professional details and employment lifecycle."
+        title="Tutors"
+        description="Invite tutors and manage account onboarding, professional details and employment lifecycle."
         actions={
           <Button asChild>
             <Link href="/portal/admin/teachers/new">

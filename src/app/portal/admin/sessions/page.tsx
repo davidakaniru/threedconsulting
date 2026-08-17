@@ -29,7 +29,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Academic"
         title="Class sessions"
-        description="Monitor online sessions across subjects and teachers."
+        description="Monitor online sessions across subjects and tutors."
       />
       <MetricGrid>
         <MetricCard label="Total" value={m.total} icon={CalendarDays} />

@@ -65,7 +65,7 @@ export async function notifyAdminNewLessonRequest(requestId: string) {
       [request.child_first_name, request.child_last_name]
         .filter(Boolean)
         .join(" ") || "Child";
-    const programmeName = programme?.name || "Programme";
+    const programmeName = programme?.name || "Subject";
     const days = (request.preferred_days ?? []).join(", ") || "Not specified";
     const adminUrl = `${siteUrl()}/portal/admin/enrolments/${request.id}`;
 
@@ -82,7 +82,7 @@ export async function notifyAdminNewLessonRequest(requestId: string) {
         <p><strong>Current class / education level:</strong> ${escapeHtml(
           request.current_education_level || "Not specified",
         )}</p>
-        <p><strong>Programme:</strong> ${escapeHtml(programmeName)}</p>
+        <p><strong>Subject:</strong> ${escapeHtml(programmeName)}</p>
         <p><strong>Preferred days:</strong> ${escapeHtml(days)}</p>
         <p><strong>Preferred time:</strong> ${escapeHtml(
           request.preferred_time || "Not specified",
@@ -146,12 +146,12 @@ export async function notifyAdminLessonAccepted(
     const programme = relationOne(request.programmes) as any;
     const teacherName =
       [teacher?.first_name, teacher?.last_name].filter(Boolean).join(" ") ||
-      "Teacher";
+      "Tutor";
     const childName =
       [request.child_first_name, request.child_last_name]
         .filter(Boolean)
         .join(" ") || "Child";
-    const programmeName = programme?.name || "Programme";
+    const programmeName = programme?.name || "Subject";
     const adminUrl = `${siteUrl()}/portal/admin/enrolments/${request.id}`;
 
     await sendTransactionalEmail({
@@ -159,16 +159,16 @@ export async function notifyAdminLessonAccepted(
       subject: `Lesson accepted — ${programmeName} for ${childName}`,
       html: `
         <h2>Lesson request accepted</h2>
-        <p>A teacher has accepted an available lesson request.</p>
-        <p><strong>Teacher:</strong> ${escapeHtml(teacherName)}</p>
-        <p><strong>Teacher email:</strong> ${escapeHtml(
+        <p>A tutor has accepted an available lesson request.</p>
+        <p><strong>Tutor:</strong> ${escapeHtml(teacherName)}</p>
+        <p><strong>Tutor email:</strong> ${escapeHtml(
           teacher?.email || "Not available",
         )}</p>
         <p><strong>Child:</strong> ${escapeHtml(childName)}</p>
         <p><strong>Current class / education level:</strong> ${escapeHtml(
           request.current_education_level || "Not specified",
         )}</p>
-        <p><strong>Programme:</strong> ${escapeHtml(programmeName)}</p>
+        <p><strong>Subject:</strong> ${escapeHtml(programmeName)}</p>
         <p><strong>Preferred days:</strong> ${escapeHtml(
           (request.preferred_days ?? []).join(", ") || "Not specified",
         )}</p>

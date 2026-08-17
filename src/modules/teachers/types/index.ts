@@ -47,3 +47,12 @@ export interface TeacherMetricsI {
   invited: number;
   onLeave: number;
 }
+
+
+export interface PublicTutor {
+  id: string;
+  name: string;
+  specialization: string | null;
+  qualification: string | null;
+  avatarUrl: string | null;
+}

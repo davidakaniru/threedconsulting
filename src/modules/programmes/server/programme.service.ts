@@ -36,7 +36,7 @@ export async function getProgrammes(params: {
   if (error)
     throw new ApiError(
       "PROGRAMMES_LOAD_FAILED",
-      "Programmes could not be loaded.",
+      "Subjects could not be loaded.",
       500,
     );
   return {
@@ -51,11 +51,11 @@ export async function getProgramme(id: string): Promise<ProgrammeDetail> {
   if (error)
     throw new ApiError(
       "PROGRAMME_LOAD_FAILED",
-      "The programme could not be loaded.",
+      "The subject could not be loaded.",
       500,
     );
   if (!data)
-    throw new ApiError("PROGRAMME_NOT_FOUND", "Programme not found.", 404);
+    throw new ApiError("PROGRAMME_NOT_FOUND", "Subject not found.", 404);
   return mapProgramme(data as ProgrammeRow);
 }
 export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
@@ -69,7 +69,7 @@ export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
   if (failed?.error)
     throw new ApiError(
       "PROGRAMME_METRICS_FAILED",
-      "Programme metrics could not be loaded.",
+      "Subject metrics could not be loaded.",
       500,
     );
   return {
@@ -99,12 +99,12 @@ export async function createProgramme(
     if (error?.code === "23505")
       throw new ApiError(
         "PROGRAMME_EXISTS",
-        "A programme with this name already exists.",
+        "A subject with this name already exists.",
         409,
       );
     throw new ApiError(
       "PROGRAMME_CREATE_FAILED",
-      "The programme could not be created.",
+      "The subject could not be created.",
       500,
     );
   }
@@ -128,12 +128,12 @@ export async function updateProgramme(
     if (error?.code === "23505")
       throw new ApiError(
         "PROGRAMME_EXISTS",
-        "A programme with this name already exists.",
+        "A subject with this name already exists.",
         409,
       );
     throw new ApiError(
       "PROGRAMME_UPDATE_FAILED",
-      "The programme could not be updated.",
+      "The subject could not be updated.",
       500,
     );
   }

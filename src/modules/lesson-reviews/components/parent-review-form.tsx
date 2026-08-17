@@ -131,12 +131,12 @@ export function ParentReviewForm({
 
       <Textarea
         id="teacher-feedback"
-        label="Feedback about the teacher"
+        label="Feedback about the tutor"
         required
         rows={5}
         {...register("teacherFeedback")}
         errorMessage={errors.teacherFeedback?.message}
-        placeholder="Share your experience with the teacher's effectiveness, communication, punctuality or approach."
+        placeholder="Share your experience with the tutor's effectiveness, communication, punctuality or approach."
       />
 
       <Controller
@@ -145,7 +145,7 @@ export function ParentReviewForm({
         render={({ field }) => (
           <div>
             <p className="font-display text-sm font-bold text-foreground">
-              Would you recommend this teacher? <span className="text-coral">*</span>
+              Would you recommend this tutor? <span className="text-coral">*</span>
             </p>
             <div className="mt-3 flex gap-2" role="radiogroup" aria-label="Would recommend">
               <Button

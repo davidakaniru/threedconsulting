@@ -135,7 +135,7 @@ function DashboardContent() {
       {child.programmes.length > 0 && (
         <SectionCard
           title="Active lessons"
-          description="Your child's matched teachers and agreed lesson schedules."
+          description="Your child's matched tutors and agreed lesson schedules."
           icon={GraduationCap}
         >
           <div className="grid gap-4 lg:grid-cols-2">
@@ -214,7 +214,7 @@ function DashboardContent() {
         />
         <MetricCard
           icon={GraduationCap}
-          label="Programmes"
+          label="Subjects"
           value={child.programmes.length}
           tone="purple"
           helper="Active one-to-one lessons"

@@ -26,7 +26,7 @@ function mapOpportunity(row: any): TeacherOpportunity {
     currentEducationLevel: row.current_education_level,
     programme: row.programmes ?? {
       id: row.programme_id,
-      name: "Programme",
+      name: "Subject",
       slug: "",
     },
     preferredDays: row.preferred_days ?? [],

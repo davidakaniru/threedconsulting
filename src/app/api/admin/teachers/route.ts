@@ -34,6 +34,6 @@ export async function POST(request: NextRequest) {
       return apiError("VALIDATION_ERROR", "Please correct the highlighted fields.", 422, details);
     }
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
-    console.error("Teacher provisioning failed", error); return apiError("INTERNAL_SERVER_ERROR", "Unable to add the teacher.", 500);
+    console.error("Tutor provisioning failed", error); return apiError("INTERNAL_SERVER_ERROR", "Unable to add the teacher.", 500);
   }
 }

@@ -70,7 +70,7 @@ export function TeachersTable() {
     () => [
       {
         id: "teacher",
-        header: "Teacher",
+        header: "Tutor",
         cell: (teacher) => (
           <div className="flex items-center gap-3">
             <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/10 font-display text-xs font-extrabold text-primary">
@@ -130,7 +130,7 @@ export function TeachersTable() {
                 href: `/portal/admin/teachers/${teacher.id}`,
               },
               {
-                label: "Edit teacher",
+                label: "Edit tutor",
                 icon: Pencil,
                 href: `/portal/admin/teachers/${teacher.id}/edit`,
               },
@@ -139,7 +139,7 @@ export function TeachersTable() {
                 icon: Copy,
                 onSelect: async () => {
                   await navigator.clipboard.writeText(teacher.email);
-                  toast.success("Teacher email copied.");
+                  toast.success("Tutor email copied.");
                 },
               },
             ]}
@@ -190,7 +190,7 @@ export function TeachersTable() {
         <TableLoading />
       ) : isError ? (
         <TableError
-          title="Teachers could not be loaded"
+          title="Tutors could not be loaded"
           description="Please check your connection and try again."
           onRetry={() => void refetch()}
         />
@@ -203,8 +203,8 @@ export function TeachersTable() {
           emptyState={
             <EmptyState
               icon={Users}
-              title="No teachers found"
-              description="Add your first teacher or adjust the current search and status filter."
+              title="No tutors found"
+              description="Add your first tutor or adjust the current search and status filter."
               action={
                 <Button asChild>
                   <Link href="/portal/admin/teachers/new">
@@ -240,7 +240,7 @@ export function TeachersTable() {
                       href: `/portal/admin/teachers/${teacher.id}`,
                     },
                     {
-                      label: "Edit teacher",
+                      label: "Edit tutor",
                       icon: Pencil,
                       href: `/portal/admin/teachers/${teacher.id}/edit`,
                     },
@@ -249,7 +249,7 @@ export function TeachersTable() {
                       icon: Copy,
                       onSelect: async () => {
                         await navigator.clipboard.writeText(teacher.email);
-                        toast.success("Teacher email copied.");
+                        toast.success("Tutor email copied.");
                       },
                     },
                   ]}

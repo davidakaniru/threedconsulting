@@ -4,16 +4,25 @@ import { LearningJourney } from "@/components/home/learning-journey";
 import { ProgrammesSection } from "@/components/home/programmes-section";
 import { StatsBar } from "@/components/home/stats-bar";
 import { WhyParents } from "@/components/home/why-parents";
+import { TeachersSection } from "@/components/home/teachers-section";
+import { getPublicTutors } from "@/modules/teachers/server/teacher.service";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = createAdminClient();
+  const [{ data: subjects }, tutors] = await Promise.all([
+    supabase.from("programmes").select("id,name,slug,description").eq("status", "published").order("name"),
+    getPublicTutors(),
+  ]);
+
   return (
     <>
       <HeroSection />
       <StatsBar />
       <WhyParents />
-      <ProgrammesSection />
+      <ProgrammesSection subjects={subjects ?? []} />
       <LearningJourney />
-      {/* <TeachersSection /> */}
+      <TeachersSection tutors={tutors} />
       {/* <Testimonials /> */}
       {/* <EventsSection /> */}
       {/* <PlatformPreview /> */}

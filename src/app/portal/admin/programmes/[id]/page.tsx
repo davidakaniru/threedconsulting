@@ -5,7 +5,7 @@ import { getProgramme } from "@/modules/programmes/server";
 import { ProgrammeAssignmentManager } from "@/modules/teaching-assignments";
 import { getAssignableTeachers } from "@/modules/teaching-assignments/server";
 type Props = { params: Promise<{ id: string }> };
-export const metadata: Metadata = { title: "Programme Details | Admin Portal" };
+export const metadata: Metadata = { title: "Subject Details | Admin Portal" };
 export default async function Page({ params }: Props) {
   const { id } = await params;
   const [programme, teachers] = await Promise.all([
@@ -16,9 +16,9 @@ export default async function Page({ params }: Props) {
     <AdminPage>
       <PageBackButton />
       <PageHeader
-        eyebrow="Programmes"
+        eyebrow="Subjects"
         title={programme.name}
-        description="Review the programme and manage the teachers eligible to teach this subject."
+        description="Review the programme and manage the tutors eligible to teach this subject."
       />
       <ProgrammeDetails programme={programme} />
       <ProgrammeAssignmentManager

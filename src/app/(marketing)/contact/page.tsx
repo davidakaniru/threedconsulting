@@ -7,7 +7,7 @@ import { PageHero } from "@/components/shared/page-hero";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Contact our friendly team with questions about programmes, trial lessons, events or enrolment.",
+    "Contact our friendly team with questions about subjects, trial lessons, events or enrolment.",
 };
 
 export default function ContactPage() {
@@ -20,7 +20,7 @@ export default function ContactPage() {
             We’d <span className="text-coral">love</span> to hear from you
           </>
         }
-        subtitle="Questions about programmes, enrolment or the platform? Our friendly team is here to help."
+        subtitle="Questions about subjects, enrolment or the platform? Our friendly team is here to help."
       />
 
       <ContactSection />

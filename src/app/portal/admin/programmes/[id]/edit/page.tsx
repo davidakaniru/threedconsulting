@@ -8,16 +8,16 @@ import {
 import { ProgrammeForm } from "@/modules/programmes";
 import { getProgramme } from "@/modules/programmes/server";
 type Props = { params: Promise<{ id: string }> };
-export const metadata: Metadata = { title: "Edit Programme | Admin Portal" };
+export const metadata: Metadata = { title: "Edit Subject | Admin Portal" };
 export default async function Page({ params }: Props) {
   const programme = await getProgramme((await params).id);
   return (
     <AdminPage className="max-w-4xl">
       <PageBackButton />
       <PageHeader
-        eyebrow="Programmes"
+        eyebrow="Subjects"
         title={`Edit ${programme.name}`}
-        description="Update the programme description or lifecycle status."
+        description="Update the subject description or lifecycle status."
       />
       <SectionCard className="p-5 sm:p-8">
         <ProgrammeForm programme={programme} />

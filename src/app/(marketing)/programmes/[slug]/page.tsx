@@ -94,12 +94,12 @@ export async function generateMetadata({
 
   if (!programme) {
     return {
-      title: "Programme not found",
+      title: "Subject not found",
     };
   }
 
   return {
-    title: `${programme.title} Programme`,
+    title: `${programme.title} Subject`,
     description: programme.description,
     alternates: {
       canonical: `/programmes/${programme.slug}`,
@@ -253,7 +253,7 @@ export default async function ProgrammePage({ params }: ProgrammePageProps) {
                 tone.text,
               )}
             >
-              About the programme
+              About the subject
             </span>
 
             <h2
@@ -312,7 +312,7 @@ export default async function ProgrammePage({ params }: ProgrammePageProps) {
               className="font-display text-xl font-extrabold
                 text-foreground"
             >
-              Programme details
+              Subject details
             </h2>
 
             <dl className="mt-6 space-y-5">

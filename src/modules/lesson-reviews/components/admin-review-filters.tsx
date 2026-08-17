@@ -63,22 +63,22 @@ export function AdminReviewFilters({
   return (
     <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-5">
       <ComboboxField
-        label="Teacher"
+        label="Tutor"
         options={teachers}
         value={teacherId}
         onValueChange={setTeacherId}
-        placeholder="All teachers"
+        placeholder="All tutors"
         searchPlaceholder="Search teachers..."
-        emptyText="No teacher found."
+        emptyText="No tutor found."
       />
       <ComboboxField
-        label="Programme"
+        label="Subject"
         options={programmes}
         value={programmeId}
         onValueChange={setProgrammeId}
         placeholder="All programmes"
         searchPlaceholder="Search programmes..."
-        emptyText="No programme found."
+        emptyText="No subject found."
       />
       <SelectField
         id="review-rating"

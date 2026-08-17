@@ -69,7 +69,7 @@ export function TeacherProgrammes({
         primaryInstructor: false,
       });
       setProgrammeId("");
-      toast.success("Programme assigned to teacher.");
+      toast.success("Subject assigned to teacher.");
     } catch (error) {
       toast.error(toApiError(error).message);
     }
@@ -86,11 +86,11 @@ export function TeacherProgrammes({
 
   return (
     <SectionCard
-      title={adminView ? "Assigned programmes" : "My programmes"}
+      title={adminView ? "Assigned subjects" : "My programmes"}
       description={
         adminView
-          ? "Manage the programmes this teacher is authorised to teach."
-          : "Programmes assigned to you by an administrator."
+          ? "Manage the subjects this teacher is authorised to teach."
+          : "Subjects assigned to you by an administrator."
       }
       contentClassName="p-5 sm:p-6"
     >
@@ -98,13 +98,13 @@ export function TeacherProgrammes({
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="min-w-0 flex-1">
             <ComboboxField
-              label="Add programme"
+              label="Add subject"
               options={programmeOptions}
               value={programmeId}
               onValueChange={setProgrammeId}
-              placeholder="Select a programme"
-              searchPlaceholder="Search programmes..."
-              emptyText="No other published programmes available."
+              placeholder="Select a subject"
+              searchPlaceholder="Search subjects..."
+              emptyText="No other published subjects available."
             />
           </div>
           <Button
@@ -113,13 +113,13 @@ export function TeacherProgrammes({
             disabled={!programmeId || create.isPending}
           >
             <Plus />
-            {create.isPending ? "Assigning..." : "Assign programme"}
+            {create.isPending ? "Assigning..." : "Assign subject"}
           </Button>
         </div>
       ) : null}
 
       {query.isLoading ? (
-        <p className="text-sm text-slate-500">Loading programmes…</p>
+        <p className="text-sm text-slate-500">Loading subjects…</p>
       ) : query.data?.assignments.length ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {query.data.assignments.map((assignment) => (
@@ -145,9 +145,9 @@ export function TeacherProgrammes({
                           <Trash2 />
                         </Button>
                       }
-                      title="Remove assigned programme?"
-                      description={`Remove ${assignment.programme.name} from this teacher's assigned programmes? The teacher will no longer receive new enrolment opportunities for this programme. Existing lesson records are preserved.`}
-                      confirmLabel="Remove programme"
+                      title="Remove assigned subject?"
+                      description={`Remove ${assignment.programme.name} from this tutor's assigned programmes? The teacher will no longer receive new enrolment opportunities for this programme. Existing lesson records are preserved.`}
+                      confirmLabel="Remove subject"
                       tone="destructive"
                       isPending={remove.isPending}
                       onConfirm={() => removeProgramme(assignment.id)}
@@ -184,7 +184,7 @@ export function TeacherProgrammes({
           title="No programmes assigned"
           description={
             adminView
-              ? "Assign a published programme to make this teacher eligible for enrolment opportunities."
+              ? "Assign a published subject to make this teacher eligible for enrolment opportunities."
               : "An administrator has not assigned any programmes yet."
           }
         />

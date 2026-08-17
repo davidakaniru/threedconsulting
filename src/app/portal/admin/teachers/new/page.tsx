@@ -5,7 +5,7 @@ import { PageBackButton } from "@/components/admin/ui/page-back-button";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { SectionCard } from "@/components/admin/ui/section-card";
 import { getProgrammes } from "@/modules/programmes/server";
-export const metadata: Metadata = { title: "Add Teacher | Admin Portal" };
+export const metadata: Metadata = { title: "Add Tutor | Admin Portal" };
 export default async function NewTeacherPage() {
   const { programmes } = await getProgrammes({
     page: 1,
@@ -16,9 +16,9 @@ export default async function NewTeacherPage() {
     <AdminPage className="max-w-5xl">
       <PageBackButton />
       <PageHeader
-        eyebrow="Teachers"
-        title="Add a teacher"
-        description="Create the employment record, assign the programmes they can teach, and send a secure account activation invitation. Teacher ID and hire date are generated automatically."
+        eyebrow="Tutors"
+        title="Add a tutor"
+        description="Create the employment record, assign the subjects they can teach, and send a secure account activation invitation. Tutor ID and hire date are generated automatically."
       />
       <SectionCard className="p-5 sm:p-8">
         <CreateTeacherForm

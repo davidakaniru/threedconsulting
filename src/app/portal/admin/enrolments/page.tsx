@@ -15,7 +15,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Admissions"
         title="Enrolments"
-        description="Review parent enrolments and publish suitable teaching opportunities to eligible subject teachers."
+        description="Review parent enrolments and publish suitable teaching opportunities to eligible subject tutors."
       />
       <LessonRequestMetrics metrics={metrics} />
       <LessonRequestsTable />

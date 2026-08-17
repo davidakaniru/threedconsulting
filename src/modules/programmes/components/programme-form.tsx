@@ -42,7 +42,7 @@ export function ProgrammeForm({ programme }: { programme?: ProgrammeDetail }) {
   const submit = handleSubmit(async (values) => {
     try {
       const saved = await mutation.mutateAsync(values);
-      toast.success(programme ? "Programme updated." : "Programme created.");
+      toast.success(programme ? "Subject updated." : "Subject created.");
       router.push(`/portal/admin/programmes/${saved.id}`);
     } catch (e) {
       toast.error(toApiError(e).message);
@@ -53,7 +53,7 @@ export function ProgrammeForm({ programme }: { programme?: ProgrammeDetail }) {
       <div className="grid gap-5">
         <Input
           id="name"
-          label="Programme name"
+          label="Subject name"
           required
           placeholder="e.g. Mathematics"
           errorMessage={errors.name?.message}
@@ -102,7 +102,7 @@ export function ProgrammeForm({ programme }: { programme?: ProgrammeDetail }) {
             ? "Saving..."
             : programme
               ? "Save changes"
-              : "Create programme"}
+              : "Create subject"}
         </Button>
       </div>
     </form>

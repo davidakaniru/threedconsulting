@@ -17,7 +17,7 @@ export async function GET(_: NextRequest, context: Context) {
     return apiSuccess(await getTeacher(id));
   } catch (error) {
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
-    console.error("Teacher detail GET failed", error);
+    console.error("Tutor detail GET failed", error);
     return apiError("INTERNAL_SERVER_ERROR", "Unable to load the teacher.", 500);
   }
 }
@@ -37,7 +37,7 @@ export async function PATCH(request: NextRequest, context: Context) {
       return apiError("VALIDATION_ERROR", "Please correct the highlighted fields.", 422, details);
     }
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
-    console.error("Teacher detail PATCH failed", error);
+    console.error("Tutor detail PATCH failed", error);
     return apiError("INTERNAL_SERVER_ERROR", "Unable to update the teacher.", 500);
   }
 }
@@ -50,7 +50,7 @@ export async function DELETE(_: NextRequest, context: Context) {
   } catch (error) {
     if (error instanceof ApiError)
       return apiError(error.code, error.message, error.status, error.details);
-    console.error("Teacher DELETE failed", error);
+    console.error("Tutor DELETE failed", error);
     return apiError(
       "INTERNAL_SERVER_ERROR",
       "Unable to delete the teacher account.",

@@ -136,7 +136,7 @@ export function TeacherDetails({ teacher }: { teacher: TeacherDetail }) {
 
       <aside className="space-y-5">
         <SectionCard
-          title="Teacher actions"
+          title="Tutor actions"
           description="Manage employment and account access safely."
           contentClassName="p-5"
         >

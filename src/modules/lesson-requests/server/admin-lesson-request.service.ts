@@ -44,7 +44,7 @@ function mapSummary(row: any, profile: any): LessonRequestSummary {
     parentEmail: profile?.email ?? "",
     programme: row.programmes ?? {
       id: row.programme_id,
-      name: "Programme",
+      name: "Subject",
       slug: "",
     },
     preferredDays: row.preferred_days ?? [],

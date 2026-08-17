@@ -41,13 +41,13 @@ export function SetPasswordForm() {
         <KeyRound className="size-6" />
       </span>
       <p className="mt-5 text-sm font-bold uppercase tracking-wider text-primary">
-        Teacher account setup
+        Tutor account setup
       </p>
       <h1 className="mt-2 font-display text-3xl font-extrabold">
         Create your password
       </h1>
       <p className="mt-3 leading-7 text-muted-foreground">
-        Choose a private password to finish activating your teacher account.
+        Choose a private password to finish activating your tutor account.
       </p>
       <form onSubmit={submit} noValidate className="mt-7 space-y-5">
         <Input

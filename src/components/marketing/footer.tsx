@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const footerLinks = {
   explore: [
     {
-      label: "Programmes",
+      label: "Subjects",
       href: "/programmes",
     },
     {
@@ -16,7 +16,7 @@ const footerLinks = {
       href: "/subjects",
     },
     {
-      label: "Teachers",
+      label: "Tutors",
       href: "/teachers",
     },
     {

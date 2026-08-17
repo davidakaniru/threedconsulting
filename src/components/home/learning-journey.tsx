@@ -27,7 +27,7 @@ const journey: JourneyStep[] = [
   {
     step: "Discover",
     description:
-      "Explore programmes and book a friendly, no-pressure open day.",
+      "Explore subjects and book a friendly, no-pressure open day.",
     icon: Compass,
     tone: "sky",
   },
@@ -38,7 +38,7 @@ const journey: JourneyStep[] = [
     tone: "grass",
   },
   {
-    step: "Meet Your Teacher",
+    step: "Meet Your Tutor",
     description:
       "A warm welcome call to match your child with the right tutor.",
     icon: HeartHandshake,

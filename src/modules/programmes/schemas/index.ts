@@ -4,7 +4,7 @@ const fields = {
   name: yup
     .string()
     .trim()
-    .required("Please enter the programme name.")
+    .required("Please enter the subject name.")
     .max(100),
   description: yup.string().trim().max(1000).default(""),
   status: yup

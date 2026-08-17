@@ -31,14 +31,14 @@ export function ProgrammeDetails({
           <Button asChild variant="outline">
             <Link href={`/portal/admin/programmes/${p.id}/edit`}>
               <Pencil />
-              Edit programme
+              Edit subject
             </Link>
           </Button>
         </div>
       </SectionCard>
       <SectionCard
-        title="Programme information"
-        description="The subject definition used by teacher eligibility, enrolments and teaching activity."
+        title="Subject information"
+        description="The subject definition used by tutor eligibility, enrolments and teaching activity."
         contentClassName="p-6"
       >
         <p className="whitespace-pre-wrap text-sm leading-7 text-slate-600">

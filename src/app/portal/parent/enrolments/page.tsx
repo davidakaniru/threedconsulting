@@ -43,7 +43,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Lessons"
         title="My enrolments"
-        description="Track your enrolments and see the teacher matched with your child."
+        description="Track your enrolments and see the tutor matched with your child."
         actions={
           <Button asChild>
             <Link href="/enrolment">
@@ -58,7 +58,7 @@ export default async function Page() {
           <EmptyState
             icon={FileText}
             title="No enrolments yet"
-            description="Submit an enrolment to find a teacher for your child."
+            description="Submit an enrolment to find a tutor for your child."
             action={
               <Button asChild>
                 <Link href="/enrolment">Submit enrolment</Link>
@@ -90,7 +90,7 @@ export default async function Page() {
                       status={assignment?.status ?? request.status}
                       label={
                         assignment
-                          ? "Teacher matched"
+                          ? "Tutor matched"
                           : request.status === "pending_review"
                             ? "Awaiting review"
                             : undefined
@@ -121,7 +121,7 @@ export default async function Page() {
                           </span>
                           <div>
                             <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              Matched teacher
+                              Matched tutor
                             </p>
                             <p className="mt-1 font-extrabold">
                               {assignment.teacherName}

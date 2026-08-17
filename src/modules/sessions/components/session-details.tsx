@@ -119,7 +119,7 @@ export function SessionDetails({
           )}
           <InfoCard
             icon={Users}
-            title="Teacher"
+            title="Tutor"
             description={session.lessonAssignment.teacher.name}
           />
         </div>

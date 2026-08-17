@@ -2,10 +2,9 @@
 
 import { motion } from "motion/react";
 
-import { ProgrammeCard } from "@/components/home/programme-card";
-import { programmes } from "@/data/programmes";
+import type { PublicSubject } from "@/components/home/subject-card";
 
-export function ProgrammesGrid() {
+export function ProgrammesGrid({ subjects }: { subjects: PublicSubject[] }) {
   return (
     <section
       className="-mt-8 bg-[#fff8ee] px-5 pb-16
@@ -13,9 +12,9 @@ export function ProgrammesGrid() {
     >
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {programmes.map((programme, index) => (
+          {subjects.map((subject, index) => (
             <motion.div
-              key={programme.slug}
+              key={subject.id}
               initial={{
                 opacity: 0,
                 y: 28,
@@ -35,7 +34,7 @@ export function ProgrammesGrid() {
               }}
               className="h-full"
             >
-              <ProgrammeCard programme={programme} />
+              <div className="h-full"><a href={`/programmes/${subject.slug}`} className="block h-full"><article className="flex h-full flex-col rounded-3xl border border-sky-50 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><h2 className="font-display text-xl font-extrabold text-foreground">{subject.name}</h2><p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted-foreground">{subject.description || `Explore our ${subject.name} tutoring.`}</p><span className="mt-4 font-display font-bold text-sky-600">Learn more →</span></article></a></div>
             </motion.div>
           ))}
         </div>

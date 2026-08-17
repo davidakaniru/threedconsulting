@@ -48,7 +48,7 @@ export function ContactFaqPrompt() {
           size="lg"
           className="shrink-0 bg-white"
         >
-          <Link href="/faqs">
+          <Link href="/#faqs">
             View FAQs
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>

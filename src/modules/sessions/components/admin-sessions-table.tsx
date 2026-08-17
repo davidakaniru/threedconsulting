@@ -61,7 +61,7 @@ export function AdminSessionsTable({
     },
     {
       id: "teacher",
-      header: "Teacher",
+      header: "Tutor",
       cell: (session) => session.lessonAssignment.teacher.name,
     },
     {
@@ -113,7 +113,7 @@ export function AdminSessionsTable({
                 setPage(1);
               }}
               options={[
-                { value: "all", label: "All programmes" },
+                { value: "all", label: "All subjects" },
                 ...programmes,
               ]}
             />
@@ -124,7 +124,7 @@ export function AdminSessionsTable({
                 setTeacherId(value);
                 setPage(1);
               }}
-              options={[{ value: "all", label: "All teachers" }, ...teachers]}
+              options={[{ value: "all", label: "All tutors" }, ...teachers]}
             />
             <Input
               id="session-date-from"
@@ -160,7 +160,7 @@ export function AdminSessionsTable({
             <CalendarDays className="mb-3 size-6 text-slate-400" />
             <p className="font-bold">No sessions found</p>
             <p className="text-sm text-slate-500">
-              Teacher-created sessions will appear here.
+              Tutor-created sessions will appear here.
             </p>
           </div>
         }

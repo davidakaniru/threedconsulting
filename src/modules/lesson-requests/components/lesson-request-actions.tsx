@@ -31,14 +31,14 @@ export function LessonRequestActions({
   return (
     <SectionCard
       title="Admin review"
-      description="Confirm that the enrolment is suitable before making it visible to teachers assigned to this subject."
+      description="Confirm that the enrolment is suitable before making it visible to tutors assigned to this subject."
     >
       <ConfirmDialog
         title="Publish this enrolment?"
         description={
           <>
             Once published, eligible <strong>{request.programme.name}</strong>{" "}
-            teachers will be able to see and accept this opportunity. The first
+            tutors will be able to see and accept this opportunity. The first
             successful acceptance will claim it.
           </>
         }
@@ -47,7 +47,7 @@ export function LessonRequestActions({
         onConfirm={publishNow}
         trigger={
           <Button>
-            <Radio /> Publish to teachers
+            <Radio /> Publish to tutors
           </Button>
         }
       />

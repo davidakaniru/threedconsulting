@@ -3,7 +3,7 @@ import { CalendarCheck2 } from "lucide-react";
 import { AdminPage, PageHeader } from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
 import { AttendanceDashboard } from "@/modules/attendance";
-export const metadata: Metadata = { title: "Attendance | Teacher Portal" };
+export const metadata: Metadata = { title: "Attendance | Tutor Portal" };
 export default async function Page() {
   await requireTeacher();
   return (

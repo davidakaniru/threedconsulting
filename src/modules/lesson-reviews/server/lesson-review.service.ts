@@ -246,8 +246,8 @@ export async function getParentReviewContext(
     teacherName:
       [teacherProfile?.first_name, teacherProfile?.last_name]
         .filter(Boolean)
-        .join(" ") || "Teacher",
-    programmeName: programme?.name || "Programme",
+        .join(" ") || "Tutor",
+    programmeName: programme?.name || "Subject",
     completedSessions,
     eligible: completedSessions > 0,
     review: reviewResult.data ? mapReview(reviewResult.data) : null,
@@ -342,10 +342,10 @@ function mapAdminReview(row: AdminReviewRow): LessonReviewAdminView {
     teacherName:
       [teacherProfile?.first_name, teacherProfile?.last_name]
         .filter(Boolean)
-        .join(" ") || "Teacher",
+        .join(" ") || "Tutor",
     teacherEmail: teacherProfile?.email || "",
     programmeId: programme?.id || assignment?.programme_id || "",
-    programmeName: programme?.name || "Programme",
+    programmeName: programme?.name || "Subject",
     assignmentStartDate: assignment?.start_date || "",
     assignmentEndDate: assignment?.end_date || "",
   };

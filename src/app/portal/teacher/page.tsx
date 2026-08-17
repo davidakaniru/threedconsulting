@@ -6,7 +6,7 @@ import { TeacherDashboard } from "@/modules/teacher-dashboard";
 import { getTeacherDashboard } from "@/modules/teacher-dashboard/server";
 
 export const metadata: Metadata = {
-  title: "Teacher Dashboard | Portal",
+  title: "Tutor Dashboard | Portal",
 };
 
 export default async function TeacherPortalPage() {

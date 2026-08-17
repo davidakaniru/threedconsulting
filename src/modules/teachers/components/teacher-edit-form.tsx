@@ -42,7 +42,7 @@ export function TeacherEditForm({ teacher }: { teacher: TeacherDetail }) {
   const submit = handleSubmit(async (values) => {
     try {
       await mutation.mutateAsync(values);
-      toast.success("Teacher details updated.");
+      toast.success("Tutor details updated.");
       router.push(`/portal/admin/teachers/${teacher.id}`);
     } catch (error) {
       toast.error(toApiError(error).message);

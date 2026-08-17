@@ -35,7 +35,7 @@ export async function getTeacherReportOptions(): Promise<TeacherReportOption[]> 
     )
     .order("created_at", { ascending: false });
 
-  if (error) throw new Error("Teachers could not be loaded for reporting.");
+  if (error) throw new Error("Tutors could not be loaded for reporting.");
 
   return (data ?? [])
     .map((row: any) => {
@@ -43,7 +43,7 @@ export async function getTeacherReportOptions(): Promise<TeacherReportOption[]> 
       const name =
         [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
         profile?.email ||
-        "Teacher";
+        "Tutor";
 
       return {
         value: row.id as string,
@@ -78,7 +78,7 @@ export async function getMonthlyTeacherActivityReport(
   const { data, error } = await query
     .order("session_date", { ascending: false })
     .order("start_time", { ascending: false });
-  if (error) throw new Error("Teacher activity report could not be loaded.");
+  if (error) throw new Error("Tutor activity report could not be loaded.");
   const map = new Map<string, TeacherMonthlyActivity>();
   const allStudents = new Set<string>();
   for (const row of data ?? []) {
@@ -97,7 +97,7 @@ export async function getMonthlyTeacherActivityReport(
         teacherName:
           [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
           profile?.email ||
-          "Teacher",
+          "Tutor",
         email: profile?.email || "",
         studentsTaught: 0,
         sessionsTotal: 0,
@@ -112,7 +112,7 @@ export async function getMonthlyTeacherActivityReport(
     }
     item.sessionsTotal++;
     if (row.status in item) (item as any)[row.status]++;
-    const pn = programme?.name || "Programme";
+    const pn = programme?.name || "Subject";
     const pc = item.programmes.find((x) => x.name === pn);
     if (pc) pc.sessions++;
     else item.programmes.push({ name: pn, sessions: 1 });
