@@ -105,7 +105,11 @@ export function TeachersTable() {
       {
         id: "specialization",
         header: "Specialization",
-        cell: (teacher) => teacher.specialization || "—",
+        cell: (teacher) => (
+          <span className="line-clamp-2 max-w-50 text-sm text-slate-600">
+            {teacher.specialization || "Not provided"}
+          </span>
+        ),
         className: "text-slate-600",
       },
       {

@@ -1,19 +1,15 @@
-import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   CalendarDays,
   GraduationCap,
-  Info,
   Mail,
   FileText,
   MapPin,
-  Pencil,
   Phone,
   UserRound,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
+import { SectionCard, StatusBadge } from "@/components/admin/ui";
 import { TeacherLifecycleActions } from "@/modules/teachers/components/teacher-lifecycle-actions";
 import { TeacherProgrammes } from "@/modules/teaching-assignments";
 import type { TeacherDetail } from "@/modules/teachers/types";
