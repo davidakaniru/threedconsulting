@@ -17,7 +17,7 @@ export default async function Page({ params }: Props) {
       <PageBackButton />
       <PageHeader
         eyebrow="Subjects"
-        title={programme.name}
+        title={programme.title}
         description="Review the programme and manage the tutors eligible to teach this subject."
       />
       <ProgrammeDetails programme={programme} />

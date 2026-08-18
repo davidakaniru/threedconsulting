@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { BookOpen, Eye, Pencil, Plus } from "lucide-react";
+import { BookOpen, Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DataTable,
@@ -18,7 +18,7 @@ import {
   TableToolbar,
 } from "@/components/admin/ui";
 import { programmeStatusOptions } from "@/modules/programmes/constants";
-import { useProgrammes } from "@/modules/programmes/hooks";
+import { useDeleteProgramme, useProgrammes } from "@/modules/programmes/hooks";
 import type { ProgrammeSummary } from "@/modules/programmes/types";
 const options = [
   { label: "All statuses", value: "all" },
@@ -32,6 +32,7 @@ export function ProgrammesTable() {
   const [status, setStatus] = useState("all");
   const deferred = useDeferredValue(search);
   const pageSize = 10;
+  const deleteProgramme = useDeleteProgramme();
   const q = useProgrammes({
     page,
     pageSize,
@@ -46,7 +47,7 @@ export function ProgrammesTable() {
         header: "Subject",
         cell: (p) => (
           <div>
-            <p className="font-extrabold text-slate-900">{p.name}</p>
+            <p className="font-extrabold text-slate-900">{p.title}</p>
             <p className="text-xs text-slate-500">/{p.slug}</p>
           </div>
         ),
@@ -77,7 +78,7 @@ export function ProgrammesTable() {
         className: "text-right",
         cell: (p) => (
           <RowActions
-            label={`Actions for ${p.name}`}
+            label={`Actions for ${p.title}`}
             actions={[
               {
                 label: "View subject",
@@ -88,6 +89,19 @@ export function ProgrammesTable() {
                 label: "Edit subject",
                 icon: Pencil,
                 href: `/portal/admin/programmes/${p.id}/edit`,
+              },
+              {
+                label: "Delete subject",
+                icon: Trash2,
+                onSelect: async () => {
+                  if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+                  try {
+                    await deleteProgramme.mutateAsync(p.id);
+                  } catch (error) {
+                    const message = error instanceof Error ? error.message : "The subject could not be deleted.";
+                    window.alert(message);
+                  }
+                },
               },
             ]}
           />
@@ -163,11 +177,11 @@ export function ProgrammesTable() {
             <article className="rounded-2xl border bg-white p-4">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="font-display font-extrabold">{p.name}</h3>
+                  <h3 className="font-display font-extrabold">{p.title}</h3>
                   <p className="text-xs text-slate-500">/{p.slug}</p>
                 </div>
                 <RowActions
-                  label={`Actions for ${p.name}`}
+                  label={`Actions for ${p.title}`}
                   actions={[
                     {
                       label: "View subject",
@@ -197,7 +211,7 @@ export function ProgrammesTable() {
           page={page}
           totalPages={pages}
           total={q.data.total}
-          label="programmes"
+          label="subjects"
           onPageChange={setPage}
         />
       )}

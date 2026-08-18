@@ -72,3 +72,29 @@ export function useUpdateProgramme(id: string) {
     },
   });
 }
+
+
+export async function uploadProgrammeCover(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await fetch("/api/admin/programmes/cover-image", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  const body = await response.json();
+  if (!response.ok) throw new Error(body?.message ?? "The cover image could not be uploaded.");
+  return body.data.url as string;
+}
+
+export function useDeleteProgramme() {
+  const c = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) =>
+      (await apiClient.delete<ApiSuccess<{ id: string }>>(API_ENDPOINTS.admin.programme(id))).data.data,
+    onSuccess: (_result, id) => {
+      c.removeQueries({ queryKey: queryKeys.programmes.detail(id) });
+      c.invalidateQueries({ queryKey: queryKeys.programmes.lists() });
+    },
+  });
+}

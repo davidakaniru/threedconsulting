@@ -16,7 +16,7 @@ export default async function Page({ params }: Props) {
       <PageBackButton />
       <PageHeader
         eyebrow="Subjects"
-        title={`Edit ${programme.name}`}
+        title={`Edit ${programme.title}`}
         description="Update the subject description or lifecycle status."
       />
       <SectionCard className="p-5 sm:p-8">

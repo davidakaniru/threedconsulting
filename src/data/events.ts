@@ -1,11 +1,12 @@
-import type { ProgrammeTone } from "@/data/programmes";
+
+type EventTone = "sky" | "sun" | "grass" | "coral" | "grape" | "teal" | "blush";
 
 export type EventItem = {
   title: string;
   type: string;
   date: string;
   time: string;
-  tone: ProgrammeTone;
+  tone: EventTone;
   spots: string;
 };
 

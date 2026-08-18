@@ -11,7 +11,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export default async function HomePage() {
   const supabase = createAdminClient();
   const [{ data: subjects }, tutors] = await Promise.all([
-    supabase.from("programmes").select("id,name,slug,description").eq("status", "published").order("name"),
+    supabase.from("programmes").select("id,title,slug,description,cover_image_url").eq("status", "published").order("title"),
     getPublicTutors(),
   ]);
 
@@ -20,7 +20,7 @@ export default async function HomePage() {
       <HeroSection />
       <StatsBar />
       <WhyParents />
-      <ProgrammesSection subjects={subjects ?? []} />
+      <ProgrammesSection subjects={(subjects ?? []).map((subject) => ({ id: subject.id, title: subject.title, slug: subject.slug, description: subject.description, coverImageUrl: subject.cover_image_url }))} />
       <LearningJourney />
       <TeachersSection tutors={tutors} />
       {/* <Testimonials /> */}

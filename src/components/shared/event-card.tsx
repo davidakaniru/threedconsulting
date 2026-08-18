@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, Clock3 } from "lucide-react";
 
 import type { EventItem } from "@/data/events";
-import type { ProgrammeTone } from "@/data/programmes";
 import { cn } from "@/lib/utils";
 
 type ToneStyles = {
@@ -10,7 +9,8 @@ type ToneStyles = {
   badge: string;
 };
 
-const toneStyles: Record<ProgrammeTone, ToneStyles> = {
+type EventTone = "sky" | "sun" | "grass" | "coral" | "grape" | "teal" | "blush";
+const toneStyles: Record<EventTone, ToneStyles> = {
   sky: {
     stripe: "bg-sky-500",
     badge: "bg-sky-100 text-sky-700",

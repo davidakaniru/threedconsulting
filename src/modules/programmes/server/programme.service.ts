@@ -81,12 +81,17 @@ export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
 }
 function input(values: CreateProgrammeRequest | UpdateProgrammeRequest) {
   return {
-    name: values.name.trim(),
-    slug: slugify(values.name),
+    name: values.title.trim(),
+    title: values.title.trim(),
+    slug: values.slug.trim(),
     description: nullableText(values.description),
+    cover_image_url: values.coverImageUrl?.trim() ?? "",
+    overview: values.overview.trim(),
+    outcomes: values.outcomes,
     status: values.status,
   };
 }
+
 export async function createProgramme(
   values: CreateProgrammeRequest,
   actorId: string,
@@ -113,7 +118,7 @@ export async function createProgramme(
     action: "programme.created",
     entityType: "programme",
     entityId: data.id,
-    metadata: { name: data.name, status: data.status },
+    metadata: { title: data.title, status: data.status },
   });
   return mapProgramme(data as ProgrammeRow);
 }
@@ -142,7 +147,30 @@ export async function updateProgramme(
     action: "programme.updated",
     entityType: "programme",
     entityId: id,
-    metadata: { name: data.name, status: data.status },
+    metadata: { title: data.title, status: data.status },
   });
   return mapProgramme(data as ProgrammeRow);
+}
+
+export async function deleteProgramme(id: string, actorId: string) {
+  const programme = await getProgramme(id);
+  const { error } = await repo.deleteProgrammeRow(id);
+  if (error) {
+    if (error.code === "23503") {
+      throw new ApiError(
+        "PROGRAMME_DELETE_BLOCKED",
+        "This subject cannot be deleted because it is still being used elsewhere.",
+        409,
+      );
+    }
+    throw new ApiError("PROGRAMME_DELETE_FAILED", "The subject could not be deleted.", 500);
+  }
+  await writeAuditLog({
+    actorId,
+    action: "programme.deleted",
+    entityType: "programme",
+    entityId: id,
+    metadata: { title: programme.title },
+  });
+  return { id };
 }

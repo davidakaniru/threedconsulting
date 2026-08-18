@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { BookOpen, CalendarDays, Pencil, Users } from "lucide-react";
+import { BookOpen, CalendarDays, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useDeleteProgramme } from "@/modules/programmes/hooks";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { InfoCard, SectionCard, StatusBadge } from "@/components/admin/ui";
 import type { ProgrammeDetail } from "@/modules/programmes/types";
 const date = (v: string) =>
@@ -10,6 +15,20 @@ export function ProgrammeDetails({
 }: {
   programme: ProgrammeDetail;
 }) {
+  const router = useRouter();
+  const deleteProgramme = useDeleteProgramme();
+
+  async function handleDelete() {
+    if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+    try {
+      await deleteProgramme.mutateAsync(p.id);
+      toast.success("Subject deleted.");
+      router.push("/portal/admin/programmes");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "The subject could not be deleted.");
+    }
+  }
+
   return (
     <div className="space-y-6">
       <SectionCard contentClassName="p-6 sm:p-8">
@@ -21,19 +40,25 @@ export function ProgrammeDetails({
               </span>
               <div>
                 <h2 className="font-display text-2xl font-extrabold text-slate-900">
-                  {p.name}
+                  {p.title}
                 </h2>
                 <p className="text-sm text-slate-500">/{p.slug}</p>
               </div>
             </div>
             <StatusBadge status={p.status} />
           </div>
-          <Button asChild variant="outline">
-            <Link href={`/portal/admin/programmes/${p.id}/edit`}>
-              <Pencil />
-              Edit subject
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline">
+              <Link href={`/portal/admin/programmes/${p.id}/edit`}>
+                <Pencil />
+                Edit subject
+              </Link>
+            </Button>
+            <Button variant="outline" onClick={handleDelete} disabled={deleteProgramme.isPending}>
+              <Trash2 />
+              {deleteProgramme.isPending ? "Deleting..." : "Delete subject"}
+            </Button>
+          </div>
         </div>
       </SectionCard>
       <SectionCard

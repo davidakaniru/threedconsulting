@@ -1,11 +1,10 @@
 import { Award } from "lucide-react";
 
-import type { Teacher } from "@/data/teachers";
-import type { ProgrammeTone } from "@/data/programmes";
+import type { Teacher, TutorTone } from "@/data/teachers";
 import { cn } from "@/lib/utils";
 
 const toneStyles: Record<
-  ProgrammeTone,
+  TutorTone,
   {
     solid: string;
     soft: string;

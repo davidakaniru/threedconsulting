@@ -1,11 +1,12 @@
-import type { ProgrammeTone } from "@/data/programmes";
+
+export type TutorTone = "sky" | "sun" | "grass" | "coral" | "grape" | "teal" | "blush";
 
 export type Teacher = {
   name: string;
   speciality: string;
   experience: string;
   fact: string;
-  tone: ProgrammeTone;
+  tone: TutorTone;
   initials: string;
 };
 

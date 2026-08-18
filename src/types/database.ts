@@ -582,33 +582,45 @@ export type Database = {
       };
       programmes: {
         Row: {
+          cover_image_url: string;
           created_at: string;
           created_by: string | null;
           description: string | null;
           id: string;
           name: string;
+          outcomes: unknown;
+          overview: string;
           slug: string;
           status: Database["public"]["Enums"]["programme_status"];
+          title: string;
           updated_at: string;
         };
         Insert: {
+          cover_image_url?: string;
           created_at?: string;
           created_by?: string | null;
           description?: string | null;
           id?: string;
           name: string;
+          outcomes?: unknown;
+          overview?: string;
           slug: string;
           status?: Database["public"]["Enums"]["programme_status"];
+          title: string;
           updated_at?: string;
         };
         Update: {
+          cover_image_url?: string;
           created_at?: string;
           created_by?: string | null;
           description?: string | null;
           id?: string;
           name?: string;
+          outcomes?: unknown;
+          overview?: string;
           slug?: string;
           status?: Database["public"]["Enums"]["programme_status"];
+          title?: string;
           updated_at?: string;
         };
         Relationships: [
