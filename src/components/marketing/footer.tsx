@@ -70,7 +70,7 @@ const footerLinks = {
       href: "/privacy-policy",
     },
     {
-      label: "Terms of Use",
+      label: "Terms & Conditions",
       href: "/terms",
     },
   ],
