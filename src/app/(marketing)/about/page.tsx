@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import AboutStory from "@/components/about/about-story";
-import { AboutValues } from "@/components/about/about-values";
+import { AboutServices } from "@/components/about/about-services";
 import { LearningApproach } from "@/components/about/learning-approach";
 import { MissionVision } from "@/components/about/mission-vision";
 import { PageHero } from "@/components/shared/page-hero";
@@ -10,7 +10,7 @@ import { StatsBar } from "@/components/home/stats-bar";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn more about our story, values and joyful approach to helping every child grow in confidence.",
+    "Empowering Young Minds. Transforming Businesses. Building Brighter Futures. Learn about Three-dmanagers' story, mission and approach to education and business consulting.",
 };
 
 export default function AboutPage() {
@@ -20,20 +20,32 @@ export default function AboutPage() {
         eyebrow="About us"
         title={
           <>
-            Big hearts, bright minds and{" "}
-            <span className="text-purple">joyful learning</span>
+            Empowering young minds,{" "}
+            <span className="text-purple">transforming businesses</span>
           </>
         }
-        subtitle="We create welcoming learning experiences that help every child feel confident, curious and excited to discover more."
+        subtitle="Building brighter futures through quality education, professional expertise and innovative solutions."
       />
 
       <AboutStory />
 
       <MissionVision />
 
-      <AboutValues />
+      <AboutServices />
 
       <LearningApproach />
+
+      <section className="bg-foreground px-5 py-16 text-center sm:px-8 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <p
+            className="font-display text-2xl font-extrabold
+              leading-snug text-white sm:text-3xl"
+          >
+            Three-D Managers — Empowering Young Minds. Transforming Businesses.
+            Building Brighter Futures.
+          </p>
+        </div>
+      </section>
 
       <StatsBar />
     </>

@@ -198,12 +198,14 @@ function JourneyItem({ item, index }: JourneyItemProps) {
         {item.step}
       </h3>
 
-      <p
-        className="mt-1.5 text-sm leading-relaxed
+      <div className="mx-auto mt-1.5 max-w-55">
+        <p
+          className="mt-1.5 text-sm leading-relaxed
           text-muted-foreground"
-      >
-        {item.description}
-      </p>
+        >
+          {item.description}
+        </p>
+      </div>
     </motion.li>
   );
 }

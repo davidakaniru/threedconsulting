@@ -38,27 +38,27 @@ export default function AboutStory() {
               text-muted-foreground"
           >
             <p>
-              Every child deserves to experience the moment when something
-              difficult finally makes sense—and to have someone beside them
-              celebrating that achievement.
+              Founded on 31 July 2025, Three-dmanagers is a purpose-driven
+              organisation committed to making a meaningful difference
+              through education and professional business consulting.
             </p>
 
             <p>
-              We created our learning community to give young people a safe,
-              encouraging place to ask questions, explore ideas and grow at
-              their own pace.
+              At the heart of our work is a simple belief: everyone has the
+              potential to grow, learn and achieve more with the right
+              support.
             </p>
 
             <p>
-              Today, our specialist teachers continue to combine excellent
-              teaching with warmth, creativity and genuine care for every
-              learner.
+              At Three-dmanagers, we are not simply providing
+              services—we are creating opportunities for learning, growth
+              and transformation.
             </p>
           </div>
 
           <Button asChild variant="outline" size="lg" className="mt-8">
-            <Link href="/teachers">
-              Meet our teachers
+            <Link href="/contact">
+              Get in touch
               <ArrowRight className="size-4" />
             </Link>
           </Button>

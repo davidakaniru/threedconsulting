@@ -57,9 +57,9 @@ export function BrandLogo({
           )}
         >
           Three-D{" "}
-          <span className={inverse ? "text-primary" : "text-primary"}>
+          {/* <span className={inverse ? "text-primary" : "text-primary"}>
             Managers
-          </span>
+          </span> */}
         </span>
       )}
     </Link>
