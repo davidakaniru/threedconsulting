@@ -26,17 +26,18 @@ export type ParentDashboardChild = {
     sessionDate: string;
     startTime: string;
     endTime: string;
-    status: string;
   }>;
   attendance: {
     present: number;
     absent: number;
+    late: number;
+    pending: number;
     attended: number;
     marked: number;
     rate: number | null;
     recent: Array<{
       id: string;
-      status: "present" | "absent";
+      status: "pending" | "present" | "absent" | "late";
       sessionTitle: string;
       programmeName: string;
       sessionDate: string;

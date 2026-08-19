@@ -180,32 +180,78 @@ export async function submitUnifiedLessonRequest(
 export async function listParentLessonRequests(
   parentId: string,
 ): Promise<ParentLessonRequest[]> {
-  const { data, error } = await (createAdminClient() as any)
+  const admin = createAdminClient() as any;
+  const { data, error } = await admin
     .from("lesson_requests")
     .select(
-      "id,existing_student_id,child_first_name,child_last_name,current_education_level,preferred_days,preferred_time,duration_months,status,created_at,programmes(id,name,slug)",
+      "id,existing_student_id,child_first_name,child_last_name,current_education_level,preferred_days,preferred_time,duration_months,status,created_at,programme_id",
     )
     .eq("parent_id", parentId)
     .order("created_at", { ascending: false });
+
   if (error)
     throw new ApiError(
       "PARENT_LESSON_REQUESTS_LOAD_FAILED",
       "Your enrolments could not be loaded.",
       500,
     );
+
+  const requestIds = (data ?? []).map((row: any) => row.id);
+  const subjectMap = new Map<string, { id: string; name: string; slug: string }[]>();
+
+  if (requestIds.length) {
+    const { data: selected, error: subjectError } = await admin
+      .from("lesson_request_programmes")
+      .select("lesson_request_id,programme_id,programmes(id,name,title,slug)")
+      .in("lesson_request_id", requestIds);
+
+    if (subjectError)
+      throw new ApiError(
+        "PARENT_LESSON_REQUEST_SUBJECTS_LOAD_FAILED",
+        "Your enrolment subjects could not be loaded.",
+        500,
+      );
+
+    for (const row of selected ?? []) {
+      const programme = Array.isArray(row.programmes)
+        ? row.programmes[0]
+        : row.programmes;
+      if (!programme) continue;
+      const subject = {
+        id: programme.id,
+        name: programme.title ?? programme.name ?? "Subject",
+        slug: programme.slug ?? "",
+      };
+      subjectMap.set(row.lesson_request_id, [
+        ...(subjectMap.get(row.lesson_request_id) ?? []),
+        subject,
+      ]);
+    }
+  }
+
   return (data ?? []).map(
-    (row: any): ParentLessonRequest => ({
-      id: row.id,
-      studentId: row.existing_student_id ?? null,
-      childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
-      currentEducationLevel: row.current_education_level,
-      programme: row.programmes ?? { id: "", name: "Programme", slug: "" },
-      preferredDays: row.preferred_days ?? [],
-      preferredTime: row.preferred_time,
-      durationMonths: row.duration_months,
-      status: row.status,
-      createdAt: row.created_at,
-    }),
+    (row: any): ParentLessonRequest => {
+      const subjects = subjectMap.get(row.id) ?? [];
+      const programme =
+        subjects[0] ??
+        (row.programme_id
+          ? { id: row.programme_id, name: "Subject", slug: "" }
+          : { id: "", name: "Subject", slug: "" });
+
+      return {
+        id: row.id,
+        studentId: row.existing_student_id ?? null,
+        childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
+        currentEducationLevel: row.current_education_level,
+        programme,
+        subjects,
+        preferredDays: row.preferred_days ?? [],
+        preferredTime: row.preferred_time,
+        durationMonths: row.duration_months,
+        status: row.status,
+        createdAt: row.created_at,
+      };
+    },
   );
 }
 

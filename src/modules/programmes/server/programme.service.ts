@@ -81,6 +81,8 @@ export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
 }
 function input(values: CreateProgrammeRequest | UpdateProgrammeRequest) {
   return {
+    // Title is required by the repository/type; fall back to name if not provided
+    title: (values as any).title?.trim() ?? values.name.trim(),
     name: values.name.trim(),
     slug: slugify(values.name),
     description: nullableText(values.description),

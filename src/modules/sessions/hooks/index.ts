@@ -4,7 +4,7 @@ import { apiClient } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import { queryKeys } from "@/lib/query/query-keys";
 import type { ApiSuccess } from "@/lib/api/types";
-import type { CreateSessionInput, UpdateSessionInput } from "../schemas";
+import type { ClassSessionRequest } from "../schemas";
 import type { ClassSession, SessionListResult } from "../types";
 export function useTeacherSessions(filters?: Record<string, unknown>) {
   return useQuery({
@@ -45,7 +45,7 @@ export function useTeacherSession(id: string) {
 export function useCreateSession() {
   const c = useQueryClient();
   return useMutation({
-    mutationFn: async (v: CreateSessionInput) =>
+    mutationFn: async (v: ClassSessionRequest) =>
       (
         await apiClient.post<ApiSuccess<ClassSession>>(
           API_ENDPOINTS.teacher.sessions,
@@ -58,7 +58,7 @@ export function useCreateSession() {
 export function useUpdateSession(id: string) {
   const c = useQueryClient();
   return useMutation({
-    mutationFn: async (v: UpdateSessionInput) =>
+    mutationFn: async (v: ClassSessionRequest) =>
       (
         await apiClient.patch<ApiSuccess<ClassSession>>(
           API_ENDPOINTS.teacher.session(id),

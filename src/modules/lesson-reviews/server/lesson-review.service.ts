@@ -2,7 +2,6 @@ import "server-only";
 
 import { ApiError } from "@/lib/api/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Database } from "@/types/database";
 import type { LessonReviewRequest } from "@/modules/lesson-reviews/schemas";
 import type {
   LessonReview,
@@ -12,81 +11,11 @@ import type {
 
 const db = () => createAdminClient() as any;
 
-type ReviewRow = Database["public"]["Tables"]["lesson_reviews"]["Row"];
-type ProgrammeRow = Database["public"]["Tables"]["programmes"]["Row"];
-type StudentRow = Database["public"]["Tables"]["students"]["Row"];
-type TeacherRow = Database["public"]["Tables"]["teachers"]["Row"];
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-
-// lesson_assignments exists in the reconciled Supabase schema, but the generated
-// Database type in this project does not currently expose it under Tables.
-// Keep this feature's row shape local until the generated database types are
-// regenerated from the current production schema.
-type AssignmentIdRow = { id: string };
-
-type AssignmentRow = {
-  id: string;
-  parent_id: string;
-  start_date: string;
-  end_date: string;
-  status: string;
-  programme_id: string;
-  student_id: string;
-  teacher_id: string;
-};
-
-type MaybeRelation<T> = T | T[] | null;
-
-type ParentAssignment = Pick<
-  AssignmentRow,
-  "id" | "parent_id" | "start_date" | "end_date" | "status" | "programme_id" | "student_id" | "teacher_id"
-> & {
-  programmes: MaybeRelation<Pick<ProgrammeRow, "id" | "name">>;
-  students: MaybeRelation<Pick<StudentRow, "first_name" | "last_name">>;
-  teachers: MaybeRelation<
-    Pick<TeacherRow, "id"> & {
-      profiles: MaybeRelation<Pick<ProfileRow, "first_name" | "last_name" | "email">>;
-    }
-  >;
-};
-
-export type ParentReviewState = {
-  assignmentId: string;
-  eligible: boolean;
-  reviewId: string | null;
-};
-
-type AdminReviewRow = ReviewRow & {
-  lesson_assignments: MaybeRelation<
-    Pick<
-      AssignmentRow,
-      | "id"
-      | "teacher_id"
-      | "student_id"
-      | "parent_id"
-      | "programme_id"
-      | "start_date"
-      | "end_date"
-    > & {
-      programmes: MaybeRelation<Pick<ProgrammeRow, "id" | "name">>;
-      students: MaybeRelation<Pick<StudentRow, "first_name" | "last_name">>;
-      teachers: MaybeRelation<
-        Pick<TeacherRow, "id"> & {
-          profiles: MaybeRelation<Pick<ProfileRow, "first_name" | "last_name" | "email">>;
-        }
-      >;
-      parents: MaybeRelation<{
-        profiles: MaybeRelation<Pick<ProfileRow, "first_name" | "last_name" | "email">>;
-      }>;
-    }
-  >;
-};
-
-function one<T>(value: MaybeRelation<T> | undefined): T | null {
+function one<T>(value: T | T[] | null | undefined): T | null {
   return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
 }
 
-function mapReview(row: ReviewRow): LessonReview {
+function mapReview(row: any): LessonReview {
   return {
     id: row.id,
     lessonAssignmentId: row.lesson_assignment_id,
@@ -95,20 +24,17 @@ function mapReview(row: ReviewRow): LessonReview {
     lessonOutcome: row.lesson_outcome,
     teacherFeedback: row.teacher_feedback,
     wouldRecommend: row.would_recommend,
-    additionalComments: row.additional_comments,
+    additionalComments: row.additional_comments ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
 }
 
-async function parentAssignment(
-  parentId: string,
-  assignmentId: string,
-): Promise<ParentAssignment> {
+async function parentAssignment(parentId: string, assignmentId: string) {
   const { data, error } = await db()
     .from("lesson_assignments")
     .select(
-      "id,parent_id,start_date,end_date,status,programme_id,student_id,teacher_id,programmes(id,name),students(first_name,last_name),teachers(id,profiles(first_name,last_name,email))",
+      "id,parent_id,start_date,end_date,status,programmes(id,name),students(first_name,last_name),teachers(id,profiles(first_name,last_name,email))",
     )
     .eq("id", assignmentId)
     .eq("parent_id", parentId)
@@ -127,7 +53,7 @@ async function parentAssignment(
       403,
     );
 
-  return data as ParentAssignment;
+  return data;
 }
 
 async function completedSessionCount(assignmentId: string) {
@@ -147,9 +73,7 @@ async function completedSessionCount(assignmentId: string) {
   return count ?? 0;
 }
 
-export async function listParentReviewStates(
-  parentId: string,
-): Promise<ParentReviewState[]> {
+export async function listParentReviewStates(parentId: string) {
   const { data: assignments, error } = await db()
     .from("lesson_assignments")
     .select("id")
@@ -162,9 +86,12 @@ export async function listParentReviewStates(
       500,
     );
 
-  const assignmentRows = (assignments ?? []) as AssignmentIdRow[];
-  const ids = assignmentRows.map((item) => item.id);
-  if (!ids.length) return [];
+  const ids = (assignments ?? []).map((item: any) => item.id);
+  if (!ids.length) return [] as Array<{
+    assignmentId: string;
+    eligible: boolean;
+    reviewId: string | null;
+  }>;
 
   const [{ data: reviews, error: reviewError }, { data: completed, error: sessionError }] =
     await Promise.all([
@@ -187,24 +114,17 @@ export async function listParentReviewStates(
       500,
     );
 
-  const reviewRows = (reviews ?? []) as Array<Pick<ReviewRow, "id" | "lesson_assignment_id">>;
-  const reviewByAssignment = new Map<string, string>();
-  for (const item of reviewRows) {
-    reviewByAssignment.set(item.lesson_assignment_id, item.id);
-  }
+  const reviewByAssignment = new Map<string, string>(
+    (reviews ?? []).map((item: any): [string, string] => [
+      item.lesson_assignment_id,
+      item.id,
+    ]),
+  );
+  const completedAssignments = new Set(
+    (completed ?? []).map((item: any) => item.lesson_assignment_id),
+  );
 
-  const completedRows = (completed ?? []) as Array<Pick<
-    Database["public"]["Tables"]["class_sessions"]["Row"],
-    "lesson_assignment_id"
-  >>;
-  const completedAssignments = new Set<string>();
-  for (const item of completedRows) {
-    if (item.lesson_assignment_id) {
-      completedAssignments.add(item.lesson_assignment_id);
-    }
-  }
-
-  return ids.map((assignmentId) => ({
+  return ids.map((assignmentId: string) => ({
     assignmentId,
     eligible: completedAssignments.has(assignmentId),
     reviewId: reviewByAssignment.get(assignmentId) ?? null,
@@ -233,10 +153,10 @@ export async function getParentReviewContext(
       500,
     );
 
-  const programme = one(assignment.programmes);
-  const student = one(assignment.students);
-  const teacher = one(assignment.teachers);
-  const teacherProfile = one(teacher?.profiles);
+  const programme = one(assignment.programmes) as any;
+  const student = one(assignment.students) as any;
+  const teacher = one(assignment.teachers) as any;
+  const teacherProfile = one(teacher?.profiles) as any;
 
   return {
     assignmentId,
@@ -319,14 +239,14 @@ export async function saveParentLessonReview(
   return mapReview(result.data);
 }
 
-function mapAdminReview(row: AdminReviewRow): LessonReviewAdminView {
-  const assignment = one(row.lesson_assignments);
-  const programme = one(assignment?.programmes);
-  const student = one(assignment?.students);
-  const teacher = one(assignment?.teachers);
-  const teacherProfile = one(teacher?.profiles);
-  const parent = one(assignment?.parents);
-  const parentProfile = one(parent?.profiles);
+function mapAdminReview(row: any): LessonReviewAdminView {
+  const assignment = one(row.lesson_assignments) as any;
+  const programme = one(assignment?.programmes) as any;
+  const student = one(assignment?.students) as any;
+  const teacher = one(assignment?.teachers) as any;
+  const teacherProfile = one(teacher?.profiles) as any;
+  const parent = one(assignment?.parents) as any;
+  const parentProfile = one(parent?.profiles) as any;
 
   return {
     ...mapReview(row),
@@ -373,11 +293,9 @@ export async function listAdminLessonReviews(filters?: {
       500,
     );
 
-  const rows = (data ?? []) as unknown as AdminReviewRow[];
-
-  return rows
-    .map((row) => mapAdminReview(row))
-    .filter((review) => {
+  return (data ?? [])
+    .map(mapAdminReview)
+    .filter((review: LessonReviewAdminView) => {
       if (filters?.teacherId && review.teacherId !== filters.teacherId)
         return false;
       if (filters?.programmeId && review.programmeId !== filters.programmeId)
@@ -409,7 +327,7 @@ export async function getAdminLessonReview(
   if (!data)
     throw new ApiError("LESSON_REVIEW_NOT_FOUND", "Review not found.", 404);
 
-  return mapAdminReview(data as unknown as AdminReviewRow);
+  return mapAdminReview(data);
 }
 
 export async function getLessonReviewFilterOptions() {

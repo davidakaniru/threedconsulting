@@ -35,8 +35,17 @@ export default async function Page() {
   const assignmentByRequest = new Map(
     assignments.map((a) => [a.lessonRequestId, a]),
   );
-  const reviewStateByAssignment = new Map(
-    reviewStates.map((state) => [state.assignmentId, state]),
+  const reviewStateByAssignment = new Map<
+    string,
+    { assignmentId: string; eligible: boolean; reviewId: string | null }
+  >(
+    reviewStates.map(
+      (state: {
+        assignmentId: string;
+        eligible: boolean;
+        reviewId: string | null;
+      }) => [state.assignmentId, state],
+    ),
   );
   return (
     <AdminPage>
@@ -77,7 +86,9 @@ export default async function Page() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <p className="text-xs font-extrabold uppercase tracking-[.14em] text-primary">
-                        {request.programme.name}
+                        {request.subjects
+                          .map((subject) => subject.name)
+                          .join(" · ")}
                       </p>
                       <h2 className="mt-1 font-display text-lg font-extrabold">
                         {request.childName}

@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { requireTeacher } from "@/lib/auth/guards";
 import { formatDate, formatTime } from "@/lib/date";
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
-import type { LessonRequestDetail } from "@/modules/lesson-requests";
+import type { TeacherOpportunity } from "@/modules/lesson-requests";
 import { TeacherOpportunityAcceptButton } from "@/modules/lesson-requests/components/teacher-opportunity-accept-button";
 import { listTeacherOpportunities } from "@/modules/lesson-requests/server";
 
@@ -158,18 +158,18 @@ export default async function TeacherLessonsPage({
         <EmptyState
           icon={BookOpenCheck}
           title="No available lessons"
-          description="New enrolments matching your assigned subjects will appear here after an administrator publishes them."
+          description="New enrolments matching at least one of your assigned subjects will appear here after an administrator publishes them."
         />
       ) : (
         <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-          {opportunities.map((item: LessonRequestDetail) => (
+          {opportunities.map((item: TeacherOpportunity) => (
             <article
               key={item.id}
               className="flex h-full flex-col rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm"
             >
               <div>
                 <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
-                  {item.programme.name}
+                  {item.subjects.map((subject) => subject.name).join(" · ")}
                 </p>
                 <h2 className="mt-1 font-display text-xl font-extrabold text-foreground">
                   {item.childName}

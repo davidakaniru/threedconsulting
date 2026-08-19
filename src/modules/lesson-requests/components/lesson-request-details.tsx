@@ -51,7 +51,7 @@ export function LessonRequestDetails({
             label="Current class / education level"
             value={request.currentEducationLevel}
           />
-          <Row label="Subject" value={request.programme.name} />
+          <Row label="Subjects" value={request.subjects.map((subject) => subject.name).join(", ")} />
           <Row
             label="Preferred days"
             value={request.preferredDays.map(dayLabel).join(", ")}
@@ -76,19 +76,19 @@ export function LessonRequestDetails({
         <InfoCard
           icon={Radio}
           title="Open to eligible teachers"
-          description={`Teachers assigned to ${request.programme.name} can now view this enrolment opportunity. It remains available until one teacher successfully accepts it.`}
+          description={`Eligible tutors assigned to at least one of ${request.subjects.map((subject) => subject.name).join(", ")} can now view this enrolment opportunity. It remains available until one tutor successfully accepts it.`}
         />
       )}
       {assignment ? (
         <InfoCard
           icon={UserCheck}
-          title="Teacher matched"
+          title="Tutor matched"
           description={`${assignment.teacherName} accepted this enrolment. The lesson assignment is active from ${new Date(assignment.startDate).toLocaleDateString("en-GB")} to ${new Date(assignment.endDate).toLocaleDateString("en-GB")}.`}
         />
       ) : request.matchedTeacherId ? (
         <InfoCard
           icon={UserCheck}
-          title="Teacher matched"
+          title="Tutor matched"
           description="This enrolment has been accepted and its lesson assignment is being prepared."
         />
       ) : null}

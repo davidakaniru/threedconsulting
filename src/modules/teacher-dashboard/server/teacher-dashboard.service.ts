@@ -1,7 +1,6 @@
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 import { getSessions } from "@/modules/sessions/server";
 import { getTeachingAssignments } from "@/modules/teaching-assignments/server";
-import type { ClassSession } from "@/modules/sessions/types";
 import type { TeacherDashboardData } from "../types";
 
 function sessionStart(session: { sessionDate: string; startTime: string }) {
@@ -33,14 +32,22 @@ export async function getTeacherDashboard(
     )
     .sort((a, b) => sessionStart(a).getTime() - sessionStart(b).getTime());
   const upcomingSessions = allUpcomingSessions.slice(0, 3);
-  const attendanceAttention: ClassSession[] = [];
+  const allAttendanceAttention = sessionResult.sessions
+    .filter(
+      (session) =>
+        (session.status === "scheduled" || session.status === "completed") &&
+        session.attendance.pending > 0 &&
+        session.attendance.total > 0,
+    )
+    .sort((a, b) => sessionStart(b).getTime() - sessionStart(a).getTime());
+  const attendanceAttention = allAttendanceAttention.slice(0, 5);
 
   return {
     metrics: {
       programmes: assignmentResult.assignments.length,
       activeLessons: allActiveLessons.length,
       upcomingSessions: allUpcomingSessions.length,
-      attendancePending: 0,
+      attendancePending: allAttendanceAttention.length,
     },
     assignments: assignmentResult.assignments,
     lessons: activeLessons,

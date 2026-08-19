@@ -9,16 +9,16 @@ import type {
 } from "../types";
 import * as repo from "./attendance.repository";
 function summary(records: AttendanceRecord[]): AttendanceSummary {
-  const counts = { present: 0, absent: 0 };
+  const counts = { pending: 0, present: 0, absent: 0, late: 0 };
   for (const record of records) counts[record.status] += 1;
-  const marked = counts.present + counts.absent;
+  const marked = counts.present + counts.absent + counts.late;
   return {
     total: records.length,
     ...counts,
     attendanceRate:
       marked === 0
         ? 0
-        : Math.round((counts.present / marked) * 100),
+        : Math.round(((counts.present + counts.late) / marked) * 100),
   };
 }
 async function sheet(
@@ -77,7 +77,9 @@ async function sheet(
     },
     records,
     summary: summary(records),
-    editable: false,
+    editable:
+      !!teacherId &&
+      (session.status === "scheduled" || session.status === "completed"),
   };
 }
 export function getSessionAttendance(sessionId: string, teacherId: string) {
@@ -87,13 +89,27 @@ export function getAdminSessionAttendance(sessionId: string) {
   return sheet(sessionId);
 }
 export async function saveSessionAttendance(
-  _sessionId: string,
-  _teacherId: string,
-  _input: AttendanceUpdateInput,
+  sessionId: string,
+  teacherId: string,
+  input: AttendanceUpdateInput,
 ) {
-  throw new ApiError(
-    "ATTENDANCE_AUTOMATED",
-    "Attendance is recorded automatically when the learner joins the meeting.",
-    409,
+  const result = await repo.updateAttendanceSheet(
+    sessionId,
+    teacherId,
+    input.records,
   );
+  if (result.error)
+    throw new ApiError(
+      "ATTENDANCE_UPDATE_FAILED",
+      result.error.message || "Attendance could not be saved.",
+      400,
+    );
+  await writeAuditLog({
+    actorId: teacherId,
+    action: "attendance.updated",
+    entityType: "class_session",
+    entityId: sessionId,
+    metadata: { recordsChanged: result.data ?? input.records.length },
+  });
+  return getSessionAttendance(sessionId, teacherId);
 }

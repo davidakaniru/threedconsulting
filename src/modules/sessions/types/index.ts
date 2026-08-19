@@ -1,8 +1,10 @@
 import type { Enums } from "@/types/database";
 export type ClassSessionStatus = Enums<"class_session_status">;
 export interface AttendanceSummary {
+  pending: number;
   present: number;
   absent: number;
+  late: number;
   total: number;
 }
 export interface ClassSession {

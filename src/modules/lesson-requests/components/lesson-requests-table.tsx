@@ -51,7 +51,7 @@ export function LessonRequestsTable() {
         cell: (request) => (
           <div>
             <p className="font-extrabold">{request.childName}</p>
-            <p className="text-xs text-slate-500">{request.programme.name}</p>
+            <p className="text-xs text-slate-500">{request.subjects.map((subject) => subject.name).join(" · ")}</p>
           </div>
         ),
       },

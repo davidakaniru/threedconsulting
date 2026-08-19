@@ -13,15 +13,15 @@ export function AttendanceDashboard() {
   return (
     <SectionCard
       title="Sessions ready for attendance"
-      description="Open a scheduled or completed session to review automatically recorded attendance."
+      description="Open a scheduled or completed session to mark or review attendance."
       contentClassName="p-0"
     >
       {sessions.length === 0 ? (
         <div className="p-6">
           <EmptyState
             icon={CalendarCheck2}
-            title="No attendance records yet"
-            description="Attendance records are generated when a learner joins a scheduled session."
+            title="No attendance sheets yet"
+            description="Schedule a class session to generate an attendance record for the child."
           />
         </div>
       ) : (
@@ -48,7 +48,7 @@ export function AttendanceDashboard() {
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center gap-1 text-sm text-slate-500">
                   <Clock3 className="size-4" />
-                  {session.attendance.present} present · {session.attendance.absent} absent
+                  {session.attendance.pending} pending
                 </span>
                 <Button size="sm" variant="outline" asChild>
                   <span>Open sheet</span>
