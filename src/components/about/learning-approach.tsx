@@ -4,11 +4,11 @@ import { ArrowRight, Check, MessageCircleHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const principles = [
-  "Small classes with meaningful teacher attention",
-  "Lessons adapted to each learner’s ability",
-  "Practical activities and real-world examples",
-  "Encouragement that builds genuine confidence",
-  "Regular, helpful feedback for parents",
+  "Personalised curriculum from Primary to high school",
+  "Learning tailored to each student's ability and pace",
+  "Support for learners aged 4-18, anywhere in the world",
+  "A focus on building genuine, lasting confidence",
+  "Essential skills developed for lifelong learning",
 ];
 
 export function LearningApproach() {
@@ -23,23 +23,23 @@ export function LearningApproach() {
             className="font-display text-sm font-bold uppercase
               tracking-wider text-turquoise"
           >
-            Our approach
+            Our approach to learning
           </span>
 
           <h2
             className="mt-3 font-display text-3xl font-extrabold
               leading-tight text-foreground md:text-4xl"
           >
-            Learning should challenge children without making them feel afraid
-            to try
+            A personalised approach to every learner
           </h2>
 
           <p
             className="mt-5 text-lg leading-8
               text-muted-foreground"
           >
-            We balance clear structure with creativity, giving learners enough
-            support to feel secure and enough freedom to think independently.
+            Our personalised approach helps students strengthen their
+            academic performance, build confidence and develop essential
+            skills for lifelong learning.
           </p>
 
           <ul className="mt-7 space-y-4">
@@ -68,8 +68,8 @@ export function LearningApproach() {
           </ul>
 
           <Button asChild size="lg" className="mt-8">
-            <Link href="/programmes">
-              Explore our programmes
+            <Link href="/tutoring">
+              Explore our tutoring
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -106,15 +106,15 @@ export function LearningApproach() {
                 font-extrabold leading-relaxed text-foreground
                 sm:text-3xl"
             >
-              “Children learn best when they feel known, encouraged and excited
-              to take the next step.”
+              "Everyone has the potential to grow, learn and achieve more
+              with the right support."
             </blockquote>
 
             <p
               className="mt-5 font-display font-bold
                 text-primary"
             >
-              Our teaching philosophy
+              Our guiding belief
             </p>
           </div>
         </div>

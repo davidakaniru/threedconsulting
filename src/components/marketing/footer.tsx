@@ -19,37 +19,6 @@ const footerLinks = {
       label: "Teachers",
       href: "/teachers",
     },
-    {
-      label: "Success Stories",
-      href: "/success-stories",
-    },
-    {
-      label: "Events",
-      href: "/events",
-    },
-  ],
-
-  resources: [
-    {
-      label: "Parent Resources",
-      href: "/parent-resources",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "FAQs",
-      href: "/faqs",
-    },
-    {
-      label: "Gallery",
-      href: "/gallery",
-    },
-    {
-      label: "Child Safety",
-      href: "/child-safety",
-    },
   ],
 
   company: [
@@ -60,10 +29,6 @@ const footerLinks = {
     {
       label: "Contact",
       href: "/contact",
-    },
-    {
-      label: "Careers",
-      href: "/careers",
     },
     {
       label: "Privacy Policy",
@@ -301,7 +266,7 @@ export function Footer() {
 
             <FooterLinkGroup title="Explore" links={footerLinks.explore} />
 
-            <FooterLinkGroup title="Resources" links={footerLinks.resources} />
+            {/* <FooterLinkGroup title="Resources" links={footerLinks.resources} /> */}
 
             <FooterLinkGroup title="Company" links={footerLinks.company} />
           </div>

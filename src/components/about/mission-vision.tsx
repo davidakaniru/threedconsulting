@@ -1,21 +1,21 @@
-import { BookOpen, Eye, Rocket } from "lucide-react";
+import { BookOpen, Rocket, Users } from "lucide-react";
 
 const items = [
   {
     eyebrow: "Our mission",
-    title: "Help every child believe they can",
+    title: "Empowering people, strengthening organisations",
     description:
-      "To provide joyful, high-quality learning experiences that build knowledge, confidence and a lifelong curiosity.",
+      "To empower individuals, strengthen organisations and build brighter futures through quality education, professional expertise and innovative solutions.",
     icon: Rocket,
     className: "bg-sky-100",
     iconClassName: "bg-primary text-white",
   },
   {
-    eyebrow: "Our vision",
-    title: "A future full of confident learners",
+    eyebrow: "Our approach",
+    title: "People, Purpose and Progress",
     description:
-      "A world where every young person feels supported, capable and excited to take on new challenges.",
-    icon: Eye,
+      "We listen, understand the unique needs of those we serve and work collaboratively to create solutions that deliver real value.",
+    icon: Users,
     className: "bg-purple/15",
     iconClassName: "bg-purple text-white",
   },

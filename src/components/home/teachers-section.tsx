@@ -9,6 +9,22 @@ import {
 } from "@/components/shared/public-tutor-card";
 
 export function TeachersSection({ tutors }: { tutors: PublicTutor[] }) {
+  if (tutors.length === 0) {
+    return (
+      <section className="bg-[#fff8ee] px-5 py-16 sm:px-8 md:py-24">
+        <div className="mx-auto max-w-7xl flex flex-col items-center justify-center gap-6">
+          <SectionHeading />
+          <div className="text-center text-lg text-muted-foreground">
+            No tutors available at the moment. Please check back later.
+          </div>
+          <Button size="lg" asChild>
+            <Link href="/become-a-tutor">Become a tutor</Link>
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-[#fff8ee] px-5 py-16 sm:px-8 md:py-24">
       <div className="mx-auto max-w-7xl">
@@ -30,16 +46,14 @@ export function TeachersSection({ tutors }: { tutors: PublicTutor[] }) {
             </motion.div>
           ))}
         </div>
-        {tutors.length > 0 && (
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/teachers">Meet the whole team</Link>
-            </Button>
-            <Button size="lg" asChild>
-              <Link href="/become-a-tutor">Become a tutor</Link>
-            </Button>
-          </div>
-        )}
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/teachers">Meet the whole team</Link>
+          </Button>
+          <Button size="lg" asChild>
+            <Link href="/become-a-tutor">Become a tutor</Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

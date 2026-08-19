@@ -55,7 +55,9 @@ if (whatsapp) {
 }
 
 const hours = [
-  weekdayHours ? ["Monday – Friday", weekdayHours] : null,
+  ["Monday-Friday", "9am-9pm"],
+  ["Saturday", "9am-8pm"],
+  ["Sunday", "2pm-8pm"],
 ].filter((item): item is [string, string] => Boolean(item));
 
 export function ContactDetails() {
@@ -82,7 +84,9 @@ export function ContactDetails() {
                   key={method.label}
                   href={method.href}
                   target={method.href.startsWith("http") ? "_blank" : undefined}
-                  rel={method.href.startsWith("http") ? "noreferrer" : undefined}
+                  rel={
+                    method.href.startsWith("http") ? "noreferrer" : undefined
+                  }
                   className="group flex items-center gap-4 rounded-2xl bg-white/10 p-3 transition-colors hover:bg-white/15"
                 >
                   <span
