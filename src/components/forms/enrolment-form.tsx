@@ -173,7 +173,7 @@ export function EnrolmentForm({
         </h2>
         <p className="mx-auto mt-3 max-w-lg leading-7 text-muted-foreground">
           We&apos;ll review your request before making it available to a
-          suitable tutor for the selected subject.
+          suitable teacher for the selected subject.
         </p>
         <p className="mt-4 text-sm text-muted-foreground">
           Reference:{" "}

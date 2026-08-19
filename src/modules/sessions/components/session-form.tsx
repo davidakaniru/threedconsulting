@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CalendarPlus, FileDown, Save } from "lucide-react";
+import { CalendarPlus, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { SelectField } from "@/components/forms/select-field";
 import { toApiError } from "@/lib/api/errors";
 import { classSessionSchema, type ClassSessionRequest } from "../schemas";
+import { classSessionStatusOptions } from "../constants";
 import { useCreateSession, useUpdateSession } from "../hooks";
 import type { ClassSession } from "../types";
 type LessonOption = {
@@ -48,42 +49,15 @@ export function SessionForm({
       startTime: session?.startTime?.slice(0, 5) ?? "",
       endTime: session?.endTime?.slice(0, 5) ?? "",
       meetingLink: session?.meetingLink ?? "",
+      status: session?.status ?? "draft",
     },
   });
   const submit = handleSubmit(async (v) => {
     try {
       const saved = session
         ? await update.mutateAsync(v)
-        : await create.mutateAsync({ ...v, action: "schedule" });
-      toast.success(session ? "Session updated." : "Session scheduled.");
-      router.push(`/portal/teacher/sessions/${saved.id}`);
-    } catch (e) {
-      toast.error(toApiError(e).message);
-    }
-  });
-  const saveAsDraft = handleSubmit(async (v) => {
-    try {
-      const saved = await create.mutateAsync({ ...v, action: "draft" });
-      toast.success("Session saved as draft.");
-      router.push(`/portal/teacher/sessions/${saved.id}`);
-    } catch (e) {
-      toast.error(toApiError(e).message);
-    }
-  });
-  const schedule = handleSubmit(async (v) => {
-    try {
-      const saved = await create.mutateAsync({ ...v, action: "schedule" });
-      toast.success("Session scheduled.");
-      router.push(`/portal/teacher/sessions/${saved.id}`);
-    } catch (e) {
-      toast.error(toApiError(e).message);
-    }
-  });
-  const scheduleDraft = handleSubmit(async (v) => {
-    if (!session) return;
-    try {
-      const saved = await update.mutateAsync({ ...v, action: "schedule" });
-      toast.success("Session scheduled.");
+        : await create.mutateAsync(v);
+      toast.success(session ? "Session updated." : "Session created.");
       router.push(`/portal/teacher/sessions/${saved.id}`);
     } catch (e) {
       toast.error(toApiError(e).message);
@@ -118,6 +92,21 @@ export function SessionForm({
           placeholder="e.g. Introduction to algebra"
           errorMessage={errors.title?.message}
           {...register("title")}
+        />
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              id="status"
+              label="Status"
+              required
+              options={classSessionStatusOptions}
+              value={field.value}
+              onValueChange={field.onChange}
+              errorMessage={errors.status?.message}
+            />
+          )}
         />
         <Input
           id="sessionDate"
@@ -164,45 +153,15 @@ export function SessionForm({
           {...register("description")}
         />
       </div>
-      <div className="flex flex-wrap justify-end gap-3 border-t pt-6">
-        {session ? (
-          <>
-            <Button type="submit" disabled={create.isPending || update.isPending}>
-              <Save />
-              {update.isPending ? "Saving..." : "Save changes"}
-            </Button>
-            {session.status === "draft" && (
-              <Button
-                type="button"
-                disabled={create.isPending || update.isPending}
-                onClick={() => void scheduleDraft()}
-              >
-                <CalendarPlus />
-                {update.isPending ? "Scheduling..." : "Schedule session"}
-              </Button>
-            )}
-          </>
-        ) : (
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={create.isPending || update.isPending}
-              onClick={() => void saveAsDraft()}
-            >
-              <FileDown />
-              {create.isPending ? "Saving..." : "Save as draft"}
-            </Button>
-            <Button
-              type="button"
-              disabled={create.isPending || update.isPending}
-              onClick={() => void schedule()}
-            >
-              <CalendarPlus />
-              {create.isPending ? "Scheduling..." : "Create session"}
-            </Button>
-          </>
-        )}
+      <div className="flex justify-end border-t pt-6">
+        <Button type="submit" disabled={create.isPending || update.isPending}>
+          {session ? <Save /> : <CalendarPlus />}
+          {create.isPending || update.isPending
+            ? "Saving..."
+            : session
+              ? "Save changes"
+              : "Create session"}
+        </Button>
       </div>
     </form>
   );

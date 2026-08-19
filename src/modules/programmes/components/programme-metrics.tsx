@@ -9,7 +9,7 @@ export function ProgrammeMetrics({
   return (
     <MetricGrid>
       <MetricCard
-        label="Subjects"
+        label="Programmes"
         value={m.total}
         helper="All subjects"
         icon={BookOpen}
@@ -32,7 +32,7 @@ export function ProgrammeMetrics({
       <MetricCard
         label="Archived"
         value={m.archived}
-        helper="Historical subjects"
+        helper="Historical programmes"
         icon={Archive}
         tone="purple"
       />

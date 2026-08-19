@@ -52,14 +52,14 @@ export function ProgrammeAssignmentManager({
   return (
     <SectionCard
       title="Teaching assignments"
-      description="Assign active tutors who are allowed to teach this subject."
+      description="Assign active teachers who are allowed to teach this programme."
       contentClassName="p-5 sm:p-6"
     >
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end">
         <SelectField
           id="teacher-assignment"
-          label="Tutor"
-          placeholder="Select a tutor"
+          label="Teacher"
+          placeholder="Select a teacher"
           options={options}
           value={teacherId}
           onValueChange={setTeacherId}
@@ -70,7 +70,7 @@ export function ProgrammeAssignmentManager({
           onClick={assign}
           disabled={!teacherId || create.isPending}
         >
-          Assign tutor
+          Assign teacher
         </Button>
       </div>
       {query.isLoading ? (
@@ -136,8 +136,8 @@ export function ProgrammeAssignmentManager({
       ) : (
         <EmptyState
           icon={GraduationCap}
-          title="No tutors assigned"
-          description="Assign the first tutor to make this subject available for published enrolments."
+          title="No teachers assigned"
+          description="Assign the first teacher to make this programme available for published enrolments."
         />
       )}
     </SectionCard>

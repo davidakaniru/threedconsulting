@@ -16,7 +16,6 @@ import {
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import type { ClassSession } from "../types";
-import { SessionJoinButton } from "./session-join-button";
 export function SessionDetails({
   session,
   admin = false,
@@ -57,7 +56,7 @@ export function SessionDetails({
                     href={`/portal/teacher/sessions/${session.id}/attendance`}
                   >
                     <CalendarCheck2 />
-                    View attendance
+                    Take attendance
                   </Link>
                 </Button>
                 <Button variant="outline" asChild>
@@ -68,22 +67,12 @@ export function SessionDetails({
                 </Button>
               </>
             )}
-            {admin ? (
-              <Button asChild>
-                <a href={session.meetingLink} target="_blank" rel="noreferrer">
-                  <ExternalLink />
-                  Join meeting
-                </a>
-              </Button>
-            ) : (
-              <SessionJoinButton
-                sessionId={session.id}
-                sessionDate={session.sessionDate}
-                startTime={session.startTime}
-                endTime={session.endTime}
-                status={session.status}
-              />
-            )}
+            <Button asChild>
+              <a href={session.meetingLink} target="_blank" rel="noreferrer">
+                <ExternalLink />
+                Join meeting
+              </a>
+            </Button>
           </div>
         </div>
       </SectionCard>
@@ -119,7 +108,7 @@ export function SessionDetails({
           )}
           <InfoCard
             icon={Users}
-            title="Tutor"
+            title="Teacher"
             description={session.lessonAssignment.teacher.name}
           />
         </div>
@@ -136,13 +125,18 @@ export function SessionDetails({
             icon={Users}
           />
           <MetricCard
+            label="Pending"
+            value={session.attendance.pending}
+            icon={Clock}
+          />
+          <MetricCard
             label="Present"
             value={session.attendance.present}
             icon={Users}
           />
           <MetricCard
-            label="Absent"
-            value={session.attendance.absent}
+            label="Absent / Late"
+            value={session.attendance.absent + session.attendance.late}
             icon={Users}
           />
         </MetricGrid>

@@ -10,7 +10,7 @@ export function TeacherDetailClient({ id }: { id: string }) {
   if (query.isError || !query.data)
     return (
       <TableError
-        title="Tutor could not be loaded"
+        title="Teacher could not be loaded"
         description="Please try again."
         onRetry={() => void query.refetch()}
       />

@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { AuthLogo } from "@/components/auth/auth-logo";
 import { SetPasswordForm } from "@/components/auth/set-password-form";
 import { getCurrentUser } from "@/lib/auth/current-user";
-export const metadata: Metadata = { title: "Activate Tutor Account" };
+export const metadata: Metadata = { title: "Activate Teacher Account" };
 export default async function SetPasswordPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");

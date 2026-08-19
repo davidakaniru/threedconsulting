@@ -35,15 +35,24 @@ export default async function Page() {
   const assignmentByRequest = new Map(
     assignments.map((a) => [a.lessonRequestId, a]),
   );
-  const reviewStateByAssignment = new Map(
-    reviewStates.map((state) => [state.assignmentId, state]),
+  const reviewStateByAssignment = new Map<
+    string,
+    { assignmentId: string; eligible: boolean; reviewId: string | null }
+  >(
+    reviewStates.map(
+      (state: {
+        assignmentId: string;
+        eligible: boolean;
+        reviewId: string | null;
+      }) => [state.assignmentId, state],
+    ),
   );
   return (
     <AdminPage>
       <PageHeader
         eyebrow="Lessons"
         title="My enrolments"
-        description="Track your enrolments and see the tutor matched with your child."
+        description="Track your enrolments and see the teacher matched with your child."
         actions={
           <Button asChild>
             <Link href="/enrolment">
@@ -58,7 +67,7 @@ export default async function Page() {
           <EmptyState
             icon={FileText}
             title="No enrolments yet"
-            description="Submit an enrolment to find a tutor for your child."
+            description="Submit an enrolment to find a teacher for your child."
             action={
               <Button asChild>
                 <Link href="/enrolment">Submit enrolment</Link>
@@ -77,7 +86,9 @@ export default async function Page() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <p className="text-xs font-extrabold uppercase tracking-[.14em] text-primary">
-                        {request.programme.name}
+                        {request.subjects
+                          .map((subject) => subject.name)
+                          .join(" · ")}
                       </p>
                       <h2 className="mt-1 font-display text-lg font-extrabold">
                         {request.childName}
@@ -90,7 +101,7 @@ export default async function Page() {
                       status={assignment?.status ?? request.status}
                       label={
                         assignment
-                          ? "Tutor matched"
+                          ? "Teacher matched"
                           : request.status === "pending_review"
                             ? "Awaiting review"
                             : undefined
@@ -121,7 +132,7 @@ export default async function Page() {
                           </span>
                           <div>
                             <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              Matched tutor
+                              Matched teacher
                             </p>
                             <p className="mt-1 font-extrabold">
                               {assignment.teacherName}

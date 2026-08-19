@@ -3,32 +3,19 @@ import "server-only";
 import { ApiError } from "@/lib/api/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyAdminLessonAccepted } from "@/lib/email/admin-notifications";
+import type { TeacherOpportunity } from "../types";
 
 const db = () => createAdminClient() as any;
 
-export interface TeacherOpportunity {
-  id: string;
-  childName: string;
-  currentEducationLevel: string;
-  programme: { id: string; name: string; slug: string };
-  preferredDays: string[];
-  preferredTime: string;
-  durationMonths: number;
-  additionalMessage: string | null;
-  publishedAt: string | null;
-  status: string;
-}
 
 function mapOpportunity(row: any): TeacherOpportunity {
   return {
     id: row.id,
     childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
     currentEducationLevel: row.current_education_level,
-    programme: row.programmes ?? {
-      id: row.programme_id,
-      name: "Subject",
-      slug: "",
-    },
+    programme: row.programmes ?? { id: row.programme_id, name: "Subject", slug: "" },
+    subjects: row._subjects ?? (row.programmes ? [row.programmes] : []),
+    matchedProgrammeId: row.matched_programme_id ?? null,
     preferredDays: row.preferred_days ?? [],
     preferredTime: row.preferred_time,
     durationMonths: row.duration_months,
@@ -59,7 +46,6 @@ export async function listTeacherOpportunities(teacherId: string) {
     .select("*,programmes(id,name,slug)")
     .eq("status", "open")
     .is("matched_teacher_id", null)
-    .in("programme_id", programmeIds)
     .order("published_at", { ascending: true });
   if (error)
     throw new ApiError(
@@ -67,7 +53,14 @@ export async function listTeacherOpportunities(teacherId: string) {
       "Available teaching opportunities could not be loaded.",
       500,
     );
-  return (data ?? []).map(mapOpportunity);
+  const requests = (data ?? []).filter((row: any) => programmeIds.includes(row.programme_id));
+  const ids = requests.map((row: any) => row.id);
+  const subjectMap = new Map<string, any[]>();
+  if (ids.length) {
+    const { data: selected } = await db().from("lesson_request_programmes").select("lesson_request_id,programme_id,programmes(id,name,slug)").in("lesson_request_id", ids);
+    for (const row of selected ?? []) subjectMap.set(row.lesson_request_id, [...(subjectMap.get(row.lesson_request_id) ?? []), row.programmes]);
+  }
+  return requests.filter((row: any) => (subjectMap.get(row.id) ?? []).some((subject: any) => programmeIds.includes(subject.id))).map((row: any) => mapOpportunity({ ...row, _subjects: subjectMap.get(row.id) ?? [] }));
 }
 
 export async function listMatchedTeacherEnrolments(teacherId: string) {

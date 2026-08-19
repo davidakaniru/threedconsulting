@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { AdminPage, PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { TeacherSessionTimeline } from "@/modules/sessions";
-export const metadata: Metadata = { title: "My Sessions | Tutor Portal" };
+export const metadata: Metadata = { title: "My Sessions | Teacher Portal" };
 export default function Page() {
   return (
     <AdminPage>

@@ -31,7 +31,7 @@ export const portalNavigation: Record<
   admin: [
     { label: "Dashboard", href: "/portal/admin", icon: Home, enabled: true },
     {
-      label: "Tutors",
+      label: "Teachers",
       href: "/portal/admin/teachers",
       icon: GraduationCap,
       enabled: true,
@@ -55,7 +55,7 @@ export const portalNavigation: Record<
       group: "People",
     },
     {
-      label: "Subjects",
+      label: "Programmes",
       href: "/portal/admin/programmes",
       icon: BookOpen,
       enabled: true,
@@ -79,7 +79,7 @@ export const portalNavigation: Record<
       group: "Academics",
     },
     {
-      label: "Tutor reports",
+      label: "Teacher reports",
       href: "/portal/admin/reports/teachers",
       icon: BarChart3,
       enabled: true,

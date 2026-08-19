@@ -13,7 +13,6 @@ import type {
   TeacherDetail,
   TeacherListResult,
   TeacherMetricsI,
-  PublicTutor,
 } from "@/modules/teachers/types";
 import {
   mapTeacherDetail,
@@ -54,7 +53,7 @@ export async function getTeachers(params: {
     console.error("Unable to list teachers", error);
     throw new ApiError(
       "TEACHERS_LOAD_FAILED",
-      "Tutors could not be loaded.",
+      "Teachers could not be loaded.",
       500,
     );
   }
@@ -68,31 +67,6 @@ export async function getTeachers(params: {
   };
 }
 
-export async function getPublicTutors(): Promise<PublicTutor[]> {
-  const { data, error } = await createAdminClient()
-    .from("teachers")
-    .select("id,qualification,specialization,profiles!inner(first_name,last_name,avatar_url,status)")
-    .eq("employment_status", "active")
-    .eq("profiles.status", "active")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Unable to load public tutors", error);
-    return [];
-  }
-
-  return ((data ?? []) as any[]).map((row) => {
-    const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
-    return {
-      id: row.id,
-      name: [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "Tutor",
-      specialization: row.specialization ?? null,
-      qualification: row.qualification ?? null,
-      avatarUrl: profile?.avatar_url ?? null,
-    };
-  });
-}
-
 export async function getTeacher(id: string): Promise<TeacherDetail> {
   const { data, error } = await getTeacherRow(id);
   if (error)
@@ -101,7 +75,7 @@ export async function getTeacher(id: string): Promise<TeacherDetail> {
       "The teacher could not be loaded.",
       500,
     );
-  if (!data) throw new ApiError("TEACHER_NOT_FOUND", "Tutor not found.", 404);
+  if (!data) throw new ApiError("TEACHER_NOT_FOUND", "Teacher not found.", 404);
   return mapTeacherDetail(data as unknown as TeacherJoinedRow);
 }
 
@@ -118,7 +92,7 @@ export async function getTeacherMetrics(): Promise<TeacherMetricsI> {
   if (failed?.error)
     throw new ApiError(
       "TEACHER_METRICS_FAILED",
-      "Tutor metrics could not be loaded.",
+      "Teacher metrics could not be loaded.",
       500,
     );
   return {
@@ -139,7 +113,7 @@ export async function inviteTeacher(
   if (programmeResult.error)
     throw new ApiError(
       "PROGRAMMES_CHECK_FAILED",
-      "Subject assignments could not be validated.",
+      "Programme assignments could not be validated.",
       500,
     );
   if ((programmeResult.data ?? []).length !== programmeIds.length)
@@ -195,7 +169,7 @@ export async function inviteTeacher(
     return { id: invite.user.id, email: input.email };
   } catch (error) {
     await admin.auth.admin.deleteUser(invite.user.id);
-    console.error("Tutor provisioning rolled back", error);
+    console.error("Teacher provisioning rolled back", error);
     throw new ApiError(
       "TEACHER_PROVISION_FAILED",
       "The teacher account could not be provisioned. No partial account was kept.",
@@ -241,7 +215,7 @@ export async function deleteTeacher(id: string, actorId: string) {
   if (assignmentDelete.error)
     throw new ApiError(
       "TEACHER_ASSIGNMENTS_DELETE_FAILED",
-      "The teacher's subject assignments could not be removed.",
+      "The teacher's programme assignments could not be removed.",
       500,
     );
 
@@ -278,7 +252,7 @@ export async function updateTeacher(id: string, input: UpdateTeacherRequest) {
   if (duplicate.error)
     throw new ApiError(
       "TEACHER_CHECK_FAILED",
-      "Tutor details could not be validated.",
+      "Teacher details could not be validated.",
       500,
     );
   if (duplicate.data)

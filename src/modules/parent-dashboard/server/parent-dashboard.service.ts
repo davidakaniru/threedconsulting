@@ -86,7 +86,7 @@ export async function getParentAcademicDashboard(
                 teacherName:
                   [profile?.first_name, profile?.last_name]
                     .filter(Boolean)
-                    .join(" ") || "Tutor",
+                    .join(" ") || "Teacher",
                 teacherQualification: teacher?.qualification ?? null,
                 teacherSpecialization: teacher?.specialization ?? null,
                 currentEducationLevel: row.current_education_level,
@@ -108,11 +108,10 @@ export async function getParentAcademicDashboard(
           {
             id: row.id,
             title: row.title,
-            programmeName: programme?.name ?? "Subject",
+            programmeName: programme?.name ?? "Programme",
             sessionDate: row.session_date,
             startTime: row.start_time,
             endTime: row.end_time,
-            status: row.status,
           },
         ];
       })
@@ -126,12 +125,12 @@ export async function getParentAcademicDashboard(
     const attendanceRows = (attendanceResult.data ?? []).filter(
       (row: any) => row.student_id === student.id,
     );
-    const counts = { present: 0, absent: 0 };
+    const counts = { present: 0, absent: 0, late: 0, pending: 0 };
     attendanceRows.forEach((row: any) => {
       if (row.status in counts) counts[row.status as keyof typeof counts] += 1;
     });
-    const marked = counts.present + counts.absent;
-    const attended = counts.present;
+    const marked = counts.present + counts.absent + counts.late;
+    const attended = counts.present + counts.late;
     const recent = attendanceRows.slice(0, 8).map((row: any) => {
       const session = relationOne(row.class_sessions) as any;
       const assignment = relationOne(session?.lesson_assignments) as any;
@@ -140,7 +139,7 @@ export async function getParentAcademicDashboard(
         id: row.id,
         status: row.status,
         sessionTitle: session?.title ?? "Session",
-        programmeName: programme?.name ?? "Subject",
+        programmeName: programme?.name ?? "Programme",
         sessionDate: session?.session_date ?? "",
       };
     });

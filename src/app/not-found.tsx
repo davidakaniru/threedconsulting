@@ -68,7 +68,7 @@ export default function NotFound() {
           <Button variant="outline" size="lg" asChild>
             <Link href="/programmes">
               <BookOpen data-icon="inline-start" />
-              Explore subjects
+              Explore programmes
             </Link>
           </Button>
         </div>

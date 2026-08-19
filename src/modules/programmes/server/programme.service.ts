@@ -36,7 +36,7 @@ export async function getProgrammes(params: {
   if (error)
     throw new ApiError(
       "PROGRAMMES_LOAD_FAILED",
-      "Subjects could not be loaded.",
+      "Programmes could not be loaded.",
       500,
     );
   return {
@@ -51,11 +51,11 @@ export async function getProgramme(id: string): Promise<ProgrammeDetail> {
   if (error)
     throw new ApiError(
       "PROGRAMME_LOAD_FAILED",
-      "The subject could not be loaded.",
+      "The programme could not be loaded.",
       500,
     );
   if (!data)
-    throw new ApiError("PROGRAMME_NOT_FOUND", "Subject not found.", 404);
+    throw new ApiError("PROGRAMME_NOT_FOUND", "Programme not found.", 404);
   return mapProgramme(data as ProgrammeRow);
 }
 export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
@@ -69,7 +69,7 @@ export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
   if (failed?.error)
     throw new ApiError(
       "PROGRAMME_METRICS_FAILED",
-      "Subject metrics could not be loaded.",
+      "Programme metrics could not be loaded.",
       500,
     );
   return {
@@ -81,17 +81,14 @@ export async function getProgrammeMetrics(): Promise<ProgrammeMetricsI> {
 }
 function input(values: CreateProgrammeRequest | UpdateProgrammeRequest) {
   return {
-    name: values.title.trim(),
-    title: values.title.trim(),
-    slug: values.slug.trim(),
+    // Title is required by the repository/type; fall back to name if not provided
+    title: (values as any).title?.trim() ?? values.name.trim(),
+    name: values.name.trim(),
+    slug: slugify(values.name),
     description: nullableText(values.description),
-    cover_image_url: values.coverImageUrl?.trim() ?? "",
-    overview: values.overview.trim(),
-    outcomes: values.outcomes,
     status: values.status,
   };
 }
-
 export async function createProgramme(
   values: CreateProgrammeRequest,
   actorId: string,
@@ -104,12 +101,12 @@ export async function createProgramme(
     if (error?.code === "23505")
       throw new ApiError(
         "PROGRAMME_EXISTS",
-        "A subject with this name already exists.",
+        "A programme with this name already exists.",
         409,
       );
     throw new ApiError(
       "PROGRAMME_CREATE_FAILED",
-      "The subject could not be created.",
+      "The programme could not be created.",
       500,
     );
   }
@@ -118,7 +115,7 @@ export async function createProgramme(
     action: "programme.created",
     entityType: "programme",
     entityId: data.id,
-    metadata: { title: data.title, status: data.status },
+    metadata: { name: data.name, status: data.status },
   });
   return mapProgramme(data as ProgrammeRow);
 }
@@ -133,12 +130,12 @@ export async function updateProgramme(
     if (error?.code === "23505")
       throw new ApiError(
         "PROGRAMME_EXISTS",
-        "A subject with this name already exists.",
+        "A programme with this name already exists.",
         409,
       );
     throw new ApiError(
       "PROGRAMME_UPDATE_FAILED",
-      "The subject could not be updated.",
+      "The programme could not be updated.",
       500,
     );
   }
@@ -147,30 +144,7 @@ export async function updateProgramme(
     action: "programme.updated",
     entityType: "programme",
     entityId: id,
-    metadata: { title: data.title, status: data.status },
+    metadata: { name: data.name, status: data.status },
   });
   return mapProgramme(data as ProgrammeRow);
-}
-
-export async function deleteProgramme(id: string, actorId: string) {
-  const programme = await getProgramme(id);
-  const { error } = await repo.deleteProgrammeRow(id);
-  if (error) {
-    if (error.code === "23503") {
-      throw new ApiError(
-        "PROGRAMME_DELETE_BLOCKED",
-        "This subject cannot be deleted because it is still being used elsewhere.",
-        409,
-      );
-    }
-    throw new ApiError("PROGRAMME_DELETE_FAILED", "The subject could not be deleted.", 500);
-  }
-  await writeAuditLog({
-    actorId,
-    action: "programme.deleted",
-    entityType: "programme",
-    entityId: id,
-    metadata: { title: programme.title },
-  });
-  return { id };
 }

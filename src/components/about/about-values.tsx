@@ -21,7 +21,7 @@ export function AboutValues() {
 
           <p
             className="mt-4 text-lg leading-relaxed
-              text-muted-foreground max-w-lg mx-auto"
+              text-muted-foreground"
           >
             These principles shape how we teach, communicate and care for every
             member of our learning community.

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -20,7 +20,6 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { SessionJoinButton } from "@/modules/sessions/components/session-join-button";
 import { DropdownMenu } from "radix-ui";
 import {
   formatDate,
@@ -34,6 +33,15 @@ import { ChildSwitcher } from "./child-switcher";
 
 function DashboardContent() {
   const { child } = useChild();
+
+  const [nowMs, setNowMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateNow = () => setNowMs(Date.now());
+    updateNow();
+    const interval = window.setInterval(updateNow, 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   if (!child) {
     return (
@@ -135,7 +143,7 @@ function DashboardContent() {
       {child.programmes.length > 0 && (
         <SectionCard
           title="Active lessons"
-          description="Your child's matched tutors and agreed lesson schedules."
+          description="Your child's matched teachers and agreed lesson schedules."
           icon={GraduationCap}
         >
           <div className="grid gap-4 lg:grid-cols-2">
@@ -214,7 +222,7 @@ function DashboardContent() {
         />
         <MetricCard
           icon={GraduationCap}
-          label="Subjects"
+          label="Programmes"
           value={child.programmes.length}
           tone="purple"
           helper="Active one-to-one lessons"
@@ -236,6 +244,19 @@ function DashboardContent() {
           ) : (
             <div className="space-y-3">
               {child.upcomingSessions.slice(0, 2).map((session, index) => {
+                const startMs = sessionDateTimeMs(
+                  session.sessionDate,
+                  session.startTime,
+                );
+                const endMs = sessionDateTimeMs(
+                  session.sessionDate,
+                  session.endTime,
+                );
+                const canJoin =
+                  nowMs !== null &&
+                  nowMs >= startMs - 30 * 60 * 1000 &&
+                  nowMs <= endMs + 10 * 60 * 1000;
+
                 return (
                   <div
                     key={session.id}
@@ -265,15 +286,17 @@ function DashboardContent() {
                           )}
                         </p>
                       </div>
-                      <SessionJoinButton
-                        sessionId={session.id}
-                        sessionDate={session.sessionDate}
-                        startTime={session.startTime}
-                        endTime={session.endTime}
-                        status={session.status}
-                        role="parent"
-                        className="shrink-0"
-                      />
+                      {canJoin && (
+                        <Button asChild size="sm">
+                          <a
+                            href={`/api/parent/sessions/${session.id}/join`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Join meeting
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
@@ -313,12 +336,18 @@ function DashboardContent() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-2xl bg-emerald-50 p-3">
                   <p className="text-2xl font-extrabold text-emerald-700">
                     {child.attendance.present}
                   </p>
                   <p className="text-xs font-bold text-emerald-700">Present</p>
+                </div>
+                <div className="rounded-2xl bg-amber-50 p-3">
+                  <p className="text-2xl font-extrabold text-amber-700">
+                    {child.attendance.late}
+                  </p>
+                  <p className="text-xs font-bold text-amber-700">Late</p>
                 </div>
                 <div className="rounded-2xl bg-rose-50 p-3">
                   <p className="text-2xl font-extrabold text-rose-700">
@@ -398,6 +427,10 @@ function DashboardContent() {
   );
 }
 
+function sessionDateTimeMs(date: string, time: string) {
+  const normalizedTime = time.length === 5 ? `${time}:00` : time;
+  return new Date(`${date}T${normalizedTime}+01:00`).getTime();
+}
 
 export function ParentAcademicDashboardView({
   data,

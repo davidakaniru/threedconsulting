@@ -1,8 +1,48 @@
 "use client";
-import { motion } from "motion/react";
-import type { PublicTutor } from "@/modules/teachers/types";
 
-const tones = ["bg-sky-500", "bg-teal-500", "bg-violet-500", "bg-orange-500", "bg-amber-500", "bg-pink-500"];
-export function TeachersGrid({ tutors }: { tutors: PublicTutor[] }) {
-  return <section className="-mt-8 bg-[#fff8ee] px-5 pb-16 sm:px-8 md:pb-24"><div className="relative mx-auto max-w-7xl"><div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{tutors.map((tutor,index)=><motion.div key={tutor.id} initial={{opacity:0,y:28}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-60px"}} transition={{duration:.5,delay:(index%3)*.05,ease:[.22,1,.36,1]}} className="h-full"><article className="group h-full rounded-3xl border border-sky-50 bg-white p-6 text-center shadow-[0_8px_30px_-12px_rgba(56,116,189,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(56,116,189,0.4)]"><div className={`mx-auto grid size-20 place-items-center rounded-full font-display text-2xl font-extrabold text-white ${tones[index%tones.length]}`}>{tutor.name.split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase()}</div><h2 className="mt-4 font-display text-lg font-extrabold text-foreground">{tutor.name}</h2><p className="text-sm font-bold text-sky-600">{tutor.specialization || "Qualified tutor"}</p>{tutor.qualification && <p className="mt-2 text-sm text-muted-foreground">{tutor.qualification}</p>}</article></motion.div>)}</div>{!tutors.length && <p className="text-center text-muted-foreground">Tutor profiles will appear here soon.</p>}</div></section>;
+import { motion } from "motion/react";
+
+import { TeacherCard } from "@/components/shared/teacher-card";
+import { teachers } from "@/data/teachers";
+
+export function TeachersGrid() {
+  return (
+    <section
+      className="-mt-8 bg-[#fff8ee] px-5 pb-16
+        sm:px-8 md:pb-24"
+    >
+      <div className="relative mx-auto max-w-7xl">
+        <div
+          className="grid gap-6
+            sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {teachers.map((teacher, index) => (
+            <motion.div
+              key={teacher.name}
+              initial={{
+                opacity: 0,
+                y: 28,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                margin: "-60px",
+              }}
+              transition={{
+                duration: 0.5,
+                delay: (index % 3) * 0.05,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="h-full"
+            >
+              <TeacherCard teacher={teacher} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

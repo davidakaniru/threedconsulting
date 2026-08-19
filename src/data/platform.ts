@@ -111,7 +111,7 @@ export const parentDash: PlatformDashboard = {
 };
 
 export const teacherDash: PlatformDashboard = {
-  role: "Tutor Portal",
+  role: "Teacher Portal",
   accent: "teal",
   greeting: "Good morning, Daniel",
   nav: [
@@ -197,7 +197,7 @@ export const adminDash: PlatformDashboard = {
   nav: [
     { icon: "LayoutDashboard", label: "Overview" },
     { icon: "Users", label: "Students" },
-    { icon: "GraduationCap", label: "Tutors" },
+    { icon: "GraduationCap", label: "Teachers" },
     { icon: "ClipboardCheck", label: "Registrations" },
     { icon: "CalendarCheck", label: "Attendance" },
     { icon: "MessagesSquare", label: "Communication" },
@@ -213,7 +213,7 @@ export const adminDash: PlatformDashboard = {
       tone: "grape",
     },
     {
-      label: "Tutors",
+      label: "Teachers",
       value: "124",
       icon: "GraduationCap",
       tone: "sky",

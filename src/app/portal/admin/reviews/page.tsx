@@ -54,7 +54,7 @@ export default async function Page({
       <PageHeader
         eyebrow="Quality"
         title="Lesson reviews"
-        description="Review parent feedback about lesson outcomes and tutoring experience. Reviews are internal and are not visible to tutors or the public."
+        description="Review parent feedback about lesson outcomes and teaching experience. Reviews are internal and are not visible to teachers or the public."
       />
 
       <MetricGrid>
@@ -62,7 +62,7 @@ export default async function Page({
         <MetricCard label="Average rating" value={average} icon={Star} />
         <MetricCard label="Would recommend" value={recommendCount} icon={ThumbsUp} />
         <MetricCard
-          label="Tutors reviewed"
+          label="Teachers reviewed"
           value={new Set(reviews.map((review) => review.teacherId)).size}
           icon={Users}
         />
@@ -70,7 +70,7 @@ export default async function Page({
 
       <SectionCard
         title="Filters"
-        description="Search reviews by tutor or subject, then narrow by rating or submission date."
+        description="Search reviews by teacher or programme, then narrow by rating or submission date."
       >
         <AdminReviewFilters
           teachers={options.teachers}
@@ -110,7 +110,7 @@ export default async function Page({
                       </p>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Tutor: {review.teacherName} · Parent: {review.parentName}
+                      Teacher: {review.teacherName} · Parent: {review.parentName}
                     </p>
                     <p className="mt-2 line-clamp-2 text-sm text-slate-700">
                       {review.lessonOutcome}

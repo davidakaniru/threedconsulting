@@ -19,7 +19,7 @@ export async function POST(request: NextRequest, context: Context) {
   } catch (error) {
     if (error instanceof ValidationError) return apiError("VALIDATION_ERROR", "The requested action is invalid.", 422);
     if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
-    console.error("Tutor action failed", error);
+    console.error("Teacher action failed", error);
     return apiError("INTERNAL_SERVER_ERROR", "The teacher action could not be completed.", 500);
   }
 }

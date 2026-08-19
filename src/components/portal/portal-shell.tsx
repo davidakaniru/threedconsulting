@@ -35,7 +35,7 @@ const roleStyles: Record<
     solid: "bg-primary",
   },
   teacher: {
-    label: "Tutor",
+    label: "Teacher",
     soft: "bg-orange-50",
     text: "text-orange-600",
     solid: "bg-orange-500",
@@ -181,8 +181,8 @@ function getPageContext(pathname: string, role: UserRole) {
 
   if (pathname.endsWith("/new")) {
     const createTitles: Partial<Record<string, string>> = {
-      Tutors: "Add tutor",
-      Subjects: "Create subject",
+      Teachers: "Add teacher",
+      Programmes: "Create programme",
       Sessions: "Create session",
     };
     return {

@@ -25,7 +25,7 @@ import { getAdminDashboardOverview } from "@/modules/dashboard/server";
 function activityLabel(action: string) {
   return action
     .replaceAll("lesson_request", "enrolment")
-    .replaceAll("teaching_assignment", "subject assignment")
+    .replaceAll("teaching_assignment", "programme assignment")
     .replaceAll("_", " ")
     .replaceAll(".", " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -34,7 +34,7 @@ function activityLabel(action: string) {
 function activityEntityLabel(entityType: string) {
   const labels: Record<string, string> = {
     lesson_request: "Enrolment",
-    teaching_assignment: "Subject assignment",
+    teaching_assignment: "Programme assignment",
   };
   return labels[entityType] ?? entityType.replaceAll("_", " ");
 }
@@ -65,7 +65,7 @@ export default async function AdminPortalPage() {
 
       <MetricGrid>
         <MetricCard
-          label="Tutors"
+          label="Teachers"
           value={metrics.teachers.total}
           helper={`${metrics.teachers.active} active`}
           icon={GraduationCap}
@@ -86,7 +86,7 @@ export default async function AdminPortalPage() {
           tone="green"
         />
         <MetricCard
-          label="Subjects"
+          label="Programmes"
           value={metrics.programmes.total}
           helper={`${metrics.programmes.published} published`}
           icon={BookOpen}
@@ -101,22 +101,22 @@ export default async function AdminPortalPage() {
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <QuickAction
-            href="/portal/admin/teachers?tab=applications"
+            href="/portal/admin/teachers/new"
             icon={GraduationCap}
-            title="Review tutor applications"
-            description="Review applications and accept suitable tutors."
+            title="Add teacher"
+            description="Create a teacher account and send their invitation."
           />
           <QuickAction
             href="/portal/admin/programmes/new"
             icon={BookOpen}
-            title="Create subject"
-            description="Add a subject and make tutors eligible to teach it."
+            title="Create programme"
+            description="Add a subject and make teachers eligible to teach it."
           />
           <QuickAction
             href="/portal/admin/enrolments"
             icon={FileCheck2}
             title="Review enrolments"
-            description="Review parent enrolments and review suitable enrolments."
+            description="Review parent enrolments and publish suitable opportunities to teachers."
           />
           <QuickAction
             href="/portal/admin/sessions"

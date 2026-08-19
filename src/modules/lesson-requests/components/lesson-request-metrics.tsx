@@ -18,7 +18,7 @@ export function LessonRequestMetrics({ metrics }: { metrics: Metrics }) {
         tone="orange"
       />
       <MetricCard
-        label="Open to tutors"
+        label="Open to teachers"
         value={metrics.open}
         icon={Radio}
         tone="green"

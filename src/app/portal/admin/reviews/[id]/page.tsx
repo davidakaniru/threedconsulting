@@ -48,8 +48,8 @@ export default async function Page({
       <SectionCard title="Review summary">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Detail label="Parent" value={`${review.parentName}${review.parentEmail ? ` · ${review.parentEmail}` : ""}`} />
-          <Detail label="Tutor" value={`${review.teacherName}${review.teacherEmail ? ` · ${review.teacherEmail}` : ""}`} />
-          <Detail label="Subject" value={review.programmeName} />
+          <Detail label="Teacher" value={`${review.teacherName}${review.teacherEmail ? ` · ${review.teacherEmail}` : ""}`} />
+          <Detail label="Programme" value={review.programmeName} />
           <Detail label="Child" value={review.childName} />
           <Detail
             label="Would recommend"
@@ -86,7 +86,7 @@ export default async function Page({
         </p>
       </SectionCard>
 
-      <SectionCard title="Feedback about the tutor">
+      <SectionCard title="Feedback about the teacher">
         <p className="whitespace-pre-wrap leading-7 text-slate-700">
           {review.teacherFeedback}
         </p>

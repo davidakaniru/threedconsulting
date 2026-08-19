@@ -12,7 +12,7 @@ function map(row: any): LessonAssignmentView {
     teacherId: row.teacher_id,
     teacherName:
       [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
-      "Tutor",
+      "Teacher",
     teacherQualification: row.teachers?.qualification ?? null,
     teacherSpecialization: row.teachers?.specialization ?? null,
     studentId: row.student_id,
@@ -24,7 +24,7 @@ function map(row: any): LessonAssignmentView {
     currentEducationLevel: row.current_education_level,
     programme: row.programmes ?? {
       id: row.programme_id,
-      name: "Subject",
+      name: "Programme",
       slug: "",
     },
     preferredDays: row.preferred_days ?? [],

@@ -6,7 +6,7 @@ import type { UpdateTeacherRequest } from "@/modules/teachers/schemas";
 import type { ProfileStatus } from "@/types/auth";
 
 const TEACHER_SELECT =
-  "id,employee_id,application_id,gender,summary,cv_path,qualification,specialization,hire_date,employment_status,onboarding_status,invited_at,activated_at,created_at,updated_at,profiles!inner(first_name,last_name,email,avatar_url,status,phone,address,date_of_birth)" as const;
+  "id,employee_id,qualification,specialization,hire_date,employment_status,onboarding_status,invited_at,activated_at,created_at,updated_at,profiles!inner(first_name,last_name,email,avatar_url,status,phone,address,date_of_birth)" as const;
 
 export async function listTeacherRows(
   from: number,

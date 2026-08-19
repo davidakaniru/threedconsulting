@@ -44,7 +44,7 @@ export const programmes: Programme[] = [
     illustration: "calc",
     tone: "sky",
     overview:
-      "Our Mathematics subject helps children understand how numbers work rather than simply memorising answers. Through visual demonstrations, practical challenges and guided problem-solving, learners build confidence at every stage.",
+      "Our Mathematics programme helps children understand how numbers work rather than simply memorising answers. Through visual demonstrations, practical challenges and guided problem-solving, learners build confidence at every stage.",
     outcomes: [
       "Build strong number and calculation skills",
       "Approach problems with confidence",
@@ -66,7 +66,7 @@ export const programmes: Programme[] = [
     illustration: "book",
     tone: "grass",
     overview:
-      "Our English subject develops the reading, writing, vocabulary and comprehension skills children need to communicate confidently. Lessons combine structured language practice with engaging texts and creative activities.",
+      "Our English programme develops the reading, writing, vocabulary and comprehension skills children need to communicate confidently. Lessons combine structured language practice with engaging texts and creative activities.",
     outcomes: [
       "Improve grammar and sentence construction",
       "Build a broader vocabulary",
@@ -88,7 +88,7 @@ export const programmes: Programme[] = [
     illustration: "book",
     tone: "coral",
     overview:
-      "Our Reading subject helps young learners become fluent, expressive and enthusiastic readers. Children develop phonics, word recognition and comprehension through stories selected for their age and ability.",
+      "Our Reading programme helps young learners become fluent, expressive and enthusiastic readers. Children develop phonics, word recognition and comprehension through stories selected for their age and ability.",
     outcomes: [
       "Recognise sounds and blend words",
       "Read with greater fluency",
@@ -110,7 +110,7 @@ export const programmes: Programme[] = [
     illustration: "robot",
     tone: "teal",
     overview:
-      "Our Coding subject takes learners from visual block-based programming to building projects with real code. Every lesson combines creativity and computational thinking through games, animations and practical challenges.",
+      "Our Coding programme takes learners from visual block-based programming to building projects with real code. Every lesson combines creativity and computational thinking through games, animations and practical challenges.",
     outcomes: [
       "Understand core programming concepts",
       "Create games, animations and applications",
@@ -137,7 +137,7 @@ export const programmes: Programme[] = [
     illustration: "pencil",
     tone: "grape",
     overview:
-      "Our Creative Writing subject gives young writers the structure and encouragement needed to turn ideas into compelling stories, poems and scripts. Learners explore character, setting, dialogue and editing.",
+      "Our Creative Writing programme gives young writers the structure and encouragement needed to turn ideas into compelling stories, poems and scripts. Learners explore character, setting, dialogue and editing.",
     outcomes: [
       "Generate and develop original ideas",
       "Create memorable characters and settings",
@@ -163,7 +163,7 @@ export const programmes: Programme[] = [
     illustration: "atom",
     tone: "teal",
     overview:
-      "Our Science subject turns curiosity into discovery through safe experiments, demonstrations and investigations. Learners explore biology, chemistry, physics and the world around them.",
+      "Our Science programme turns curiosity into discovery through safe experiments, demonstrations and investigations. Learners explore biology, chemistry, physics and the world around them.",
     outcomes: [
       "Ask meaningful scientific questions",
       "Plan and carry out safe experiments",
@@ -185,7 +185,7 @@ export const programmes: Programme[] = [
     illustration: "music",
     tone: "grape",
     overview:
-      "Our Music subject introduces learners to rhythm, melody, performance and musical theory in a relaxed group environment. Children learn through listening, playing and creating together.",
+      "Our Music programme introduces learners to rhythm, melody, performance and musical theory in a relaxed group environment. Children learn through listening, playing and creating together.",
     outcomes: [
       "Develop rhythm and timing",
       "Understand foundational music theory",
@@ -207,7 +207,7 @@ export const programmes: Programme[] = [
     illustration: "mic",
     tone: "coral",
     overview:
-      "Our Public Speaking subject helps young people express their ideas clearly and confidently. Through presentations, debates, storytelling and group activities, learners become more assured communicators.",
+      "Our Public Speaking programme helps young people express their ideas clearly and confidently. Through presentations, debates, storytelling and group activities, learners become more assured communicators.",
     outcomes: [
       "Speak clearly and confidently",
       "Organise ideas into effective presentations",
@@ -233,7 +233,7 @@ export const programmes: Programme[] = [
     illustration: "paint",
     tone: "blush",
     overview:
-      "Our Arts & Crafts subject gives children the freedom to experiment with colour, shape, texture and different materials. Every project encourages creativity, patience and personal expression.",
+      "Our Arts & Crafts programme gives children the freedom to experiment with colour, shape, texture and different materials. Every project encourages creativity, patience and personal expression.",
     outcomes: [
       "Explore different artistic materials",
       "Develop fine motor coordination",
@@ -255,7 +255,7 @@ export const programmes: Programme[] = [
     illustration: "robot",
     tone: "sky",
     overview:
-      "Our Robotics subject combines engineering, electronics and coding. Learners work through practical challenges as they design, construct and program machines that respond to the world around them.",
+      "Our Robotics programme combines engineering, electronics and coding. Learners work through practical challenges as they design, construct and program machines that respond to the world around them.",
     outcomes: [
       "Understand basic electronics and sensors",
       "Construct working robotic systems",
@@ -281,7 +281,7 @@ export const programmes: Programme[] = [
     illustration: "grad",
     tone: "sun",
     overview:
-      "Our Exam Preparation subject gives learners a clear revision structure, targeted teaching and regular practice. We identify knowledge gaps, strengthen exam technique and help children approach assessments calmly.",
+      "Our Exam Preparation programme gives learners a clear revision structure, targeted teaching and regular practice. We identify knowledge gaps, strengthen exam technique and help children approach assessments calmly.",
     outcomes: [
       "Identify and close knowledge gaps",
       "Understand common question formats",

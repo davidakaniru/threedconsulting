@@ -51,7 +51,7 @@ export function LessonRequestDetails({
             label="Current class / education level"
             value={request.currentEducationLevel}
           />
-          <Row label="Subject" value={request.programme.name} />
+          <Row label="Subjects" value={request.subjects.map((subject) => subject.name).join(", ")} />
           <Row
             label="Preferred days"
             value={request.preferredDays.map(dayLabel).join(", ")}
@@ -75,8 +75,8 @@ export function LessonRequestDetails({
       {request.status === "open" && (
         <InfoCard
           icon={Radio}
-          title="Open to eligible tutors"
-          description={`Tutors assigned to ${request.programme.name} can now view this enrolment opportunity. It remains available until one tutor successfully accepts it.`}
+          title="Open to eligible teachers"
+          description={`Eligible tutors assigned to at least one of ${request.subjects.map((subject) => subject.name).join(", ")} can now view this enrolment opportunity. It remains available until one tutor successfully accepts it.`}
         />
       )}
       {assignment ? (

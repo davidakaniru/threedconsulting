@@ -27,7 +27,7 @@ const journey: JourneyStep[] = [
   {
     step: "Discover",
     description:
-      "Explore subjects and book a friendly, no-pressure open day.",
+      "Explore programmes and book a friendly, no-pressure open day.",
     icon: Compass,
     tone: "sky",
   },
@@ -38,7 +38,7 @@ const journey: JourneyStep[] = [
     tone: "grass",
   },
   {
-    step: "Meet Your Tutor",
+    step: "Meet Your Teacher",
     description:
       "A warm welcome call to match your child with the right tutor.",
     icon: HeartHandshake,
@@ -136,7 +136,7 @@ function SectionHeading() {
 
       <p
         className="mt-4 text-lg leading-relaxed
-          text-muted-foreground max-w-md mx-auto"
+          text-muted-foreground"
       >
         From first hello to graduation day — a clear, supportive path you and
         your child take together.

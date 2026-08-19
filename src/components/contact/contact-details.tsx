@@ -20,6 +20,7 @@ const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
 const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE?.trim();
 const whatsapp = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP?.trim();
 const address = process.env.NEXT_PUBLIC_CONTACT_ADDRESS?.trim();
+const weekdayHours = process.env.NEXT_PUBLIC_CONTACT_HOURS_WEEKDAYS?.trim();
 
 const contactMethods: ContactMethod[] = [];
 
@@ -53,11 +54,9 @@ if (whatsapp) {
   });
 }
 
-const hours: [string, string][] = [
-  ["Monday – Friday", "9am-9pm"],
-  ["Saturday", "9am-8pm"],
-  ["Sunday", "2pm-8pm"],
-];
+const hours = [
+  weekdayHours ? ["Monday – Friday", weekdayHours] : null,
+].filter((item): item is [string, string] => Boolean(item));
 
 export function ContactDetails() {
   return (
@@ -71,7 +70,7 @@ export function ContactDetails() {
         </h2>
         <p className="mt-4 leading-7 text-white/80">
           Whether you have a quick question or need help choosing the right
-          subject, our team is ready to help.
+          programme, our team is ready to help.
         </p>
 
         {contactMethods.length > 0 && (

@@ -221,7 +221,7 @@ export function TutorApplicationsTable() {
           {totalPages > 1 && (
             <div className="border-t border-slate-100 p-4">
               <Pagination
-                total={data?.total}
+                total={data?.total ?? 0}
                 page={page}
                 totalPages={totalPages}
                 onPageChange={setPage}

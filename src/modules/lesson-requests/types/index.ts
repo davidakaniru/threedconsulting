@@ -22,6 +22,7 @@ export type ParentLessonRequest = {
   childName: string;
   currentEducationLevel: string;
   programme: { id: string; name: string; slug: string };
+  subjects: { id: string; name: string; slug: string }[];
   preferredDays: string[];
   preferredTime: string;
   durationMonths: number;
@@ -29,3 +30,18 @@ export type ParentLessonRequest = {
   createdAt: string;
 };
 export * from "./admin";
+
+export type TeacherOpportunity = {
+  id: string;
+  childName: string;
+  currentEducationLevel: string;
+  programme: { id: string; name: string; slug: string };
+  subjects: { id: string; name: string; slug: string }[];
+  matchedProgrammeId: string | null;
+  preferredDays: string[];
+  preferredTime: string;
+  durationMonths: number;
+  additionalMessage: string | null;
+  publishedAt: string | null;
+  status: string;
+};

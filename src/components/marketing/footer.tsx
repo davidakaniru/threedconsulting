@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const footerLinks = {
   explore: [
     {
-      label: "Subjects",
+      label: "Programmes",
       href: "/programmes",
     },
     {
@@ -16,7 +16,7 @@ const footerLinks = {
       href: "/subjects",
     },
     {
-      label: "Tutors",
+      label: "Teachers",
       href: "/teachers",
     },
     {
@@ -141,6 +141,45 @@ function FooterLogo() {
   return <BrandLogo inverse imageClassName="size-14" />;
 }
 
+function DecorativeShapes() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <div
+        className="absolute -left-16 top-20 size-44 rounded-full
+          bg-primary/10 blur-2xl"
+      />
+
+      <div
+        className="absolute right-[8%] top-12 size-40 rounded-full
+          bg-purple/10 blur-3xl"
+      />
+
+      <div
+        className="absolute bottom-0 left-1/2 size-52 -translate-x-1/2
+          rounded-full bg-coral/10 blur-3xl"
+      />
+
+      <div
+        className="absolute right-10 top-28 hidden size-5 rotate-12
+          rounded-md bg-warning/70 lg:block"
+      />
+
+      <div
+        className="absolute left-[8%] top-48 hidden size-4 rounded-full
+          bg-turquoise lg:block"
+      />
+
+      <div
+        className="absolute bottom-24 right-[16%] hidden size-5 -rotate-12
+          rounded-full bg-pink lg:block"
+      />
+    </div>
+  );
+}
+
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
@@ -169,6 +208,17 @@ export function Footer() {
           />
 
           <div
+            aria-hidden="true"
+            className="absolute right-[28%] top-6 size-5 rotate-12
+              rounded-md bg-warning"
+          />
+
+          <div
+            aria-hidden="true"
+            className="absolute bottom-7 left-8 size-4 rounded-full bg-pink"
+          />
+
+          <div
             className="relative flex flex-col items-start justify-between
               gap-7 lg:flex-row lg:items-center"
           >
@@ -182,12 +232,12 @@ export function Footer() {
 
               <h2
                 className="font-display text-3xl font-extrabold leading-tight
-                  tracking-tight text-white sm:text-4xl max-w-md"
+                  tracking-tight text-white sm:text-4xl"
               >
                 Ready to make learning feel exciting again?
               </h2>
 
-              <p className="mt-3 max-w-115 text-sm leading-6 text-white/80 sm:text-base">
+              <p className="mt-3 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
                 Join a supportive learning community where every child receives
                 the guidance, confidence and attention they need to grow.
               </p>
@@ -227,6 +277,7 @@ export function Footer() {
         className="relative overflow-hidden bg-foreground pb-8 pt-32
           text-white"
       >
+        <DecorativeShapes />
 
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
@@ -290,7 +341,7 @@ export function Footer() {
                       >
                         <MapPin aria-hidden="true" className="size-4" />
                       </span>
-                      <span className="max-w-50 pt-1.5 leading-6">
+                      <span className="max-w-xs pt-1.5 leading-6">
                         {contactAddress}
                       </span>
                     </div>

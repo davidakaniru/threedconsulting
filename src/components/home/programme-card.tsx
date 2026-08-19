@@ -89,7 +89,7 @@ export function ProgrammeCard({ programme }: ProgrammeCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        {/* <span
+        <span
           className={cn(
             "mb-3 self-start rounded-full px-3 py-1",
             "font-display text-xs font-bold",
@@ -97,7 +97,7 @@ export function ProgrammeCard({ programme }: ProgrammeCardProps) {
           )}
         >
           {programme.ageGroup}
-        </span> */}
+        </span>
 
         <h2
           className="font-display text-xl font-extrabold

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 const features = [
   {
-    title: "Qualified Tutors",
+    title: "Qualified Teachers",
     description:
       "Every tutor is DBS-checked, degree-qualified and specially trained for young learners.",
   },
@@ -32,7 +32,7 @@ const features = [
     description: "Learning plans shaped around your child’s pace and goals.",
   },
   {
-    title: "Flexible Subjects",
+    title: "Flexible Programmes",
     description: "Weekday, weekend and holiday options that fit family life.",
   },
   {
@@ -95,9 +95,9 @@ function SectionHeading() {
         A trusted partner in your child’s education
       </h2>
 
-      <p className="mt-4 text-lg leading-relaxed text-muted-foreground max-w-lg mx-auto">
+      <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
         Everything we do is designed to earn your confidence — from qualified
-        tutors to a genuinely joyful way of learning.
+        teachers to a genuinely joyful way of learning.
       </p>
     </motion.div>
   );

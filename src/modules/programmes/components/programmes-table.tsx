@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { BookOpen, Eye, Pencil, Plus, Trash2 } from "lucide-react";
+import { BookOpen, Eye, Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DataTable,
@@ -18,7 +18,7 @@ import {
   TableToolbar,
 } from "@/components/admin/ui";
 import { programmeStatusOptions } from "@/modules/programmes/constants";
-import { useDeleteProgramme, useProgrammes } from "@/modules/programmes/hooks";
+import { useProgrammes } from "@/modules/programmes/hooks";
 import type { ProgrammeSummary } from "@/modules/programmes/types";
 const options = [
   { label: "All statuses", value: "all" },
@@ -32,7 +32,6 @@ export function ProgrammesTable() {
   const [status, setStatus] = useState("all");
   const deferred = useDeferredValue(search);
   const pageSize = 10;
-  const deleteProgramme = useDeleteProgramme();
   const q = useProgrammes({
     page,
     pageSize,
@@ -44,10 +43,10 @@ export function ProgrammesTable() {
     () => [
       {
         id: "programme",
-        header: "Subject",
+        header: "Programme",
         cell: (p) => (
           <div>
-            <p className="font-extrabold text-slate-900">{p.title}</p>
+            <p className="font-extrabold text-slate-900">{p.name}</p>
             <p className="text-xs text-slate-500">/{p.slug}</p>
           </div>
         ),
@@ -78,30 +77,17 @@ export function ProgrammesTable() {
         className: "text-right",
         cell: (p) => (
           <RowActions
-            label={`Actions for ${p.title}`}
+            label={`Actions for ${p.name}`}
             actions={[
               {
-                label: "View subject",
+                label: "View programme",
                 icon: Eye,
                 href: `/portal/admin/programmes/${p.id}`,
               },
               {
-                label: "Edit subject",
+                label: "Edit programme",
                 icon: Pencil,
                 href: `/portal/admin/programmes/${p.id}/edit`,
-              },
-              {
-                label: "Delete subject",
-                icon: Trash2,
-                onSelect: async () => {
-                  if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
-                  try {
-                    await deleteProgramme.mutateAsync(p.id);
-                  } catch (error) {
-                    const message = error instanceof Error ? error.message : "The subject could not be deleted.";
-                    window.alert(message);
-                  }
-                },
               },
             ]}
           />
@@ -121,7 +107,7 @@ export function ProgrammesTable() {
               setSearch(v);
               setPage(1);
             }}
-            placeholder="Search subjects..."
+            placeholder="Search programmes..."
           />
         }
         filters={
@@ -139,7 +125,7 @@ export function ProgrammesTable() {
           <Button asChild className="sm:hidden">
             <Link href="/portal/admin/programmes/new">
               <Plus />
-              Add subject
+              Add programme
             </Link>
           </Button>
         }
@@ -148,7 +134,7 @@ export function ProgrammesTable() {
         <TableLoading />
       ) : q.isError ? (
         <TableError
-          title="Subjects could not be loaded"
+          title="Programmes could not be loaded"
           description="Please try again."
           onRetry={() => void q.refetch()}
         />
@@ -161,13 +147,13 @@ export function ProgrammesTable() {
           emptyState={
             <EmptyState
               icon={BookOpen}
-              title="No subjects found"
-              description="Create a subject or adjust the filters."
+              title="No programmes found"
+              description="Create a programme or adjust the filters."
               action={
                 <Button asChild>
                   <Link href="/portal/admin/programmes/new">
                     <Plus />
-                    Add subject
+                    Add programme
                   </Link>
                 </Button>
               }
@@ -177,19 +163,19 @@ export function ProgrammesTable() {
             <article className="rounded-2xl border bg-white p-4">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="font-display font-extrabold">{p.title}</h3>
+                  <h3 className="font-display font-extrabold">{p.name}</h3>
                   <p className="text-xs text-slate-500">/{p.slug}</p>
                 </div>
                 <RowActions
-                  label={`Actions for ${p.title}`}
+                  label={`Actions for ${p.name}`}
                   actions={[
                     {
-                      label: "View subject",
+                      label: "View programme",
                       icon: Eye,
                       href: `/portal/admin/programmes/${p.id}`,
                     },
                     {
-                      label: "Edit subject",
+                      label: "Edit programme",
                       icon: Pencil,
                       href: `/portal/admin/programmes/${p.id}/edit`,
                     },
@@ -211,7 +197,7 @@ export function ProgrammesTable() {
           page={page}
           totalPages={pages}
           total={q.data.total}
-          label="subjects"
+          label="programmes"
           onPageChange={setPage}
         />
       )}

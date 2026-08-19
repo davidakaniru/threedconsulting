@@ -97,7 +97,7 @@ export function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
               delay: 0.12,
             }}
             className="mt-5 text-lg leading-relaxed
-              text-muted-foreground md:text-xl max-w-xl mx-auto"
+              text-muted-foreground md:text-xl"
           >
             {subtitle}
           </motion.p>

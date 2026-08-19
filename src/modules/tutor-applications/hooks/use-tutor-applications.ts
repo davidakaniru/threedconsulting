@@ -12,7 +12,8 @@ import type {
 
 export const tutorApplicationQueryKeys = {
   all: ["tutor-applications"] as const,
-  list: (params: Record<string, unknown>) => ["tutor-applications", "list", params] as const,
+  list: (params: Record<string, unknown>) =>
+    ["tutor-applications", "list", params] as const,
   detail: (id: string) => ["tutor-applications", "detail", id] as const,
 };
 
@@ -25,10 +26,9 @@ export function useTutorApplications(params: {
   return useQuery({
     queryKey: tutorApplicationQueryKeys.list(params),
     queryFn: async () => {
-      const { data } = await apiClient.get<ApiSuccess<TutorApplicationListResult>>(
-        API_ENDPOINTS.admin.tutorApplications,
-        { params },
-      );
+      const { data } = await apiClient.get<
+        ApiSuccess<TutorApplicationListResult>
+      >(API_ENDPOINTS.admin.tutorApplications, { params });
       return data.data;
     },
   });
@@ -50,7 +50,13 @@ export function useTutorApplication(id: string) {
 export function useTutorApplicationAction() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, action }: { id: string; action: TutorApplicationAction }) => {
+    mutationFn: async ({
+      id,
+      action,
+    }: {
+      id: string;
+      action: TutorApplicationAction;
+    }) => {
       const { data } = await apiClient.post<ApiSuccess<unknown>>(
         API_ENDPOINTS.admin.tutorApplicationActions(id),
         action,
@@ -58,9 +64,13 @@ export function useTutorApplicationAction() {
       return data.data;
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: tutorApplicationQueryKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: tutorApplicationQueryKeys.all,
+      });
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
-      queryClient.invalidateQueries({ queryKey: tutorApplicationQueryKeys.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: tutorApplicationQueryKeys.detail(variables.id),
+      });
     },
   });
 }

@@ -16,12 +16,8 @@ import { Button } from "../ui/button";
 
 const primaryLinks = [
   {
-    label: "Subjects",
+    label: "Programmes",
     href: "/programmes",
-  },
-  {
-    label: "Become a Tutor",
-    href: "/become-a-tutor",
   },
   {
     label: "About Us",

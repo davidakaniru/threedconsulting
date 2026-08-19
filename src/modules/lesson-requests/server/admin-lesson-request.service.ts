@@ -36,17 +36,27 @@ async function parentProfiles(parentIds: string[]) {
   return new Map((data ?? []).map((profile: any) => [profile.id, profile]));
 }
 
+async function requestSubjects(requestIds: string[]) {
+  if (!requestIds.length) return new Map<string, any[]>();
+  const { data, error } = await db().from("lesson_request_programmes").select("lesson_request_id,programme_id,programmes(id,name,slug)").in("lesson_request_id", requestIds);
+  if (error) throw new ApiError("LESSON_REQUEST_SUBJECTS_LOAD_FAILED", "Enrolment subjects could not be loaded.", 500);
+  const map = new Map<string, any[]>();
+  for (const row of data ?? []) {
+    const list = map.get(row.lesson_request_id) ?? [];
+    if (row.programmes) list.push(row.programmes);
+    map.set(row.lesson_request_id, list);
+  }
+  return map;
+}
+
 function mapSummary(row: any, profile: any): LessonRequestSummary {
   return {
     id: row.id,
     childName: `${row.child_first_name} ${row.child_last_name}`.trim(),
     parentName: displayName(profile),
     parentEmail: profile?.email ?? "",
-    programme: row.programmes ?? {
-      id: row.programme_id,
-      name: "Subject",
-      slug: "",
-    },
+    programme: row._subjects?.[0] ?? { id: row.programme_id, name: "Subject", slug: "" },
+    subjects: row._subjects ?? [],
     preferredDays: row.preferred_days ?? [],
     preferredTime: row.preferred_time,
     durationMonths: row.duration_months,
@@ -61,7 +71,7 @@ export async function listLessonRequests(
   const { page, pageSize, from, to } = normalizePagination(params);
   let query = db()
     .from("lesson_requests")
-    .select("*,programmes(id,name,slug)", { count: "exact" })
+    .select("*", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -87,9 +97,8 @@ export async function listLessonRequests(
   const profiles = await parentProfiles(
     (data ?? []).map((row: any) => row.parent_id),
   );
-  const requests = (data ?? []).map((row: any) =>
-    mapSummary(row, profiles.get(row.parent_id)),
-  );
+  const subjectMap = await requestSubjects((data ?? []).map((row: any) => row.id));
+  const requests = (data ?? []).map((row: any) => mapSummary({ ...row, _subjects: subjectMap.get(row.id) ?? [] }, profiles.get(row.parent_id)));
 
   return { requests, total: count ?? requests.length, page, pageSize };
 }
@@ -99,7 +108,7 @@ export async function getLessonRequest(
 ): Promise<LessonRequestDetail> {
   const { data, error } = await db()
     .from("lesson_requests")
-    .select("*,programmes(id,name,slug)")
+    .select("*")
     .eq("id", id)
     .maybeSingle();
   if (error)
@@ -112,8 +121,10 @@ export async function getLessonRequest(
     throw new ApiError("LESSON_REQUEST_NOT_FOUND", "Enrolment not found.", 404);
   const profiles = await parentProfiles([data.parent_id]);
   const profile = profiles.get(data.parent_id);
+  const subjectMap = await requestSubjects([data.id]);
+  const subjects = subjectMap.get(data.id) ?? [];
   return {
-    ...mapSummary(data, profile),
+    ...mapSummary({ ...data, _subjects: subjects }, profile),
     childFirstName: data.child_first_name,
     childLastName: data.child_last_name,
     childDateOfBirth: data.child_date_of_birth,
@@ -124,6 +135,8 @@ export async function getLessonRequest(
     publishedAt: data.published_at,
     matchedTeacherId: data.matched_teacher_id,
     matchedAt: data.matched_at,
+    matchedProgrammeId: data.matched_programme_id ?? null,
+    matchedTutorName: null,
   };
 }
 
@@ -192,7 +205,35 @@ export async function publishLessonRequest(id: string, actorId: string) {
     action: "lesson_request.published",
     entityType: "lesson_request",
     entityId: id,
-    metadata: { programmeId: current.programme.id },
+    metadata: { programmeId: current.matchedProgrammeId ?? current.programme?.id ?? null, subjectIds: current.subjects.map((subject) => subject.id) },
   });
+  return data;
+}
+
+
+export async function listEligibleTutors(id: string) {
+  const request = await getLessonRequest(id);
+  const subjectIds = request.subjects.map((s) => s.id);
+  if (!subjectIds.length) return [];
+  const { data, error } = await db()
+    .from("teaching_assignments")
+    .select("teacher_id,programme_id,teachers!inner(id,employee_id,employment_status,onboarding_status,profiles!inner(first_name,last_name,email,status)),programmes!inner(id,name,slug)")
+    .in("programme_id", subjectIds)
+    .eq("status", "active")
+    .eq("teachers.employment_status", "active")
+    .eq("teachers.onboarding_status", "active")
+    .eq("teachers.profiles.status", "active");
+  if (error) throw new ApiError("ELIGIBLE_TUTORS_LOAD_FAILED", "Eligible tutors could not be loaded.", 500);
+  const seen = new Set<string>();
+  return (data ?? []).filter((row: any) => { if (seen.has(row.teacher_id)) return false; seen.add(row.teacher_id); return true; }).map((row: any) => ({ id: row.teacher_id, name: [row.teachers?.profiles?.first_name,row.teachers?.profiles?.last_name].filter(Boolean).join(" ") || row.teachers?.employee_id || "Tutor", email: row.teachers?.profiles?.email ?? "", matchingSubject: row.programmes?.name ?? null }));
+}
+
+export async function assignLessonRequest(id: string, teacherId: string, actorId: string) {
+  const { data, error } = await db().rpc("admin_assign_lesson_request", { p_lesson_request_id: id, p_teacher_id: teacherId, p_actor_id: actorId });
+  if (error) {
+    const message = String(error.message ?? "");
+    if (message.includes("not eligible")) throw new ApiError("LESSON_REQUEST_TUTOR_NOT_ELIGIBLE", "This tutor is not assigned to any subject selected for the enrolment.", 403);
+    throw new ApiError("LESSON_REQUEST_ASSIGN_FAILED", "The tutor could not be assigned to this enrolment.", 409);
+  }
   return data;
 }

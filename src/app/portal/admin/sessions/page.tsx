@@ -19,7 +19,7 @@ export default async function Page() {
     getProgrammes({ pageSize: 100 }),
     getTeachers({ pageSize: 100 }),
   ]);
-  const programmes = p.programmes.map((x) => ({ value: x.id, label: x.title }));
+  const programmes = p.programmes.map((x) => ({ value: x.id, label: x.name }));
   const teachers = t.teachers.map((x) => ({
     value: x.id,
     label: [x.firstName, x.lastName].filter(Boolean).join(" ") || x.email,
@@ -29,7 +29,7 @@ export default async function Page() {
       <PageHeader
         eyebrow="Academic"
         title="Class sessions"
-        description="Monitor online sessions across subjects and tutors."
+        description="Monitor online sessions across subjects and teachers."
       />
       <MetricGrid>
         <MetricCard label="Total" value={m.total} icon={CalendarDays} />

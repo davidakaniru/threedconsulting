@@ -24,7 +24,7 @@ import {
 } from "@/modules/reports/server";
 
 export const metadata: Metadata = {
-  title: "Tutor Activity Reports | Admin Portal",
+  title: "Teacher Activity Reports | Admin Portal",
 };
 
 export default async function Page({
@@ -49,13 +49,13 @@ export default async function Page({
     <AdminPage>
       <PageHeader
         eyebrow="Reports"
-        title="Tutor activity"
-        description="Select a tutor and month to review their teaching activity."
+        title="Teacher activity"
+        description="Select a teacher and month to review their teaching activity."
       />
 
       <SectionCard
         title="Report filters"
-        description="Search by tutor name or ID, then choose the reporting month."
+        description="Search by teacher name or ID, then choose the reporting month."
       >
         <TeacherReportFilters
           month={month}
@@ -67,13 +67,13 @@ export default async function Page({
       {!selectedTeacher ? (
         <EmptyState
           icon={BarChart3}
-          title="Select a tutor"
-          description="Choose a tutor above to view their monthly activity report."
+          title="Select a teacher"
+          description="Choose a teacher above to view their monthly activity report."
         />
       ) : !activity || !report ? (
         <EmptyState
           icon={BarChart3}
-          title="No tutor activity"
+          title="No teacher activity"
           description={`No lesson sessions were recorded for ${selectedTeacher.label} in ${new Intl.DateTimeFormat(
             "en-NG",
             { month: "long", year: "numeric", timeZone: "UTC" },
@@ -105,7 +105,7 @@ export default async function Page({
           </MetricGrid>
 
           <SectionCard
-            eyebrow="Tutor"
+            eyebrow="Teacher"
             title={activity.teacherName}
             description={`${activity.email} · ${report.label}`}
             action={

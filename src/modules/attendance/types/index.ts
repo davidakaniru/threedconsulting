@@ -1,5 +1,5 @@
 import type { Enums } from "@/types/database";
-export type AttendanceStatus = "present" | "absent";
+export type AttendanceStatus = Enums<"attendance_status">;
 export interface AttendanceRecord {
   id: string;
   studentId: string;
@@ -11,8 +11,10 @@ export interface AttendanceRecord {
 }
 export interface AttendanceSummary {
   total: number;
+  pending: number;
   present: number;
   absent: number;
+  late: number;
   attendanceRate: number;
 }
 export interface SessionAttendanceSheet {

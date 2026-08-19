@@ -4,7 +4,7 @@ import { AdminPage, PageBackButton, PageHeader } from "@/components/admin/ui";
 import { requireTeacher } from "@/lib/auth/guards";
 import { getSession } from "@/modules/sessions/server";
 import { SessionDetails } from "@/modules/sessions";
-export const metadata: Metadata = { title: "Session Details | Tutor Portal" };
+export const metadata: Metadata = { title: "Session Details | Teacher Portal" };
 export default async function Page({
   params,
 }: {

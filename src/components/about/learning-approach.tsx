@@ -4,7 +4,7 @@ import { ArrowRight, Check, MessageCircleHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const principles = [
-  "Small classes with meaningful tutor attention",
+  "Small classes with meaningful teacher attention",
   "Lessons adapted to each learner’s ability",
   "Practical activities and real-world examples",
   "Encouragement that builds genuine confidence",
@@ -69,7 +69,7 @@ export function LearningApproach() {
 
           <Button asChild size="lg" className="mt-8">
             <Link href="/programmes">
-              Explore our subjects
+              Explore our programmes
               <ArrowRight className="size-4" />
             </Link>
           </Button>

@@ -36,7 +36,7 @@ export function TeacherReportFilters({
       }}
     >
       <ComboboxField
-        label="Tutor"
+        label="Teacher"
         required
         options={teachers}
         value={selectedTeacherId}

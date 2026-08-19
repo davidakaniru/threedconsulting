@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { Copy, Eye, Pencil, Users } from "lucide-react";
+import { Copy, Eye, Pencil, Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -18,9 +19,9 @@ import {
   TableLoading,
   TableToolbar,
 } from "@/components/admin/ui";
+import { Button } from "@/components/ui/button";
 import { useTeachers } from "@/modules/teachers/hooks";
 import type { TeacherSummary } from "@/modules/teachers/types";
-import Image from "next/image";
 
 const teacherStatusOptions = [
   { label: "All statuses", value: "all" },
@@ -69,21 +70,11 @@ export function TeachersTable() {
     () => [
       {
         id: "teacher",
-        header: "Tutor",
+        header: "Teacher",
         cell: (teacher) => (
           <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-2xl overflow-hidden bg-primary/10 font-display text-xs font-extrabold text-primary">
-              {teacher.avatarUrl ? (
-                <Image
-                  src={teacher.avatarUrl}
-                  alt={teacherName(teacher)}
-                  width={40}
-                  height={40}
-                  className="size-full object-cover"
-                />
-              ) : (
-                <span className="text-lg">{teacherInitials(teacher)}</span>
-              )}
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/10 font-display text-xs font-extrabold text-primary">
+              {teacherInitials(teacher)}
             </span>
             <div className="min-w-0">
               <p className="truncate font-extrabold text-slate-900">
@@ -105,11 +96,7 @@ export function TeachersTable() {
       {
         id: "specialization",
         header: "Specialization",
-        cell: (teacher) => (
-          <span className="line-clamp-2 max-w-50 text-sm text-slate-600">
-            {teacher.specialization || "Not provided"}
-          </span>
-        ),
+        cell: (teacher) => teacher.specialization || "—",
         className: "text-slate-600",
       },
       {
@@ -143,11 +130,16 @@ export function TeachersTable() {
                 href: `/portal/admin/teachers/${teacher.id}`,
               },
               {
+                label: "Edit teacher",
+                icon: Pencil,
+                href: `/portal/admin/teachers/${teacher.id}/edit`,
+              },
+              {
                 label: "Copy email",
                 icon: Copy,
                 onSelect: async () => {
                   await navigator.clipboard.writeText(teacher.email);
-                  toast.success("Tutor email copied.");
+                  toast.success("Teacher email copied.");
                 },
               },
             ]}
@@ -184,13 +176,21 @@ export function TeachersTable() {
             placeholder="All statuses"
           />
         }
+        actions={
+          <Button asChild className="sm:hidden">
+            <Link href="/portal/admin/teachers/new">
+              <Plus />
+              Add teacher
+            </Link>
+          </Button>
+        }
       />
 
       {isLoading ? (
         <TableLoading />
       ) : isError ? (
         <TableError
-          title="Tutors could not be loaded"
+          title="Teachers could not be loaded"
           description="Please check your connection and try again."
           onRetry={() => void refetch()}
         />
@@ -203,8 +203,16 @@ export function TeachersTable() {
           emptyState={
             <EmptyState
               icon={Users}
-              title="No tutors found"
-              description="Add your first tutor or adjust the current search and status filter."
+              title="No teachers found"
+              description="Add your first teacher or adjust the current search and status filter."
+              action={
+                <Button asChild>
+                  <Link href="/portal/admin/teachers/new">
+                    <Plus />
+                    Add teacher
+                  </Link>
+                </Button>
+              }
             />
           }
           mobileCard={(teacher) => (
@@ -232,7 +240,7 @@ export function TeachersTable() {
                       href: `/portal/admin/teachers/${teacher.id}`,
                     },
                     {
-                      label: "Edit tutor",
+                      label: "Edit teacher",
                       icon: Pencil,
                       href: `/portal/admin/teachers/${teacher.id}/edit`,
                     },
@@ -241,7 +249,7 @@ export function TeachersTable() {
                       icon: Copy,
                       onSelect: async () => {
                         await navigator.clipboard.writeText(teacher.email);
-                        toast.success("Tutor email copied.");
+                        toast.success("Teacher email copied.");
                       },
                     },
                   ]}

@@ -2,30 +2,28 @@ import type { Metadata } from "next";
 
 import { PageHero } from "@/components/shared/page-hero";
 import { TeachersGrid } from "@/components/teachers/teachers-grid";
-import { getPublicTutors } from "@/modules/teachers/server/teacher.service";
 
 export const metadata: Metadata = {
-  title: "Our Tutors",
+  title: "Our Teachers",
   description:
-    "Meet our qualified tutors who make learning engaging, supportive and fun.",
+    "Meet our degree-qualified, DBS-checked teachers who make learning engaging, supportive and fun.",
 };
 
-export default async function TeachersPage() {
-  const tutors = await getPublicTutors();
+export default function TeachersPage() {
   return (
     <>
       <PageHero
-        eyebrow="Meet our tutors"
+        eyebrow="Meet our teachers"
         title={
           <>
             The people who make learning{" "}
             <span className="text-[#ff7a59]">magical</span>
           </>
         }
-        subtitle="Every tutor is carefully selected and equipped to bring out the best in young learners."
+        subtitle="Every teacher is degree-qualified, DBS-checked and specially trained to bring out the best in young learners."
       />
 
-      <TeachersGrid tutors={tutors} />
+      <TeachersGrid />
     </>
   );
 }

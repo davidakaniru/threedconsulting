@@ -10,3 +10,13 @@ export function getAttendanceRows(sessionId: string) {
     .eq("session_id", sessionId);
 }
 
+export function updateAttendanceSheet(
+  sessionId: string,
+  teacherId: string,
+  records: unknown,
+) {
+  return createAdminClient()
+    .from("session_attendance")
+    .upsert(records as never)
+    .eq("session_id", sessionId);
+}

@@ -13,13 +13,15 @@ export function mapSession(row: any): ClassSession {
   const teacherName =
     [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
     profile?.email ||
-    "Tutor";
+    "Teacher";
   const statuses = (row.session_attendance ?? []) as Array<{
-    status: "present" | "absent";
+    status: "pending" | "present" | "absent" | "late";
   }>;
   const attendance = {
+    pending: 0,
     present: 0,
     absent: 0,
+    late: 0,
     total: statuses.length,
   };
   statuses.forEach((x) => attendance[x.status]++);
@@ -41,7 +43,7 @@ export function mapSession(row: any): ClassSession {
       student: { id: la?.student_id ?? "", name: studentName },
       programme: {
         id: programme?.id ?? "",
-        name: programme?.name ?? "Subject",
+        name: programme?.name ?? "Programme",
       },
       teacher: { id: la?.teacher_id ?? "", name: teacherName },
     },

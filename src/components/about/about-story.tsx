@@ -50,7 +50,7 @@ export default function AboutStory() {
             </p>
 
             <p>
-              Today, our specialist tutors continue to combine excellent
+              Today, our specialist teachers continue to combine excellent
               teaching with warmth, creativity and genuine care for every
               learner.
             </p>
@@ -58,7 +58,7 @@ export default function AboutStory() {
 
           <Button asChild variant="outline" size="lg" className="mt-8">
             <Link href="/teachers">
-              Meet our tutors
+              Meet our teachers
               <ArrowRight className="size-4" />
             </Link>
           </Button>

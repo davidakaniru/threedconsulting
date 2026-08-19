@@ -19,10 +19,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST() {
-  return apiError(
-    "MANUAL_TUTOR_CREATION_DISABLED",
-    "Tutors must be created by accepting a tutor application.",
-    410,
-  );
+export async function POST(request: NextRequest) {
+  try {
+    const admin = await requireApiAdmin();
+    const input = await createTeacherSchema.validate(await request.json(), { abortEarly: false, stripUnknown: true });
+    return apiSuccess(
+      await inviteTeacher(input, request.nextUrl.origin, admin.id),
+      201,
+    );
+  } catch (error) {
+    if (error instanceof SyntaxError) return apiError("INVALID_JSON", "The request body is invalid.", 400);
+    if (error instanceof ValidationError) {
+      const details = error.inner.reduce<Record<string,string>>((a, i) => { if (i.path && !a[i.path]) a[i.path] = i.message; return a; }, {});
+      return apiError("VALIDATION_ERROR", "Please correct the highlighted fields.", 422, details);
+    }
+    if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
+    console.error("Teacher provisioning failed", error); return apiError("INTERNAL_SERVER_ERROR", "Unable to add the teacher.", 500);
+  }
 }

@@ -33,7 +33,7 @@ export function ContactFaqPrompt() {
             </h2>
 
             <p
-              className="mt-2 max-w-md leading-7
+              className="mt-2 max-w-xl leading-7
                 text-muted-foreground"
             >
               Browse our frequently asked questions for quick information about
@@ -48,7 +48,7 @@ export function ContactFaqPrompt() {
           size="lg"
           className="shrink-0 bg-white"
         >
-          <Link href="/#faqs">
+          <Link href="/faqs">
             View FAQs
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>

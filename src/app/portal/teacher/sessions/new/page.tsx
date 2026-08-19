@@ -8,7 +8,7 @@ import {
 import { requireTeacher } from "@/lib/auth/guards";
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 import { SessionForm } from "@/modules/sessions";
-export const metadata: Metadata = { title: "New Session | Tutor Portal" };
+export const metadata: Metadata = { title: "New Session | Teacher Portal" };
 export default async function Page({
   searchParams,
 }: {

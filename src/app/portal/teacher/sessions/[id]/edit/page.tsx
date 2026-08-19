@@ -10,7 +10,7 @@ import { requireTeacher } from "@/lib/auth/guards";
 import { getTeacherLessonAssignments } from "@/modules/lesson-assignments/server";
 import { getSession } from "@/modules/sessions/server";
 import { SessionForm } from "@/modules/sessions";
-export const metadata: Metadata = { title: "Edit Session | Tutor Portal" };
+export const metadata: Metadata = { title: "Edit Session | Teacher Portal" };
 export default async function Page({
   params,
 }: {

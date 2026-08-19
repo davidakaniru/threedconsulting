@@ -36,7 +36,7 @@ export async function getAssignableTeachers() {
   if (error)
     throw new ApiError(
       "TEACHERS_LOAD_FAILED",
-      "Tutors could not be loaded.",
+      "Teachers could not be loaded.",
       500,
     );
   return (data ?? []).map((row) => {

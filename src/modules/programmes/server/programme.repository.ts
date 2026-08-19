@@ -3,7 +3,7 @@ import { sanitizeFilterTerm } from "@/lib/repositories";
 import type { TablesInsert, TablesUpdate } from "@/types/database";
 import type { ProgrammeStatus } from "@/modules/programmes/types";
 const SELECT =
-  "id,name,title,slug,description,cover_image_url,overview,outcomes,status,created_by,created_at,updated_at" as const;
+  "id,name,slug,description,status,created_by,created_at,updated_at" as const;
 export function listProgrammeRows(
   from: number,
   to: number,
@@ -19,7 +19,7 @@ export function listProgrammeRows(
   if (status && status !== "all") q = q.eq("status", status as ProgrammeStatus);
   if (term)
     q = q.or(
-      `name.ilike.%${term}%,title.ilike.%${term}%,slug.ilike.%${term}%,description.ilike.%${term}%`,
+      `name.ilike.%${term}%,slug.ilike.%${term}%,description.ilike.%${term}%`,
     );
   return q;
 }
@@ -54,8 +54,4 @@ export function getProgrammeCount(status?: ProgrammeStatus) {
     .select("id", { count: "exact", head: true });
   if (status) q = q.eq("status", status);
   return q;
-}
-
-export function deleteProgrammeRow(id: string) {
-  return createAdminClient().from("programmes").delete().eq("id", id);
 }

@@ -42,7 +42,7 @@ export function CreateTeacherForm({
   const submit = handleSubmit(async (values) => {
     try {
       await mutation.mutateAsync(values);
-      toast.success("Tutor invited successfully.");
+      toast.success("Teacher invited successfully.");
       router.push("/portal/admin/teachers");
     } catch (e) {
       toast.error(toApiError(e).message);
@@ -92,10 +92,10 @@ export function CreateTeacherForm({
       <fieldset className="space-y-3">
         <div>
           <legend className="text-sm font-semibold text-foreground">
-            Subjects <span className="text-destructive">*</span>
+            Programmes <span className="text-destructive">*</span>
           </legend>
           <p className="mt-1 text-sm text-muted-foreground">
-            Select every subject this teacher is eligible to teach.
+            Select every programme this teacher is eligible to teach.
           </p>
         </div>
         {programmes.length ? (
@@ -117,7 +117,7 @@ export function CreateTeacherForm({
           </div>
         ) : (
           <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
-            No published subjects are available. Publish a subject before
+            No published programmes are available. Publish a programme before
             adding a teacher.
           </p>
         )}

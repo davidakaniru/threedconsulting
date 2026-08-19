@@ -9,9 +9,6 @@ export const API_ENDPOINTS = {
   },
   admin: {
     teachers: "/admin/teachers",
-    tutorApplications: "/admin/tutor-applications",
-    tutorApplication: (id: string) => `/admin/tutor-applications/${id}`,
-    tutorApplicationActions: (id: string) => `/admin/tutor-applications/${id}`,
     teacher: (id: string) => `/admin/teachers/${id}`,
     teacherActions: (id: string) => `/admin/teachers/${id}/actions`,
     students: "/admin/students",
@@ -31,6 +28,10 @@ export const API_ENDPOINTS = {
     sessions: "/admin/sessions",
     session: (id: string) => `/admin/sessions/${id}`,
     contactInquiry: (id: string) => `/admin/contact-inquiries/${id}`,
+    tutorApplications: "/api/admin/tutor-applications",
+    tutorApplication: (id: string) => `/api/admin/tutor-applications/${id}`,
+    tutorApplicationActions: (id: string) =>
+      `/api/admin/tutor-applications/${id}/actions`,
   },
   teacher: {
     sessions: "/teacher/sessions",

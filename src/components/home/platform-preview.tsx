@@ -16,7 +16,7 @@ const tabs = [
   },
   {
     key: "teacher",
-    label: "Tutor Portal",
+    label: "Teacher Portal",
     data: teacherDash,
     blurb: "Plan, teach and track — with less admin and more impact.",
   },
@@ -227,7 +227,7 @@ function SectionHeading() {
           text-muted-foreground"
       >
         Registered families gain access to a personalised dashboard — part of
-        one connected ecosystem for parents, tutors and administrators.
+        one connected ecosystem for parents, teachers and administrators.
       </p>
     </motion.div>
   );

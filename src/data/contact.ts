@@ -1,6 +1,6 @@
 export const enquiryOptions = [
   {
-    label: "Subject enquiry",
+    label: "Programme enquiry",
     value: "programme",
   },
   {

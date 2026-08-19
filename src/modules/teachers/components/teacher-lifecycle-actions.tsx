@@ -95,14 +95,14 @@ export function TeacherLifecycleActions({
             </Button>
           }
           title={`${label}?`}
-          description="This changes the tutor's employment lifecycle status without deleting the account or record."
+          description="This changes the teacher's employment lifecycle status without deleting the account or record."
           confirmLabel={label}
           isPending={mutation.isPending}
           tone={status === "former" ? "destructive" : "default"}
           onConfirm={() =>
             run(
               { type: "employment_status", status },
-              `Tutor marked ${status.replaceAll("_", " ")}.`,
+              `Teacher marked ${status.replaceAll("_", " ")}.`,
             )
           }
         />
@@ -117,14 +117,14 @@ export function TeacherLifecycleActions({
             </Button>
           }
           title="Suspend this account?"
-          description="The tutor will be blocked from using the portal until an admin reactivates the account."
+          description="The teacher will be blocked from using the portal until an admin reactivates the account."
           confirmLabel="Suspend account"
           tone="destructive"
           isPending={mutation.isPending}
           onConfirm={() =>
             run(
               { type: "account_status", status: "suspended" },
-              "Tutor account suspended.",
+              "Teacher account suspended.",
             )
           }
         />
@@ -137,13 +137,13 @@ export function TeacherLifecycleActions({
             </Button>
           }
           title="Reactivate this account?"
-          description="The tutor will regain access according to their current role and employment status."
+          description="The teacher will regain access according to their current role and employment status."
           confirmLabel="Reactivate account"
           isPending={mutation.isPending}
           onConfirm={() =>
             run(
               { type: "account_status", status: "active" },
-              "Tutor account reactivated.",
+              "Teacher account reactivated.",
             )
           }
         />
@@ -155,13 +155,13 @@ export function TeacherLifecycleActions({
         trigger={
           <Button variant="destructive" className="w-full justify-start">
             <Trash2 />
-            Delete tutor account
+            Delete teacher account
           </Button>
         }
-        title="Delete this tutor account?"
+        title="Delete this teacher account?"
         description={
           <>
-            This permanently deletes the tutor account and cannot be undone.
+            This permanently deletes the teacher account and cannot be undone.
             Teachers with lesson or session history cannot be deleted; use
             <strong> Mark former</strong> instead to preserve historical records.
           </>
@@ -172,7 +172,7 @@ export function TeacherLifecycleActions({
         onConfirm={async () => {
           try {
             await deleteMutation.mutateAsync();
-            toast.success("Tutor account deleted.");
+            toast.success("Teacher account deleted.");
             router.push("/portal/admin/teachers");
           } catch (error) {
             toast.error(toApiError(error).message);

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Radio } from "lucide-react";
+import { AssignTutor } from "./assign-tutor";
 import { toast } from "sonner";
 import { ConfirmDialog, SectionCard } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
@@ -31,14 +32,21 @@ export function LessonRequestActions({
   return (
     <SectionCard
       title="Admin review"
-      description="Confirm that the enrolment is suitable before making it visible to tutors assigned to this subject."
+      description="Review the enrolment, then either assign an eligible tutor directly or publish it so an eligible tutor can accept it."
     >
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm font-bold">Assign directly</p>
+          <p className="mt-1 text-sm text-muted-foreground">Only active tutors assigned to at least one selected subject are available.</p>
+        </div>
+        <AssignTutor requestId={request.id} />
+      </div>
       <ConfirmDialog
         title="Publish this enrolment?"
         description={
           <>
-            Once published, eligible <strong>{request.programme.name}</strong>{" "}
-            tutors will be able to see and accept this opportunity. The first
+            Once published, eligible <strong>{request.subjects.map((subject) => subject.name).join(", ")}</strong>{" "}
+            teachers will be able to see and accept this opportunity. The first
             successful acceptance will claim it.
           </>
         }
@@ -47,7 +55,7 @@ export function LessonRequestActions({
         onConfirm={publishNow}
         trigger={
           <Button>
-            <Radio /> Publish to tutors
+            <Radio /> Publish to teachers
           </Button>
         }
       />

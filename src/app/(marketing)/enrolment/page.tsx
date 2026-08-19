@@ -36,7 +36,7 @@ export default async function EnrolmentPage({ searchParams }: Props) {
             <span className="text-turquoise">one-to-one lessons</span>
           </>
         }
-        subtitle="Tell us the subject, preferred days and time. We’ll review your request and match your child with an eligible tutor."
+        subtitle="Tell us the subject, preferred days and time. We’ll review your request and match your child with an eligible teacher."
       />
       <section className="bg-cream px-5 pb-20 sm:px-8 md:pb-28">
         <EnrolmentForm

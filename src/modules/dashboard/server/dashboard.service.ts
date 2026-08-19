@@ -76,7 +76,7 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
         programmeName: row.lesson_assignments?.programmes?.name ?? "Programme",
         teacherName:
           [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
-          "Tutor",
+          "Teacher",
       };
     }),
     recentActivity: (activity.data ?? []).map((row: any) => ({

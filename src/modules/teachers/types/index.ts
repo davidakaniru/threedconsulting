@@ -7,10 +7,6 @@ export type TeacherOnboardingStatus = Enums<"teacher_onboarding_status">;
 export interface TeacherSummary {
   id: string;
   employeeId: string;
-  applicationId: string | null;
-  gender: "male" | "female" | null;
-  summary: string | null;
-  cvPath: string | null;
   firstName: string | null;
   lastName: string | null;
   email: string;
@@ -50,13 +46,4 @@ export interface TeacherMetricsI {
   active: number;
   invited: number;
   onLeave: number;
-}
-
-
-export interface PublicTutor {
-  id: string;
-  name: string;
-  specialization: string | null;
-  qualification: string | null;
-  avatarUrl: string | null;
 }
