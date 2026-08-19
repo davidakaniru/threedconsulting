@@ -32,7 +32,7 @@ export default async function EnrolmentPage({ searchParams }: Props) {
         eyebrow="Enrolment"
         title={
           <>
-            Enrol your child for{" "}
+            Enrol your child for <br />
             <span className="text-turquoise">one-to-one lessons</span>
           </>
         }

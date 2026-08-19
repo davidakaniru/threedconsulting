@@ -5,12 +5,8 @@ export default function ProgrammesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Our programmes"
-        title={
-          <>
-            Eleven ways to <span className="text-sky-500">spark curiosity</span>
-          </>
-        }
+        eyebrow="Our subjects"
+        title={<>Learning That Grows With You</>}
         subtitle="Specialist-led subjects for ages 4–16, taught in small, supportive classes both in person and online."
       />
 

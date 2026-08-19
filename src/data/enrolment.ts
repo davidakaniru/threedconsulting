@@ -39,7 +39,7 @@ export function getEnrolmentSteps(hasParentAccount: boolean) {
       id: "lesson",
       label: "Lesson request",
       fields: [
-        "programmeId",
+        "programmeIds",
         "preferredDays",
         "preferredTime",
         "durationMonths",

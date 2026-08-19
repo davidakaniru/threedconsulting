@@ -93,7 +93,12 @@ export const enrolmentSchema = yup
       .trim()
       .required("Please enter your child’s current class or education level.")
       .max(100, "Please keep the education level under 100 characters."),
-    programmeId: yup.string().uuid().required("Please select a subject."),
+    programmeIds: yup
+      .array()
+      .of(yup.string().uuid().required())
+      .min(1, "Please select at least one subject.")
+      .required("Please select at least one subject."),
+    programmeId: yup.string().uuid().optional(),
     preferredDays: yup
       .array()
       .of(

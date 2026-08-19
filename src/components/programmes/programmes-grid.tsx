@@ -1,44 +1,23 @@
-"use client";
-
-import { motion } from "motion/react";
-
 import { ProgrammeCard } from "@/components/home/programme-card";
-import { programmes } from "@/data/programmes";
+import { getPublishedProgrammesForPublic } from "@/modules/programmes/server";
 
-export function ProgrammesGrid() {
+export async function ProgrammesGrid() {
+  const programmes = await getPublishedProgrammesForPublic();
+
   return (
-    <section
-      className="-mt-8 bg-[#fff8ee] px-5 pb-16
-        sm:px-8 md:pb-24"
-    >
+    <section className="-mt-8 bg-[#fff8ee] px-5 pb-16 sm:px-8 md:pb-24">
       <div className="relative mx-auto max-w-7xl">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {programmes.map((programme, index) => (
-            <motion.div
-              key={programme.slug}
-              initial={{
-                opacity: 0,
-                y: 28,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                margin: "-60px",
-              }}
-              transition={{
-                duration: 0.5,
-                delay: (index % 3) * 0.05,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="h-full"
-            >
-              <ProgrammeCard programme={programme} />
-            </motion.div>
-          ))}
-        </div>
+        {programmes.length === 0 ? (
+          <div className="rounded-3xl border border-sky-50 bg-white p-10 text-center text-muted-foreground">
+            No subjects are currently available.
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {programmes.map((programme) => (
+              <ProgrammeCard key={programme.slug} programme={programme} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

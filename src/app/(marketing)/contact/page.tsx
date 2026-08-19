@@ -17,7 +17,7 @@ export default function ContactPage() {
         eyebrow="Contact us"
         title={
           <>
-            We’d <span className="text-coral">love</span> to hear from you
+            We’d <span className="text-coral">love</span> to <br /> hear from you
           </>
         }
         subtitle="Questions about programmes, enrolment or the platform? Our friendly team is here to help."

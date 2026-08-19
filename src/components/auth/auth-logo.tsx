@@ -5,12 +5,6 @@ interface AuthLogoProps {
   compact?: boolean;
 }
 
-export function AuthLogo({ className}: AuthLogoProps) {
-  return (
-    <BrandLogo
-      className={className}
-      showText={false}
-      priority
-    />
-  );
+export function AuthLogo({ className }: AuthLogoProps) {
+  return <BrandLogo className={className} priority />;
 }

@@ -172,7 +172,20 @@ export function RegisterForm() {
               className="mt-1 size-4 rounded border-primary/20 accent-primary"
               {...register("acceptedTerms")}
             />
-            <span>I agree to the terms of service and privacy policy.</span>
+            <span>
+              I agree to the{" "}
+              <Link href="/terms" className="font-medium text-purple underline-offset-2 hover:underline">
+                terms and conditions
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy-policy"
+                className="font-medium text-purple underline-offset-2 hover:underline"
+              >
+                privacy policy
+              </Link>
+              .
+            </span>
           </label>
           {errors.acceptedTerms?.message && (
             <p

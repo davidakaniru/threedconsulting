@@ -95,7 +95,7 @@ function SectionHeading() {
         A trusted partner in your child’s education
       </h2>
 
-      <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+      <p className="mt-4 text-lg leading-relaxed text-muted-foreground max-w-lg mx-auto">
         Everything we do is designed to earn your confidence — from qualified
         teachers to a genuinely joyful way of learning.
       </p>
