@@ -8,10 +8,6 @@ import { cn } from "@/lib/utils";
 const footerLinks = {
   explore: [
     {
-      label: "Programmes",
-      href: "/programmes",
-    },
-    {
       label: "Subjects",
       href: "/subjects",
     },
@@ -192,7 +188,6 @@ export function Footer() {
         className="relative overflow-hidden bg-foreground pb-8 pt-32
           text-white"
       >
-
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
             className="grid gap-12 border-b border-white/10 pb-12
@@ -283,25 +278,25 @@ export function Footer() {
             {socialLinks.length > 0 && (
               <div className="flex items-center justify-center gap-2 sm:justify-end">
                 {socialLinks.map(({ label, href, icon: Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className={cn(
-                    "grid size-10 place-items-center rounded-full",
-                    "border border-white/10 bg-white/5 text-white/70",
-                    "transition-[transform,background-color,color,border-color]",
-                    "hover:-translate-y-0.5 hover:border-primary/40",
-                    "hover:bg-primary hover:text-white",
-                    "focus-visible:outline-none focus-visible:ring-2",
-                    "focus-visible:ring-white/70 focus-visible:ring-offset-2",
-                    "focus-visible:ring-offset-foreground",
-                  )}
-                >
-                  <Icon aria-hidden="true" className="size-4" />
-                </a>
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    className={cn(
+                      "grid size-10 place-items-center rounded-full",
+                      "border border-white/10 bg-white/5 text-white/70",
+                      "transition-[transform,background-color,color,border-color]",
+                      "hover:-translate-y-0.5 hover:border-primary/40",
+                      "hover:bg-primary hover:text-white",
+                      "focus-visible:outline-none focus-visible:ring-2",
+                      "focus-visible:ring-white/70 focus-visible:ring-offset-2",
+                      "focus-visible:ring-offset-foreground",
+                    )}
+                  >
+                    <Icon aria-hidden="true" className="size-4" />
+                  </a>
                 ))}
               </div>
             )}

@@ -9,40 +9,12 @@ import {
 
 const testimonials: Testimonial[] = [
   {
-    name: "Rebecca T.",
-    review:
-      "My daughter went from dreading maths to asking for extra worksheets. The teachers are wonderful and I love the progress reports.",
+    name: "Anthony Onunkwo",
+    review: `I started the Three-d managers with 4 children and now two has moved on to higher levels as they could now stand on their own, remaining two. Thanks to Three-d managers. They have been excellent in their coaching, one thing I like about them is their punctuality and also the method of teaching with positive results.`,
     rating: 5,
-    childAge: "Parent of Maya, age 8",
-    tone: "sky",
-    initials: "RT",
-  },
-  {
-    name: "James M.",
-    review:
-      "The coding club sparked something in my son. He’s building his own games now. Safe, professional and genuinely fun.",
-    rating: 5,
-    childAge: "Parent of Ethan, age 10",
-    tone: "teal",
-    initials: "JM",
-  },
-  {
-    name: "Aisha K.",
-    review:
-      "Small classes make all the difference. My twins feel seen and supported, and communication with staff is brilliant.",
-    rating: 5,
-    childAge: "Parent of Zara & Yusuf, age 7",
+    childAge: "Parent of 4",
     tone: "coral",
-    initials: "AK",
-  },
-  {
-    name: "Helen P.",
-    review:
-      "From the first open day I felt this was a place I could trust. The graduation celebration brought tears to my eyes.",
-    rating: 5,
-    childAge: "Parent of Oliver, age 11",
-    tone: "grape",
-    initials: "HP",
+    initials: "AO",
   },
 ];
 
