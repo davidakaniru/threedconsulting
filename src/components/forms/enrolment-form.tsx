@@ -56,7 +56,7 @@ export function EnrolmentForm({
   } | null>(null);
   const [submitError, setSubmitError] = useState("");
   const [programmeOptions, setProgrammeOptions] = useState<
-    Array<{ id: string; name: string; slug: string }>
+    Array<{ id: string; name?: string; title?: string; slug: string }>
   >([]);
   const methods = useForm<EnrolmentFormValues>({
     resolver: yupResolver(enrolmentSchema),
@@ -74,6 +74,7 @@ export function EnrolmentForm({
       childLastName: initialChild?.lastName ?? "",
       childDateOfBirth: initialChild?.dateOfBirth ?? "",
       currentEducationLevel: initialChild?.currentEducationLevel ?? "",
+      programmeIds: [],
       programmeId: "",
       preferredDays: [],
       preferredTime: "",
@@ -93,7 +94,7 @@ export function EnrolmentForm({
     formState: { errors, isSubmitting },
   } = methods;
   const preferredDays = useWatch({ control, name: "preferredDays" });
-  const programmeId = useWatch({ control, name: "programmeId" });
+  const programmeIds = useWatch({ control, name: "programmeIds" }) ?? [];
   const childMode = useWatch({ control, name: "childMode" });
   const existingStudentId = useWatch({ control, name: "existingStudentId" });
   useEffect(() => {
@@ -146,7 +147,10 @@ export function EnrolmentForm({
       const response = await fetch("/api/public/lesson-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          programmeId: values.programmeIds[0],
+        }),
       });
       const payload = await response.json();
       if (!response.ok)
@@ -198,9 +202,9 @@ export function EnrolmentForm({
       </div>
     );
   const step = steps[currentStep].id;
-  const selectedProgramme = programmeOptions.find(
-    (p) => p.id === programmeId,
-  )?.name;
+  const selectedProgrammes = programmeOptions
+    .filter((p) => programmeIds.includes(p.id))
+    .map((p) => p.title ?? p.name ?? "Subject");
   return (
     <FormProvider {...methods}>
       <div className="mx-auto max-w-3xl">
@@ -404,28 +408,46 @@ export function EnrolmentForm({
               <Header
                 kicker={`Step ${currentStep + 1} of ${steps.length}`}
                 title="Tell us what lessons you need"
-                text="Choose the subject, the days that work for your child, your preferred time and how long you want the arrangement to run."
+                text="Choose one or more subjects, the days that work for your child, your preferred time and how long you want the arrangement to run."
               />
-              <Controller
-                name="programmeId"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <SelectField
-                    id="programme-id"
-                    name={field.name}
-                    label="Subject"
-                    placeholder="Choose a subject"
-                    options={programmeOptions.map((p) => ({
-                      label: p.name,
-                      value: p.id,
-                    }))}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    required
-                    errorMessage={fieldState.error?.message}
-                  />
+              <div>
+                <p className="mb-3 text-sm font-semibold">
+                  Subjects <span className="text-destructive">*</span>
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {programmeOptions.map((programme) => {
+                    const checked = programmeIds.includes(programme.id);
+                    return (
+                      <label
+                        key={programme.id}
+                        className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 text-sm font-medium transition ${checked ? "border-primary bg-primary/5" : "border-border"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 size-4 accent-primary"
+                          checked={checked}
+                          onChange={(event) => {
+                            const next = event.target.checked
+                              ? [...programmeIds, programme.id]
+                              : programmeIds.filter((id) => id !== programme.id);
+                            methods.setValue("programmeIds", next, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
+                            methods.setValue("programmeId", next[0] ?? "");
+                          }}
+                        />
+                        <span>{programme.title ?? programme.name ?? "Subject"}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {errors.programmeIds?.message && (
+                  <p className="mt-2 text-xs font-medium text-destructive">
+                    {errors.programmeIds.message}
+                  </p>
                 )}
-              />
+              </div>
               <div>
                 <p className="mb-3 text-sm font-semibold">
                   Preferred days <span className="text-destructive">*</span>
@@ -500,11 +522,11 @@ export function EnrolmentForm({
               <Header
                 kicker={`Step ${currentStep + 1} of ${steps.length}`}
                 title="Review your enrolment"
-                text="Make sure the schedule and subject are correct before submitting."
+                text="Make sure the selected subjects, schedule and other details are correct before submitting."
               />
               <EnrolmentSummary
                 values={getValues()}
-                programmeLabel={selectedProgramme}
+                programmeLabels={selectedProgrammes}
               />
               <label className="flex cursor-pointer items-start gap-3 text-sm text-muted-foreground">
                 <input

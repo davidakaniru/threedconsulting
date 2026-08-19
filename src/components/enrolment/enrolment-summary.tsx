@@ -2,7 +2,7 @@ import type { EnrolmentFormValues } from "@/lib/schemas/enrolment-schema";
 import { lessonDays } from "@/data/enrolment";
 interface Props {
   values: EnrolmentFormValues;
-  programmeLabel?: string;
+  programmeLabels?: string[];
 }
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -14,7 +14,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
     </div>
   );
 }
-export function EnrolmentSummary({ values, programmeLabel }: Props) {
+export function EnrolmentSummary({ values, programmeLabels = [] }: Props) {
   const days = lessonDays
     .filter((day) => values.preferredDays.includes(day.value))
     .map((day) => day.label)
@@ -41,7 +41,7 @@ export function EnrolmentSummary({ values, programmeLabel }: Props) {
           label="Current class / education level"
           value={values.currentEducationLevel}
         />
-        <Row label="Subject" value={programmeLabel} />
+        <Row label="Subjects" value={programmeLabels.length ? programmeLabels.join(", ") : "Not provided"} />
         <Row label="Preferred days" value={days} />
         <Row label="Preferred time" value={values.preferredTime} />
         <Row

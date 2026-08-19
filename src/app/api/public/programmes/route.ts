@@ -1,1 +1,13 @@
-import {apiError,apiSuccess} from "@/lib/api/responses";import {createAdminClient} from "@/lib/supabase/admin";export const runtime="nodejs";export async function GET(){try{const {data,error}=await (createAdminClient() as any).from("programmes").select("id,name,slug").eq("status","published").order("name");if(error)throw error;return apiSuccess(data??[])}catch(e){console.error(e);return apiError("PROGRAMMES_LOAD_FAILED","Programmes could not be loaded.",500)}}
+import { apiError, apiSuccess } from "@/lib/api/responses";
+import { getPublishedProgrammesForPublic } from "@/modules/programmes/server";
+
+export const runtime = "nodejs";
+
+export async function GET() {
+  try {
+    return apiSuccess(await getPublishedProgrammesForPublic());
+  } catch (error) {
+    console.error("Public programmes GET failed", error);
+    return apiError("PROGRAMMES_LOAD_FAILED", "Programmes could not be loaded.", 500);
+  }
+}

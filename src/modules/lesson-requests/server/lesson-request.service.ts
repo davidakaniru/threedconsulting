@@ -139,12 +139,16 @@ export async function submitUnifiedLessonRequest(
     );
 
   const uniqueDays = [...new Set(input.preferredDays)];
+  const programmeIds = [...new Set(input.programmeIds ?? [input.programmeId])].filter(Boolean);
+  if (!programmeIds.length)
+    throw new ApiError("SUBJECTS_REQUIRED", "Please select at least one subject.", 422);
+
   const { data: request, error } = await (admin as any)
     .from("lesson_requests")
     .insert({
       parent_id: parentId,
       existing_student_id: existingStudentId,
-      programme_id: input.programmeId,
+      programme_id: programmeIds[0],
       child_first_name: childFirstName,
       child_last_name: childLastName,
       child_date_of_birth: childDateOfBirth,
@@ -164,6 +168,24 @@ export async function submitUnifiedLessonRequest(
     throw new ApiError(
       "LESSON_REQUEST_CREATE_FAILED",
       "Your lesson request could not be submitted. Please try again.",
+      500,
+    );
+  }
+
+  const { error: subjectLinkError } = await (admin as any)
+    .from("lesson_request_programmes")
+    .insert(programmeIds.map((programmeId) => ({
+      lesson_request_id: request.id,
+      programme_id: programmeId,
+    })));
+
+  if (subjectLinkError) {
+    await admin.from("lesson_requests").delete().eq("id", request.id);
+    if (createdUserId) await admin.auth.admin.deleteUser(createdUserId);
+    console.error("Lesson request subject links creation failed", subjectLinkError);
+    throw new ApiError(
+      "LESSON_REQUEST_SUBJECTS_CREATE_FAILED",
+      "Your selected subjects could not be saved. Please try again.",
       500,
     );
   }
