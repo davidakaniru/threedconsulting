@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 
 import { BecomeATutorForm } from "@/modules/tutor-applications/components/become-a-tutor-form";
@@ -17,8 +16,8 @@ export default function BecomeATutorPage() {
         eyebrow="Join our tutor community"
         title={
           <>
-            Become a{" "}
-            <span className="text-[#ff7a59]">tutor</span> with Three-dmanagers
+            Become a <span className="text-[#ff7a59]">tutor</span> with Three-D
+            Managers
           </>
         }
         subtitle="If you are passionate about teaching and have expertise in a particular subject, we would love to hear from you."

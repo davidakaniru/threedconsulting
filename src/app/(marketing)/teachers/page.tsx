@@ -14,7 +14,7 @@ export default async function TeachersPage() {
   return (
     <>
       <PageHero
-        eyebrow="Meet our teachers"
+        eyebrow="Meet our tutors"
         title={
           <>
             The people who make learning{" "}

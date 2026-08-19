@@ -93,7 +93,7 @@ function SectionHeading() {
 
       <h2
         className="font-display text-3xl font-extrabold
-          leading-tight text-foreground md:text-[2.75rem]"
+          leading-tight text-foreground md:text-[2.75rem] max-w-lg mx-auto"
       >
         Everything parents want to know
       </h2>

@@ -32,17 +32,17 @@ export function BrandLogo({
     >
       <span
         className={cn(
-          "relative shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5",
+          "relative shrink-0 overflow-hidden",
           "transition-transform duration-200 group-hover:-rotate-2 group-hover:scale-105",
           compact ? "size-10" : "size-12",
           imageClassName,
         )}
       >
         <Image
-          src="/brand/threed-consulting.jpeg"
-          alt=""
+          src="/brand/three-dmanagers.png"
+          alt="Three-D Managers Limited logo"
           fill
-          sizes={compact ? "40px" : "48px"}
+          sizes={compact ? "20px" : "20px"}
           className="object-contain"
           priority={priority}
         />
@@ -55,12 +55,13 @@ export function BrandLogo({
             compact ? "text-base" : "text-xl",
             inverse ? "text-white" : "text-foreground",
           )}
-      >
-        ThreeD{" "}
-        {/* <span className={inverse ? "text-primary" : "text-primary"}>
-          Consulting
-        </span> */}
-      </span>)}
+        >
+          Three-D{" "}
+          <span className={inverse ? "text-primary" : "text-primary"}>
+            Managers
+          </span>
+        </span>
+      )}
     </Link>
   );
 }
