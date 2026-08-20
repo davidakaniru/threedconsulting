@@ -94,8 +94,8 @@ function SectionHeading() {
         className="mt-4 text-lg leading-relaxed
           text-muted-foreground"
       >
-        Trust is earned. Here’s what parents say about learning with ThreeD
-        Consulting.
+        Trust is earned. Here’s what parents say about learning with Three-d
+        managers.
       </p>
     </motion.div>
   );
