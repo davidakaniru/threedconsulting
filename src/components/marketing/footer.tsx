@@ -15,6 +15,14 @@ const footerLinks = {
       label: "Teachers",
       href: "/teachers",
     },
+    {
+      label: "Enrolment",
+      href: "/enrolment",
+    },
+    {
+      label: "FAQs",
+      href: "/#faqs",
+    },
   ],
 
   company: [

@@ -42,6 +42,7 @@ export function FAQPreview() {
     <section
       className="bg-sky-50/60 px-5 py-16
         sm:px-8 md:py-24"
+      id="faqs"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeading />
