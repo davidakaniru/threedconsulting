@@ -43,7 +43,7 @@ export async function listTeacherOpportunities(teacherId: string) {
   if (!programmeIds.length) return [];
   const { data, error } = await db()
     .from("lesson_requests")
-    .select("*,programmes(id,name,slug)")
+    .select("*,programmes!lesson_requests_programme_id_fkey(id,name,slug)")
     .eq("status", "open")
     .is("matched_teacher_id", null)
     .order("published_at", { ascending: true });
@@ -66,7 +66,7 @@ export async function listTeacherOpportunities(teacherId: string) {
 export async function listMatchedTeacherEnrolments(teacherId: string) {
   const { data, error } = await db()
     .from("lesson_requests")
-    .select("*,programmes(id,name,slug)")
+    .select("*,programmes!lesson_requests_programme_id_fkey(id,name,slug)")
     .eq("matched_teacher_id", teacherId)
     .in("status", ["matched", "active"])
     .order("matched_at", { ascending: false });
