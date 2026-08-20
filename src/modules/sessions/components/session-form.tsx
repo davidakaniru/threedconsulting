@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { SelectField } from "@/components/forms/select-field";
 import { toApiError } from "@/lib/api/errors";
 import { classSessionSchema, type ClassSessionRequest } from "../schemas";
-import { classSessionStatusOptions } from "../constants";
 import { useCreateSession, useUpdateSession } from "../hooks";
 import type { ClassSession } from "../types";
 type LessonOption = {
@@ -49,7 +48,6 @@ export function SessionForm({
       startTime: session?.startTime?.slice(0, 5) ?? "",
       endTime: session?.endTime?.slice(0, 5) ?? "",
       meetingLink: session?.meetingLink ?? "",
-      status: session?.status ?? "draft",
     },
   });
   const submit = handleSubmit(async (v) => {
@@ -92,21 +90,6 @@ export function SessionForm({
           placeholder="e.g. Introduction to algebra"
           errorMessage={errors.title?.message}
           {...register("title")}
-        />
-        <Controller
-          name="status"
-          control={control}
-          render={({ field }) => (
-            <SelectField
-              id="status"
-              label="Status"
-              required
-              options={classSessionStatusOptions}
-              value={field.value}
-              onValueChange={field.onChange}
-              errorMessage={errors.status?.message}
-            />
-          )}
         />
         <Input
           id="sessionDate"

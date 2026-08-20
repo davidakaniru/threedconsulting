@@ -74,12 +74,15 @@ function input(v: ClassSessionRequest) {
     start_time: v.startTime,
     end_time: v.endTime,
     meeting_link: v.meetingLink.trim(),
-    status: v.status,
   };
 }
 export async function createSession(v: ClassSessionRequest, teacherId: string) {
   await assertOwnership(v.lessonAssignmentId, teacherId);
-  const r = await repo.insertSession({ ...input(v), created_by: teacherId });
+  const r = await repo.insertSession({
+    ...input(v),
+    status: "scheduled",
+    created_by: teacherId,
+  });
   if (r.error || !r.data)
     throw new ApiError(
       "SESSION_CREATE_FAILED",
