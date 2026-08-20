@@ -160,9 +160,7 @@ export function EnrolmentForm({
       setSubmitted(payload.data);
     } catch (e) {
       setSubmitError(
-        e instanceof Error
-          ? e.message
-          : "Unable to submit your enrolment.",
+        e instanceof Error ? e.message : "Unable to submit your enrolment.",
       );
     }
   }
@@ -176,8 +174,8 @@ export function EnrolmentForm({
           Enrolment received
         </h2>
         <p className="mx-auto mt-3 max-w-lg leading-7 text-muted-foreground">
-          We&apos;ll review your request before making it available to a
-          suitable teacher for the selected subject.
+          We&apos;ll review your request and match your child to a suitable
+          teacher for the selected subject(s).
         </p>
         <p className="mt-4 text-sm text-muted-foreground">
           Reference:{" "}
@@ -429,7 +427,9 @@ export function EnrolmentForm({
                           onChange={(event) => {
                             const next = event.target.checked
                               ? [...programmeIds, programme.id]
-                              : programmeIds.filter((id) => id !== programme.id);
+                              : programmeIds.filter(
+                                  (id) => id !== programme.id,
+                                );
                             methods.setValue("programmeIds", next, {
                               shouldValidate: true,
                               shouldDirty: true,
@@ -437,7 +437,9 @@ export function EnrolmentForm({
                             methods.setValue("programmeId", next[0] ?? "");
                           }}
                         />
-                        <span>{programme.title ?? programme.name ?? "Subject"}</span>
+                        <span>
+                          {programme.title ?? programme.name ?? "Subject"}
+                        </span>
                       </label>
                     );
                   })}
@@ -536,7 +538,10 @@ export function EnrolmentForm({
                 />
                 <span>
                   I agree to the{" "}
-                  <Link href="/terms" className="font-medium text-purple underline-offset-2 hover:underline">
+                  <Link
+                    href="/terms"
+                    className="font-medium text-purple underline-offset-2 hover:underline"
+                  >
                     terms and conditions
                   </Link>{" "}
                   and{" "}

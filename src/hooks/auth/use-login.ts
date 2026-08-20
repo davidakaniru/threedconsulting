@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiSuccess } from "@/lib/api/types";
@@ -16,5 +16,15 @@ async function login(values: LoginRequest): Promise<LoginResponse> {
 }
 
 export function useLogin() {
-  return useMutation({ mutationFn: login });
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      // A successful login establishes a new authenticated session.
+      // Discard everything from the previous session so no user-scoped
+      // data can be reused after switching accounts.
+      queryClient.clear();
+    },
+  });
 }
