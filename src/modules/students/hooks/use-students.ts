@@ -108,6 +108,7 @@ export function useUpdateParentStudent(id: string) {
       ).data.data,
     onSuccess: () => {
       client.invalidateQueries({ queryKey: queryKeys.students.detail(id) });
+      client.invalidateQueries({ queryKey: queryKeys.students.lists() });
     },
   });
 }
@@ -128,6 +129,7 @@ export function useUploadParentStudentPhoto(id: string) {
     },
     onSuccess: () => {
       client.invalidateQueries({ queryKey: queryKeys.students.detail(id) });
+      client.invalidateQueries({ queryKey: queryKeys.students.lists() });
     },
   });
 }

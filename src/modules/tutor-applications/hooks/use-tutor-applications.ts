@@ -68,6 +68,7 @@ export function useTutorApplicationAction() {
         queryKey: tutorApplicationQueryKeys.all,
       });
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
+      queryClient.invalidateQueries({ queryKey: ["lesson-requests"] });
       queryClient.invalidateQueries({
         queryKey: tutorApplicationQueryKeys.detail(variables.id),
       });

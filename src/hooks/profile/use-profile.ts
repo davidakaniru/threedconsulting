@@ -64,6 +64,10 @@ export function useUpdateProfile() {
     onSuccess: (profile) => {
       queryClient.setQueryData(queryKeys.profile.detail(), profile);
       queryClient.setQueryData(queryKeys.auth.currentUser(), profile);
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.currentUser() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.currentUser() });
     },
   });
 }

@@ -15,6 +15,9 @@ export const queryKeys = {
     currentUser: () => ["auth", "current-user"] as const,
   },
   teachers: teacherKeys,
+  teacherProfile: {
+    all: ["teacher", "profile"] as const,
+  },
   students: studentKeys,
   parents: parentKeys,
   programmes: programmeKeys,

@@ -91,6 +91,7 @@ export function useUpdateTeacher(id: string) {
     },
     onSuccess: (teacher) => {
       queryClient.setQueryData(queryKeys.teachers.detail(id), teacher);
+      queryClient.invalidateQueries({ queryKey: queryKeys.teachers.detail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.teachers.lists() });
     },
   });
@@ -108,6 +109,7 @@ export function useTeacherAction(id: string) {
     },
     onSuccess: (teacher) => {
       queryClient.setQueryData(queryKeys.teachers.detail(id), teacher);
+      queryClient.invalidateQueries({ queryKey: queryKeys.teachers.detail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.teachers.lists() });
     },
   });

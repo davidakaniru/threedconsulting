@@ -43,9 +43,11 @@ export function usePublishLessonRequest(id: string) {
         )
       ).data.data,
     onSuccess: async () => {
-      await client.invalidateQueries({
-        queryKey: queryKeys.lessonRequests.all,
-      });
+      await Promise.all([
+        client.invalidateQueries({ queryKey: queryKeys.lessonRequests.all }),
+        client.invalidateQueries({ queryKey: queryKeys.lessonRequests.detail(id) }),
+        client.invalidateQueries({ queryKey: queryKeys.teachingAssignments.all }),
+      ]);
     },
   });
 }
@@ -65,6 +67,8 @@ export function useAssignLessonRequest(id: string) {
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: queryKeys.lessonRequests.all });
       await client.invalidateQueries({ queryKey: queryKeys.lessonRequests.detail(id) });
+      await client.invalidateQueries({ queryKey: queryKeys.teachingAssignments.all });
+      await client.invalidateQueries({ queryKey: queryKeys.teachers.all });
     },
   });
 }
