@@ -6,7 +6,7 @@ import {
 } from "@/modules/lesson-requests";
 import { getLessonRequestMetrics } from "@/modules/lesson-requests/server";
 
-export const metadata: Metadata = { title: "Enrollments | Admin Portal" };
+export const metadata: Metadata = { title: "Lesson Requests | Admin Portal" };
 
 export default async function Page() {
   const metrics = await getLessonRequestMetrics();
@@ -15,8 +15,8 @@ export default async function Page() {
     <AdminPage>
       <PageHeader
         eyebrow="Admissions"
-        title="Enrollments"
-        description="Review parent Enrollments and publish suitable teaching opportunities to eligible subject teachers."
+        title="Lesson requests"
+        description="Review parent lesson requests and publish suitable teaching opportunities to eligible subject teachers."
       />
       <LessonRequestMetrics metrics={metrics} />
       <LessonRequestsTable />

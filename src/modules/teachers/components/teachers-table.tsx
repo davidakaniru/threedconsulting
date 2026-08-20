@@ -53,7 +53,7 @@ function formatDate(value: string) {
 export function TeachersTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState("active");
   const deferredSearch = useDeferredValue(search);
   const pageSize = 10;
 

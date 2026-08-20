@@ -4,7 +4,7 @@ import { LessonRequestDetails } from "@/modules/lesson-requests";
 import { getLessonRequest } from "@/modules/lesson-requests/server";
 import { getLessonAssignmentByRequest } from "@/modules/lesson-assignments/server";
 
-export const metadata: Metadata = { title: "Enrollment Review | Admin Portal" };
+export const metadata: Metadata = { title: "Lesson Request Review | Admin Portal" };
 
 export default async function Page({
   params,
