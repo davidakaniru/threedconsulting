@@ -25,16 +25,3 @@ export async function GET(_request: NextRequest, context: Context) {
   }
 }
 
-export async function POST(request: NextRequest, context: Context) {
-  try {
-    const admin = await requireApiAdmin();
-    const { id } = await context.params;
-    const input = await actionSchema.validate(await request.json(), { abortEarly: false, stripUnknown: true });
-    return apiSuccess(await performTutorApplicationAction(id, input, admin.id, request.nextUrl.origin));
-  } catch (error) {
-    if (error instanceof ValidationError) return apiError("VALIDATION_ERROR", "The requested application action is invalid.", 422);
-    if (error instanceof ApiError) return apiError(error.code, error.message, error.status, error.details);
-    console.error("Admin tutor application action failed", error);
-    return apiError("INTERNAL_SERVER_ERROR", "The application action could not be completed.", 500);
-  }
-}
