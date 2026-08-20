@@ -13,6 +13,14 @@ export interface TeacherSummary {
   avatarUrl: string | null;
   qualification: string | null;
   specialization: string | null;
+  expertise: string | null;
+  qualifications: string | null;
+  addressLine1: string | null;
+  city: string | null;
+  country: string | null;
+  gender: "male" | "female" | null;
+  summary: string | null;
+  cvPath: string | null;
   hireDate: string;
   employmentStatus: TeacherEmploymentStatus;
   onboardingStatus: TeacherOnboardingStatus;

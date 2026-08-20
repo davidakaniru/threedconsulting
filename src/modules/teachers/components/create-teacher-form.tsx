@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   createTeacherSchema,
@@ -73,20 +74,26 @@ export function CreateTeacherForm({
           errorMessage={errors.email?.message}
           {...register("email")}
         />
-        <Input
-          id="qualification"
-          label="Qualification"
-          placeholder="e.g. B.Ed Early Childhood Education"
-          errorMessage={errors.qualification?.message}
-          {...register("qualification")}
-        />
-        <Input
-          id="specialization"
-          label="Specialization"
-          placeholder="e.g. Mathematics"
-          errorMessage={errors.specialization?.message}
-          {...register("specialization")}
-        />
+        <div className="sm:col-span-2">
+          <Textarea
+            id="qualification"
+            label="Qualifications"
+            rows={5}
+            placeholder="List the teacher's relevant academic, teaching or professional qualifications."
+            errorMessage={errors.qualification?.message}
+            {...register("qualification")}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <Textarea
+            id="specialization"
+            label="Areas of expertise / specialisation"
+            rows={5}
+            placeholder="e.g. Mathematics, Physics, GCSE preparation, primary education..."
+            errorMessage={errors.specialization?.message}
+            {...register("specialization")}
+          />
+        </div>
       </div>
 
       <fieldset className="space-y-3">

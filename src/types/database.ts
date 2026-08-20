@@ -1258,16 +1258,21 @@ export type Database = {
         Row: {
           activated_at: string | null
           application_id: string | null
+          address_line_1: string | null
+          city: string | null
+          country: string | null
           created_at: string
           cv_path: string | null
           employee_id: string
           employment_status: Database["public"]["Enums"]["teacher_employment_status"]
+          expertise: string | null
           gender: string | null
           hire_date: string
           id: string
           invited_at: string
           onboarding_status: Database["public"]["Enums"]["teacher_onboarding_status"]
           qualification: string | null
+          qualifications: string | null
           specialization: string | null
           summary: string | null
           updated_at: string
@@ -1275,16 +1280,21 @@ export type Database = {
         Insert: {
           activated_at?: string | null
           application_id?: string | null
+          address_line_1?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           cv_path?: string | null
           employee_id?: string
           employment_status?: Database["public"]["Enums"]["teacher_employment_status"]
+          expertise?: string | null
           gender?: string | null
           hire_date?: string
           id: string
           invited_at?: string
           onboarding_status?: Database["public"]["Enums"]["teacher_onboarding_status"]
           qualification?: string | null
+          qualifications?: string | null
           specialization?: string | null
           summary?: string | null
           updated_at?: string
@@ -1292,16 +1302,21 @@ export type Database = {
         Update: {
           activated_at?: string | null
           application_id?: string | null
+          address_line_1?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           cv_path?: string | null
           employee_id?: string
           employment_status?: Database["public"]["Enums"]["teacher_employment_status"]
+          expertise?: string | null
           gender?: string | null
           hire_date?: string
           id?: string
           invited_at?: string
           onboarding_status?: Database["public"]["Enums"]["teacher_onboarding_status"]
           qualification?: string | null
+          qualifications?: string | null
           specialization?: string | null
           summary?: string | null
           updated_at?: string

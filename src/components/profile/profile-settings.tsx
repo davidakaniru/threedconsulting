@@ -26,6 +26,7 @@ import {
 import { parseError } from "@/lib/utils";
 import type { AuthenticatedUser } from "@/types/auth";
 import Image from "next/image";
+import { TeacherProfileSettings } from "@/modules/teachers/components/teacher-profile-settings";
 
 interface ProfileSettingsProps {
   initialProfile: AuthenticatedUser;
@@ -205,6 +206,9 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
         </div>
       </section>
 
+      {profile.role === "teacher" ? (
+        <TeacherProfileSettings initialProfile={profile} />
+      ) : (
       <section className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
@@ -303,6 +307,8 @@ export function ProfileSettings({ initialProfile }: ProfileSettingsProps) {
           </div>
         </form>
       </section>
+
+      )}
 
       <section className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-start gap-3">

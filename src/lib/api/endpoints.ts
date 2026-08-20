@@ -34,6 +34,8 @@ export const API_ENDPOINTS = {
       `/admin/tutor-applications/${id}/actions`,
   },
   teacher: {
+    profile: "/teacher/profile",
+    profileCv: "/teacher/profile/cv",
     sessions: "/teacher/sessions",
     session: (id: string) => `/teacher/sessions/${id}`,
     sessionAttendance: (id: string) => `/teacher/sessions/${id}/attendance`,

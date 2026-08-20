@@ -6,3 +6,4 @@ export * from "./teacher-edit-form";
 export * from "./teacher-lifecycle-actions";
 export * from "./teacher-metrics";
 export * from "./teachers-table";
+export * from "./teacher-profile-settings";
