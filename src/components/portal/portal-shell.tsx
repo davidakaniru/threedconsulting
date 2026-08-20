@@ -60,7 +60,10 @@ function SidebarContent({
 
   return (
     <aside
-      className="flex h-full w-72 flex-col border-r border-slate-200 bg-white px-4 py-5"
+      className={cn(
+        "flex h-full w-72 flex-col border-r border-slate-200 bg-white px-4 py-5",
+        user.role === "admin" && "overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+      )}
       aria-label="Portal navigation"
     >
       <Link

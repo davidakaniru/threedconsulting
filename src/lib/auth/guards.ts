@@ -48,6 +48,7 @@ export async function requireApiRole(
 
 export const requireApiAdmin = () => requireApiRole("admin");
 export const requireApiParent = () => requireApiRole("parent");
+export const requireApiTeacher = () => requireApiRole("teacher");
 
 export async function requireApiAuth(): Promise<AuthenticatedUser> {
   const user = await getCurrentUser();

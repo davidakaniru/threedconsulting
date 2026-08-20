@@ -6,7 +6,7 @@ import type { UpdateTeacherRequest } from "@/modules/teachers/schemas";
 import type { ProfileStatus } from "@/types/auth";
 
 const TEACHER_SELECT =
-  "id,employee_id,qualification,specialization,hire_date,employment_status,onboarding_status,invited_at,activated_at,created_at,updated_at,profiles!inner(first_name,last_name,email,avatar_url,status,phone,address,date_of_birth)" as const;
+  "id,employee_id,qualification,specialization,expertise,qualifications,address_line_1,city,country,gender,summary,cv_path,hire_date,employment_status,onboarding_status,invited_at,activated_at,created_at,updated_at,profiles!inner(first_name,last_name,email,avatar_url,status,phone,address,date_of_birth)" as const;
 
 export async function listTeacherRows(
   from: number,
@@ -196,7 +196,71 @@ export async function updateTeacherRecord(
       employee_id: input.employeeId.trim(),
       qualification: input.qualification?.trim() || null,
       specialization: input.specialization?.trim() || null,
+      expertise: input.specialization?.trim() || null,
+      qualifications: input.qualification?.trim() || null,
     })
+    .eq("id", id)
+    .select("id")
+    .single();
+}
+
+export async function updateTeacherSelfProfile(
+  id: string,
+  input: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    addressLine1: string;
+    city: string;
+    country: string;
+    gender: "male" | "female";
+    dateOfBirth: string;
+    summary: string;
+    expertise: string;
+    qualifications: string;
+  },
+) {
+  const admin = createAdminClient();
+  const authResult = await admin.auth.admin.updateUserById(id, { email: input.email.trim().toLowerCase() });
+  if (authResult.error) return { error: authResult.error, data: null };
+
+  const profileResult = await admin
+    .from("profiles")
+    .update({
+      first_name: input.firstName.trim(),
+      last_name: input.lastName.trim(),
+      email: input.email.trim().toLowerCase(),
+      phone: input.phone.trim() || null,
+      date_of_birth: input.dateOfBirth || null,
+      address: input.addressLine1.trim() || null,
+    })
+    .eq("id", id);
+  if (profileResult.error) return { error: profileResult.error, data: null };
+
+  return admin
+    .from("teachers")
+    .update({
+      address_line_1: input.addressLine1.trim(),
+      city: input.city.trim(),
+      country: input.country.trim(),
+      gender: input.gender,
+      summary: input.summary.trim(),
+      expertise: input.expertise.trim(),
+      qualifications: input.qualifications.trim(),
+      // Keep legacy fields in sync for existing public/admin consumers.
+      specialization: input.expertise.trim(),
+      qualification: input.qualifications.trim(),
+    })
+    .eq("id", id)
+    .select("id")
+    .single();
+}
+
+export async function updateTeacherCvPath(id: string, cvPath: string | null) {
+  return createAdminClient()
+    .from("teachers")
+    .update({ cv_path: cvPath })
     .eq("id", id)
     .select("id")
     .single();

@@ -67,7 +67,7 @@ export async function notifyAdminNewLessonRequest(requestId: string) {
         .join(" ") || "Child";
     const programmeName = programme?.name || "Programme";
     const days = (request.preferred_days ?? []).join(", ") || "Not specified";
-    const adminUrl = `${siteUrl()}/portal/admin/enrolments/${request.id}`;
+    const adminUrl = `${siteUrl()}/portal/admin/lesson-requests/${request.id}`;
 
     await sendTransactionalEmail({
       to,
@@ -152,7 +152,7 @@ export async function notifyAdminLessonAccepted(
         .filter(Boolean)
         .join(" ") || "Child";
     const programmeName = programme?.name || "Programme";
-    const adminUrl = `${siteUrl()}/portal/admin/enrolments/${request.id}`;
+    const adminUrl = `${siteUrl()}/portal/admin/lesson-requests/${request.id}`;
 
     await sendTransactionalEmail({
       to,

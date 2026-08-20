@@ -55,7 +55,7 @@ export default async function AdminPortalPage() {
         description="Review what needs attention today and move quickly into the academy's core operations."
         actions={
           <Button asChild>
-            <Link href="/portal/admin/enrolments">
+            <Link href="/portal/admin/lesson-requests">
               <FileCheck2 aria-hidden="true" />
               Review enrolments
             </Link>
@@ -113,7 +113,7 @@ export default async function AdminPortalPage() {
             description="Add a subject and make teachers eligible to teach it."
           />
           <QuickAction
-            href="/portal/admin/enrolments"
+            href="/portal/admin/lesson-requests"
             icon={FileCheck2}
             title="Review enrolments"
             description="Review parent enrolments and publish suitable opportunities to teachers."
@@ -134,7 +134,7 @@ export default async function AdminPortalPage() {
           icon={FileCheck2}
           action={
             <Button asChild variant="outline">
-              <Link href="/portal/admin/enrolments">View queue</Link>
+              <Link href="/portal/admin/lesson-requests">View queue</Link>
             </Button>
           }
           contentClassName="p-0"
@@ -144,7 +144,7 @@ export default async function AdminPortalPage() {
               {overview.pendingLessonRequests.slice(0, 3).map((application) => (
                 <Link
                   key={application.id}
-                  href={`/portal/admin/enrolments/${application.id}`}
+                  href={`/portal/admin/lesson-requests/${application.id}`}
                   className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-slate-50 sm:px-6"
                 >
                   <div className="min-w-0">

@@ -33,6 +33,8 @@ import {
   updateAccountStatus,
   updateEmploymentStatus,
   updateTeacherRecord,
+  updateTeacherSelfProfile,
+  updateTeacherCvPath,
   getTeacherCount,
 } from "@/modules/teachers/server/teacher.repository";
 
@@ -178,6 +180,42 @@ export async function inviteTeacher(
   }
 }
 
+
+export async function updateOwnTeacherProfile(
+  id: string,
+  input: import("@/modules/teachers/schemas").TeacherProfileRequest,
+) {
+  const dob = new Date(`${input.dateOfBirth}T00:00:00`);
+  if (Number.isNaN(dob.getTime()) || dob > new Date()) {
+    throw new ApiError("DATE_OF_BIRTH_INVALID", "Please provide a valid date of birth.", 422);
+  }
+  const result = await updateTeacherSelfProfile(id, input);
+  if (result.error) {
+    console.error("Unable to update teacher profile", result.error);
+    throw new ApiError("TEACHER_PROFILE_UPDATE_FAILED", "Your teacher profile could not be updated.", 500);
+  }
+  return getTeacher(id);
+}
+
+export async function uploadOwnTeacherCv(id: string, file: File) {
+  const admin = createAdminClient();
+  const bucket = "tutor-applications";
+  const path = `teacher-cvs/${id}/cv.pdf`;
+  const upload = await admin.storage.from(bucket).upload(path, file, {
+    contentType: "application/pdf",
+    upsert: true,
+  });
+  if (upload.error) {
+    console.error("Unable to upload teacher CV", upload.error);
+    throw new ApiError("TEACHER_CV_UPLOAD_FAILED", "Your CV could not be uploaded.", 500);
+  }
+  const saved = await updateTeacherCvPath(id, path);
+  if (saved.error) {
+    await admin.storage.from(bucket).remove([path]);
+    throw new ApiError("TEACHER_CV_UPDATE_FAILED", "Your CV was uploaded but could not be saved to your profile.", 500);
+  }
+  return getTeacher(id);
+}
 
 export async function deleteTeacher(id: string, actorId: string) {
   const teacher = await getTeacher(id);

@@ -7,10 +7,13 @@ import { getTeacherMetrics } from "@/modules/teachers/server/teacher.service";
 import { TeacherMetrics } from "@/modules/teachers/components";
 import { AdminTutorsTabs } from "@/modules/tutor-applications/components/admin-tutors-tabs";
 
-export const metadata: Metadata = { title: "Teachers | Admin Portal" };
+export const metadata: Metadata = {
+  title: "Teacher Applications | Admin Portal",
+};
 
-export default async function TeachersPage() {
+export default async function TeacherApplicationsPage() {
   const metrics = await getTeacherMetrics();
+
   return (
     <AdminPage>
       <PageHeader
