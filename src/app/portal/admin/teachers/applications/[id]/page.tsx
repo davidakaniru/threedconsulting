@@ -66,7 +66,7 @@ export default async function TutorApplicationPage({ params }: Props) {
                   <StatusBadge status={application.status} />
                 </div>
                 <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                  <p className="flex items-center gap-2">
+                  <p className="flex items-center gap-2 text-ellipsis line-clamp-1">
                     <Mail className="size-4" />
                     {application.email}
                   </p>
@@ -123,6 +123,15 @@ export default async function TutorApplicationPage({ params }: Props) {
               {application.country}
             </p>
           </section>
+
+          {application.status === "pending" ||
+          application.status === "reviewing" ? (
+            <TutorApplicationDetailActions
+              applicationId={application.id}
+              applicantName={fullName}
+              email={application.email}
+            />
+          ) : null}
         </div>
 
         <aside className="space-y-4">
@@ -144,14 +153,6 @@ export default async function TutorApplicationPage({ params }: Props) {
               <ArrowLeft className="size-4 rotate-180 text-slate-400" />
             </Link>
           )}
-          {application.status === "pending" ||
-          application.status === "reviewing" ? (
-            <TutorApplicationDetailActions
-              applicationId={application.id}
-              applicantName={fullName}
-              email={application.email}
-            />
-          ) : null}
         </aside>
       </div>
     </AdminPage>
