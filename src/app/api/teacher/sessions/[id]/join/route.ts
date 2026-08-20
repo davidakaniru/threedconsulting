@@ -52,7 +52,7 @@ export async function GET(
   const start = sessionDateTimeMs(session.session_date, session.start_time);
   const end = sessionDateTimeMs(session.session_date, session.end_time);
 
-  if (now < start - OPEN_BEFORE_MS || now > end) {
+  if (now < start - OPEN_BEFORE_MS || now >= end) {
     return NextResponse.json(
       {
         error: {

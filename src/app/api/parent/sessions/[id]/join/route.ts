@@ -5,8 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
-const OPEN_BEFORE_MS = 30 * 60 * 1000;
-const CLOSE_AFTER_MS = 10 * 60 * 1000;
+const OPEN_BEFORE_MS = 5 * 60 * 1000;
 
 function sessionDateTimeMs(date: string, time: string) {
   const normalizedTime = time.length === 5 ? `${time}:00` : time;
@@ -53,7 +52,7 @@ export async function GET(
   const start = sessionDateTimeMs(session.session_date, session.start_time);
   const end = sessionDateTimeMs(session.session_date, session.end_time);
 
-  if (now < start - OPEN_BEFORE_MS || now > end + CLOSE_AFTER_MS) {
+  if (now < start - OPEN_BEFORE_MS || now >= end) {
     return NextResponse.json(
       {
         error: {
@@ -63,6 +62,24 @@ export async function GET(
         },
       },
       { status: 403 },
+    );
+  }
+
+  const { error: joinError } = await supabase.rpc("record_session_join", {
+    p_session_id: id,
+    p_participant_type: "student",
+    p_joined_at: new Date().toISOString(),
+  });
+
+  if (joinError) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "SESSION_JOIN_FAILED",
+          message: "Your meeting join could not be recorded.",
+        },
+      },
+      { status: 409 },
     );
   }
 

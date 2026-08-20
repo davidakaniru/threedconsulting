@@ -29,7 +29,7 @@ function getJoinState(
   const endMs = sessionDateTimeMs(sessionDate, endTime);
 
   if (nowMs < startMs - OPEN_BEFORE_MS) return "before";
-  if (nowMs > endMs) return "after";
+  if (nowMs >= endMs) return "after";
   return "open";
 }
 
@@ -68,7 +68,7 @@ export function SessionJoinButton({
   useEffect(() => {
     const updateNow = () => setNowMs(Date.now());
     updateNow();
-    const interval = window.setInterval(updateNow, 30_000);
+    const interval = window.setInterval(updateNow, 1_000);
     return () => window.clearInterval(interval);
   }, []);
 

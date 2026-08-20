@@ -3,7 +3,6 @@ import {
   CalendarCheck2,
   CalendarDays,
   Clock,
-  ExternalLink,
   Pencil,
   Users,
 } from "lucide-react";
@@ -15,6 +14,7 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { SessionJoinButton } from "./session-join-button";
 import type { ClassSession } from "../types";
 export function SessionDetails({
   session,
@@ -67,12 +67,16 @@ export function SessionDetails({
                 </Button>
               </>
             )}
-            <Button asChild>
-              <a href={session.meetingLink} target="_blank" rel="noreferrer">
-                <ExternalLink />
-                Join meeting
-              </a>
-            </Button>
+            {!admin && (
+              <SessionJoinButton
+                sessionId={session.id}
+                sessionDate={session.sessionDate}
+                startTime={session.startTime}
+                endTime={session.endTime}
+                status={session.status}
+                role="teacher"
+              />
+            )}
           </div>
         </div>
       </SectionCard>

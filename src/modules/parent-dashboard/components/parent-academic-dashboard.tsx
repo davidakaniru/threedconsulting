@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
 import {
   CalendarDays,
   CheckCircle2,
@@ -20,10 +20,10 @@ import {
   StatusBadge,
 } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { SessionJoinButton } from "@/modules/sessions/components/session-join-button";
 import { DropdownMenu } from "radix-ui";
 import {
   formatDate,
-  formatDateTime,
   formatRelative,
   formatTime,
 } from "@/lib/date";
@@ -34,14 +34,6 @@ import { ChildSwitcher } from "./child-switcher";
 function DashboardContent() {
   const { child } = useChild();
 
-  const [nowMs, setNowMs] = useState<number | null>(null);
-
-  useEffect(() => {
-    const updateNow = () => setNowMs(Date.now());
-    updateNow();
-    const interval = window.setInterval(updateNow, 30_000);
-    return () => window.clearInterval(interval);
-  }, []);
 
   if (!child) {
     return (
@@ -244,18 +236,6 @@ function DashboardContent() {
           ) : (
             <div className="space-y-3">
               {child.upcomingSessions.slice(0, 2).map((session, index) => {
-                const startMs = sessionDateTimeMs(
-                  session.sessionDate,
-                  session.startTime,
-                );
-                const endMs = sessionDateTimeMs(
-                  session.sessionDate,
-                  session.endTime,
-                );
-                const canJoin =
-                  nowMs !== null &&
-                  nowMs >= startMs - 30 * 60 * 1000 &&
-                  nowMs <= endMs + 10 * 60 * 1000;
 
                 return (
                   <div
@@ -286,17 +266,14 @@ function DashboardContent() {
                           )}
                         </p>
                       </div>
-                      {canJoin && (
-                        <Button asChild size="sm">
-                          <a
-                            href={`/api/parent/sessions/${session.id}/join`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Join meeting
-                          </a>
-                        </Button>
-                      )}
+                      <SessionJoinButton
+                        sessionId={session.id}
+                        sessionDate={session.sessionDate}
+                        startTime={session.startTime}
+                        endTime={session.endTime}
+                        status="scheduled"
+                        role="parent"
+                      />
                     </div>
                   </div>
                 );
@@ -425,11 +402,6 @@ function DashboardContent() {
       </SectionCard>
     </div>
   );
-}
-
-function sessionDateTimeMs(date: string, time: string) {
-  const normalizedTime = time.length === 5 ? `${time}:00` : time;
-  return new Date(`${date}T${normalizedTime}+01:00`).getTime();
 }
 
 export function ParentAcademicDashboardView({
