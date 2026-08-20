@@ -63,8 +63,8 @@ export const portalNavigation: Record<
       group: "Academics",
     },
     {
-      label: "Enrolments",
-      href: "/portal/admin/enrolments",
+      label: "Enrollments",
+      href: "/portal/admin/lesson-requests",
       icon: FileCheck2,
       enabled: true,
       permission: "enrolments.read",

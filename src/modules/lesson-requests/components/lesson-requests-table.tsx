@@ -143,7 +143,7 @@ export function LessonRequestsTable() {
           data={query.data?.requests ?? []}
           columns={columns}
           getRowId={(request) => request.id}
-          getRowHref={(request) => `/portal/admin/enrolments/${request.id}`}
+          getRowHref={(request) => `/portal/admin/lesson-requests/${request.id}`}
           emptyState={
             <EmptyState
               icon={ClipboardList}
