@@ -9,11 +9,23 @@ import { getPublishedProgrammesForPublic } from "@/modules/programmes/server";
 import { getActiveTutorsForPublic } from "@/modules/teachers/server";
 import { Testimonials } from "@/components/home/testimonials";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
-  const [programmes, tutors] = await Promise.all([
+  const [programmesResult, tutorsResult] = await Promise.allSettled([
     getPublishedProgrammesForPublic(),
     getActiveTutorsForPublic(),
   ]);
+
+  if (programmesResult.status === "rejected") {
+    console.error("HomePage: failed to load programmes", programmesResult.reason);
+  }
+  if (tutorsResult.status === "rejected") {
+    console.error("HomePage: failed to load tutors", tutorsResult.reason);
+  }
+
+  const programmes = programmesResult.status === "fulfilled" ? programmesResult.value : [];
+  const tutors = tutorsResult.status === "fulfilled" ? tutorsResult.value : [];
 
   return (
     <>

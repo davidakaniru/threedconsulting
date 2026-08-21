@@ -38,11 +38,11 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  /*
-   * Do not place unrelated logic between createServerClient()
-   * and getClaims(). Supabase may refresh the session here.
-   */
-  await supabase.auth.getClaims();
+  try {
+    await supabase.auth.getClaims();
+  } catch (error) {
+    console.error("proxy: supabase.auth.getClaims() failed", error);
+  }
 
   return response;
 }
